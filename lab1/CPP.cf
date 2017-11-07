@@ -1,0 +1,42 @@
+-- Program defifinitions
+PDefs. 	Program ::= [Def] ;
+
+terminator Def "" ;
+
+-- Comments
+comment 	"//" ;
+comment 	"/*" "*/" ;
+
+-- Functions
+DFun. 		Def ::= Type Id "(" [Arg] ")" "{" [Stm] "}" ;
+separator	Arg "," ;
+terminator 	Stm "" ;
+
+-- Argument Declaration
+ADecl. 	Arg ::= Type Id ;
+
+-- Statements (Expressions followed by ";")
+SExp.	Stm ::= Exp ";" ;
+
+-- Statements (Declarations)
+SDecl.	Stm ::= Type Id ";" ;
+SInit.	Stm ::= Type Id "=" Exp ";" ;
+
+-- Statemens (return, while, if, block)
+SReturn. 	Stm ::= "return" Exp ";" ;
+SWhile.		Stm ::= "while" "(" Exp ")" Stm ;
+SBlock. 	Stm ::= "{" [Stm] "}" ;
+SIfElse.	Stm ::= "if" "(" Exp ")" Stm "else" Stm ;
+
+-- Coercions and sep
+coercions Exp 15 ;
+separator Exp "," ;
+
+-- Types
+Tbool.		Type ::= "bool" ;
+Tdouble.	Type ::= "double" ;
+Tint.		Type ::= "int" ;
+Tvoid.		Type ::= "void" ;
+
+-- Id
+token Id (letter (letter | digit | '_')*) ;
