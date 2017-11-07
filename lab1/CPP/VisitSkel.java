@@ -11,8 +11,8 @@ public class VisitSkel
 {
   public class ProgramVisitor<R,A> implements Program.Visitor<R,A>
   {
-    public R visit(CPP.Absyn.PDefs p, A arg)
-    { /* Code For PDefs Goes Here */
+    public R visit(CPP.Absyn.Prog p, A arg)
+    { /* Code For Prog Goes Here */
       for (Def x: p.listdef_)
       { /* ... */ }
       return null;
@@ -85,7 +85,21 @@ public class VisitSkel
     { /* Code For EInt Goes Here */
       //p.integer_;
       return null;
-    }                                                                
+    }        public R visit(CPP.Absyn.EString p, A arg)
+    { /* Code For EString Goes Here */
+      //p.string_;
+      return null;
+    }        public R visit(CPP.Absyn.ELShift p, A arg)
+    { /* Code For ELShift Goes Here */
+      p.exp_1.accept(new ExpVisitor<R,A>(), arg);
+      p.exp_2.accept(new ExpVisitor<R,A>(), arg);
+      return null;
+    }    public R visit(CPP.Absyn.ERShift p, A arg)
+    { /* Code For ERShift Goes Here */
+      p.exp_1.accept(new ExpVisitor<R,A>(), arg);
+      p.exp_2.accept(new ExpVisitor<R,A>(), arg);
+      return null;
+    }                                                        
   }
   public class TypeVisitor<R,A> implements Type.Visitor<R,A>
   {
@@ -97,6 +111,9 @@ public class VisitSkel
       return null;
     }    public R visit(CPP.Absyn.Tint p, A arg)
     { /* Code For Tint Goes Here */
+      return null;
+    }    public R visit(CPP.Absyn.Tstring p, A arg)
+    { /* Code For Tstring Goes Here */
       return null;
     }    public R visit(CPP.Absyn.Tvoid p, A arg)
     { /* Code For Tvoid Goes Here */

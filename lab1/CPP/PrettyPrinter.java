@@ -217,11 +217,11 @@ public class PrettyPrinter
 
   private static void pp(CPP.Absyn.Program foo, int _i_)
   {
-    if (foo instanceof CPP.Absyn.PDefs)
+    if (foo instanceof CPP.Absyn.Prog)
     {
-       CPP.Absyn.PDefs _pdefs = (CPP.Absyn.PDefs) foo;
+       CPP.Absyn.Prog _prog = (CPP.Absyn.Prog) foo;
        if (_i_ > 0) render(_L_PAREN);
-       pp(_pdefs.listdef_, 0);
+       pp(_prog.listdef_, 0);
        if (_i_ > 0) render(_R_PAREN);
     }
   }
@@ -375,6 +375,31 @@ public class PrettyPrinter
        pp(_eint.integer_, 0);
        if (_i_ > 15) render(_R_PAREN);
     }
+    else     if (foo instanceof CPP.Absyn.EString)
+    {
+       CPP.Absyn.EString _estring = (CPP.Absyn.EString) foo;
+       if (_i_ > 14) render(_L_PAREN);
+       printQuoted(_estring.string_);
+       if (_i_ > 14) render(_R_PAREN);
+    }
+    else     if (foo instanceof CPP.Absyn.ELShift)
+    {
+       CPP.Absyn.ELShift _elshift = (CPP.Absyn.ELShift) foo;
+       if (_i_ > 10) render(_L_PAREN);
+       pp(_elshift.exp_1, 10);
+       render("<<");
+       pp(_elshift.exp_2, 11);
+       if (_i_ > 10) render(_R_PAREN);
+    }
+    else     if (foo instanceof CPP.Absyn.ERShift)
+    {
+       CPP.Absyn.ERShift _ershift = (CPP.Absyn.ERShift) foo;
+       if (_i_ > 10) render(_L_PAREN);
+       pp(_ershift.exp_1, 10);
+       render(">>");
+       pp(_ershift.exp_2, 11);
+       if (_i_ > 10) render(_R_PAREN);
+    }
   }
 
   private static void pp(CPP.Absyn.ListExp foo, int _i_)
@@ -412,6 +437,13 @@ public class PrettyPrinter
        render("int");
        if (_i_ > 0) render(_R_PAREN);
     }
+    else     if (foo instanceof CPP.Absyn.Tstring)
+    {
+       CPP.Absyn.Tstring _tstring = (CPP.Absyn.Tstring) foo;
+       if (_i_ > 0) render(_L_PAREN);
+       render("string");
+       if (_i_ > 0) render(_R_PAREN);
+    }
     else     if (foo instanceof CPP.Absyn.Tvoid)
     {
        CPP.Absyn.Tvoid _tvoid = (CPP.Absyn.Tvoid) foo;
@@ -424,13 +456,13 @@ public class PrettyPrinter
 
   private static void sh(CPP.Absyn.Program foo)
   {
-    if (foo instanceof CPP.Absyn.PDefs)
+    if (foo instanceof CPP.Absyn.Prog)
     {
-       CPP.Absyn.PDefs _pdefs = (CPP.Absyn.PDefs) foo;
+       CPP.Absyn.Prog _prog = (CPP.Absyn.Prog) foo;
        render("(");
-       render("PDefs");
+       render("Prog");
        render("[");
-       sh(_pdefs.listdef_);
+       sh(_prog.listdef_);
        render("]");
        render(")");
     }
@@ -576,6 +608,32 @@ public class PrettyPrinter
        sh(_eint.integer_);
        render(")");
     }
+    if (foo instanceof CPP.Absyn.EString)
+    {
+       CPP.Absyn.EString _estring = (CPP.Absyn.EString) foo;
+       render("(");
+       render("EString");
+       sh(_estring.string_);
+       render(")");
+    }
+    if (foo instanceof CPP.Absyn.ELShift)
+    {
+       CPP.Absyn.ELShift _elshift = (CPP.Absyn.ELShift) foo;
+       render("(");
+       render("ELShift");
+       sh(_elshift.exp_1);
+       sh(_elshift.exp_2);
+       render(")");
+    }
+    if (foo instanceof CPP.Absyn.ERShift)
+    {
+       CPP.Absyn.ERShift _ershift = (CPP.Absyn.ERShift) foo;
+       render("(");
+       render("ERShift");
+       sh(_ershift.exp_1);
+       sh(_ershift.exp_2);
+       render(")");
+    }
   }
 
   private static void sh(CPP.Absyn.ListExp foo)
@@ -604,6 +662,11 @@ public class PrettyPrinter
     {
        CPP.Absyn.Tint _tint = (CPP.Absyn.Tint) foo;
        render("Tint");
+    }
+    if (foo instanceof CPP.Absyn.Tstring)
+    {
+       CPP.Absyn.Tstring _tstring = (CPP.Absyn.Tstring) foo;
+       render("Tstring");
     }
     if (foo instanceof CPP.Absyn.Tvoid)
     {

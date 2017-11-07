@@ -11,7 +11,7 @@ public abstract class FoldVisitor<R,A> implements AllVisitor<R,A> {
     public abstract R combine(R x, R y, A arg);
 
 /* Program */
-    public R visit(CPP.Absyn.PDefs p, A arg) {
+    public R visit(CPP.Absyn.Prog p, A arg) {
       R r = leaf(arg);
       for (Def x : p.listdef_)
       {
@@ -91,6 +91,22 @@ public abstract class FoldVisitor<R,A> implements AllVisitor<R,A> {
       R r = leaf(arg);
       return r;
     }
+    public R visit(CPP.Absyn.EString p, A arg) {
+      R r = leaf(arg);
+      return r;
+    }
+    public R visit(CPP.Absyn.ELShift p, A arg) {
+      R r = leaf(arg);
+      r = combine(p.exp_1.accept(this, arg), r, arg);
+      r = combine(p.exp_2.accept(this, arg), r, arg);
+      return r;
+    }
+    public R visit(CPP.Absyn.ERShift p, A arg) {
+      R r = leaf(arg);
+      r = combine(p.exp_1.accept(this, arg), r, arg);
+      r = combine(p.exp_2.accept(this, arg), r, arg);
+      return r;
+    }
 
 /* Type */
     public R visit(CPP.Absyn.Tbool p, A arg) {
@@ -102,6 +118,10 @@ public abstract class FoldVisitor<R,A> implements AllVisitor<R,A> {
       return r;
     }
     public R visit(CPP.Absyn.Tint p, A arg) {
+      R r = leaf(arg);
+      return r;
+    }
+    public R visit(CPP.Absyn.Tstring p, A arg) {
       R r = leaf(arg);
       return r;
     }

@@ -1,6 +1,5 @@
 -- Program defifinition
-PDefs. 	Program ::= [Def] ;
-
+Prog. 	Program ::= [Def] ;
 terminator Def "" ;
 
 -- Comments
@@ -8,40 +7,44 @@ comment 	"#" ;
 comment 	"//" ;
 comment 	"/*" "*/" ;
 
--- Functions
+-- Functions definition
 DFun. 		Def ::= Type Id "(" [Arg] ")" "{" [Stm] "}" ;
 separator	Arg "," ;
 terminator 	Stm "" ;
 
--- Argument Declaration
-ADecl. 	Arg ::= Type Id ;
+-- Argument Decl
+ADecl. 		Arg ::= Type Id ;
 
 -- Statements (Expressions followed by ";")
 SExp.	Stm ::= Exp ";" ;
 
--- Statements (Declarations)
-SDecl.	Stm ::= Type Id ";" ;
-SInit.	Stm ::= Type Id "=" Exp ";" ;
+-- Statement (declaration)
+SDecl. 	Stm ::= Type Id ";" ;
+SInit. 	Stm ::= Type Id "=" Exp ";" ;
 
--- Statemens (return, while, if, block)
+-- Statemens (return, while, ifelse, block)
 SReturn. 	Stm ::= "return" Exp ";" ;
 SWhile.		Stm ::= "while" "(" Exp ")" Stm ;
 SBlock. 	Stm ::= "{" [Stm] "}" ;
 SIfElse.	Stm ::= "if" "(" Exp ")" Stm "else" Stm ;
 
--- Coercions and sep
+-- Coercion levels
 EInt. 		Exp15 ::= Integer ;
+EString. 	Exp15 ::= String ;
+ELShift.	Exp10 ::= Exp10 "<<" Exp11 ;
+ERShift.	Exp10 ::= Exp10 ">>" Exp11 ;
 
 coercions Exp 15 ;
 separator Exp "," ;
 
 -- Qualified constants
-
+--QCon. 		Exp ::= Type [Id] "::" Type [Id] ;
 
 -- Types
 Tbool.		Type ::= "bool" ;
 Tdouble.	Type ::= "double" ;
 Tint.		Type ::= "int" ;
+Tstring. 	Type ::= "string" ;
 Tvoid.		Type ::= "void" ;
 
 -- Id

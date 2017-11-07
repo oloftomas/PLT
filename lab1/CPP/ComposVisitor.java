@@ -12,14 +12,14 @@ public class ComposVisitor<A> implements
   CPP.Absyn.Type.Visitor<CPP.Absyn.Type,A>
 {
 /* Program */
-    public Program visit(CPP.Absyn.PDefs p, A arg)
+    public Program visit(CPP.Absyn.Prog p, A arg)
     {
       ListDef listdef_ = new ListDef();
       for (Def x : p.listdef_)
       {
         listdef_.add(x.accept(this,arg));
       }
-      return new CPP.Absyn.PDefs(listdef_);
+      return new CPP.Absyn.Prog(listdef_);
     }
 /* Def */
     public Def visit(CPP.Absyn.DFun p, A arg)
@@ -90,6 +90,20 @@ public class ComposVisitor<A> implements
     {
       Integer integer_ = p.integer_;
       return new CPP.Absyn.EInt(integer_);
+    }    public Exp visit(CPP.Absyn.EString p, A arg)
+    {
+      String string_ = p.string_;
+      return new CPP.Absyn.EString(string_);
+    }    public Exp visit(CPP.Absyn.ELShift p, A arg)
+    {
+      Exp exp_1 = p.exp_1.accept(this, arg);
+      Exp exp_2 = p.exp_2.accept(this, arg);
+      return new CPP.Absyn.ELShift(exp_1, exp_2);
+    }    public Exp visit(CPP.Absyn.ERShift p, A arg)
+    {
+      Exp exp_1 = p.exp_1.accept(this, arg);
+      Exp exp_2 = p.exp_2.accept(this, arg);
+      return new CPP.Absyn.ERShift(exp_1, exp_2);
     }
 /* Type */
     public Type visit(CPP.Absyn.Tbool p, A arg)
@@ -101,6 +115,9 @@ public class ComposVisitor<A> implements
     }    public Type visit(CPP.Absyn.Tint p, A arg)
     {
       return new CPP.Absyn.Tint();
+    }    public Type visit(CPP.Absyn.Tstring p, A arg)
+    {
+      return new CPP.Absyn.Tstring();
     }    public Type visit(CPP.Absyn.Tvoid p, A arg)
     {
       return new CPP.Absyn.Tvoid();

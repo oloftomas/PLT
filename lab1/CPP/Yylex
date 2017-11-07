@@ -31,14 +31,17 @@ IDENT = ({LETTER}|{DIGIT}|['_])
 <YYINITIAL>, { return new Symbol(sym._SYMB_4); }
 <YYINITIAL>; { return new Symbol(sym._SYMB_5); }
 <YYINITIAL>= { return new Symbol(sym._SYMB_6); }
-<YYINITIAL>bool { return new Symbol(sym._SYMB_7); }
-<YYINITIAL>double { return new Symbol(sym._SYMB_8); }
-<YYINITIAL>else { return new Symbol(sym._SYMB_9); }
-<YYINITIAL>if { return new Symbol(sym._SYMB_10); }
-<YYINITIAL>int { return new Symbol(sym._SYMB_11); }
-<YYINITIAL>return { return new Symbol(sym._SYMB_12); }
-<YYINITIAL>void { return new Symbol(sym._SYMB_13); }
-<YYINITIAL>while { return new Symbol(sym._SYMB_14); }
+<YYINITIAL><< { return new Symbol(sym._SYMB_7); }
+<YYINITIAL>>> { return new Symbol(sym._SYMB_8); }
+<YYINITIAL>bool { return new Symbol(sym._SYMB_9); }
+<YYINITIAL>double { return new Symbol(sym._SYMB_10); }
+<YYINITIAL>else { return new Symbol(sym._SYMB_11); }
+<YYINITIAL>if { return new Symbol(sym._SYMB_12); }
+<YYINITIAL>int { return new Symbol(sym._SYMB_13); }
+<YYINITIAL>return { return new Symbol(sym._SYMB_14); }
+<YYINITIAL>string { return new Symbol(sym._SYMB_15); }
+<YYINITIAL>void { return new Symbol(sym._SYMB_16); }
+<YYINITIAL>while { return new Symbol(sym._SYMB_17); }
 <YYINITIAL>"#"[^\n]*\n { /* skip */ }
 <YYINITIAL>"//"[^\n]*\n { /* skip */ }
 <YYINITIAL>"/*" { yybegin(COMMENT); }
@@ -47,7 +50,15 @@ IDENT = ({LETTER}|{DIGIT}|['_])
 <COMMENT>[\n] { /* skip */ }
 
 <YYINITIAL>{LETTER}({LETTER}|{DIGIT}|_)* { return new Symbol(sym.Id, yytext().intern()); }
-
+<YYINITIAL>"\"" { yybegin(STRING); }
+<STRING>\\ { yybegin(ESCAPED); }
+<STRING>\" { String foo = pstring; pstring = new String(); yybegin(YYINITIAL); return new Symbol(sym._STRING_, foo.intern()); }
+<STRING>.  { pstring += yytext(); }
+<ESCAPED>n { pstring +=  "\n"; yybegin(STRING); }
+<ESCAPED>\" { pstring += "\""; yybegin(STRING); }
+<ESCAPED>\\ { pstring += "\\"; yybegin(STRING); }
+<ESCAPED>t  { pstring += "\t"; yybegin(STRING); }
+<ESCAPED>.  { pstring += yytext(); yybegin(STRING); }
 
 
 <YYINITIAL>{DIGIT}+ { return new Symbol(sym._INTEGER_, new Integer(yytext())); }

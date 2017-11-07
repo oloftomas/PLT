@@ -3,7 +3,7 @@ import CPP.Absyn.*;
 /** BNFC-Generated Abstract Visitor */
 public class AbstractVisitor<R,A> implements AllVisitor<R,A> {
 /* Program */
-    public R visit(CPP.Absyn.PDefs p, A arg) { return visitDefault(p, arg); }
+    public R visit(CPP.Absyn.Prog p, A arg) { return visitDefault(p, arg); }
     public R visitDefault(CPP.Absyn.Program p, A arg) {
       throw new IllegalArgumentException(this.getClass().getName() + ": " + p);
     }
@@ -31,7 +31,10 @@ public class AbstractVisitor<R,A> implements AllVisitor<R,A> {
 /* Exp */
     public R visit(CPP.Absyn.EInt p, A arg) { return visitDefault(p, arg); }
 
+    public R visit(CPP.Absyn.EString p, A arg) { return visitDefault(p, arg); }
 
+    public R visit(CPP.Absyn.ELShift p, A arg) { return visitDefault(p, arg); }
+    public R visit(CPP.Absyn.ERShift p, A arg) { return visitDefault(p, arg); }
 
 
 
@@ -53,6 +56,7 @@ public class AbstractVisitor<R,A> implements AllVisitor<R,A> {
     public R visit(CPP.Absyn.Tbool p, A arg) { return visitDefault(p, arg); }
     public R visit(CPP.Absyn.Tdouble p, A arg) { return visitDefault(p, arg); }
     public R visit(CPP.Absyn.Tint p, A arg) { return visitDefault(p, arg); }
+    public R visit(CPP.Absyn.Tstring p, A arg) { return visitDefault(p, arg); }
     public R visit(CPP.Absyn.Tvoid p, A arg) { return visitDefault(p, arg); }
     public R visitDefault(CPP.Absyn.Type p, A arg) {
       throw new IllegalArgumentException(this.getClass().getName() + ": " + p);
