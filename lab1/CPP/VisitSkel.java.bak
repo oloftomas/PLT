@@ -81,11 +81,7 @@ public class VisitSkel
   }
   public class ExpVisitor<R,A> implements Exp.Visitor<R,A>
   {
-    public R visit(CPP.Absyn.EInt p, A arg)
-    { /* Code For EInt Goes Here */
-      //p.integer_;
-      return null;
-    }                                                                
+                                                                
   }
   public class TypeVisitor<R,A> implements Type.Visitor<R,A>
   {

@@ -87,10 +87,6 @@ public abstract class FoldVisitor<R,A> implements AllVisitor<R,A> {
     }
 
 /* Exp */
-    public R visit(CPP.Absyn.EInt p, A arg) {
-      R r = leaf(arg);
-      return r;
-    }
 
 /* Type */
     public R visit(CPP.Absyn.Tbool p, A arg) {

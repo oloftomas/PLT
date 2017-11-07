@@ -86,11 +86,7 @@ public class ComposVisitor<A> implements
       return new CPP.Absyn.SIfElse(exp_, stm_1, stm_2);
     }
 /* Exp */
-    public Exp visit(CPP.Absyn.EInt p, A arg)
-    {
-      Integer integer_ = p.integer_;
-      return new CPP.Absyn.EInt(integer_);
-    }
+
 /* Type */
     public Type visit(CPP.Absyn.Tbool p, A arg)
     {

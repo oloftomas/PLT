@@ -29,7 +29,6 @@ nonterminal CPP.Absyn.ListArg ListArg;
 nonterminal CPP.Absyn.ListStm ListStm;
 nonterminal CPP.Absyn.Arg Arg;
 nonterminal CPP.Absyn.Stm Stm;
-nonterminal CPP.Absyn.Exp Exp15;
 nonterminal CPP.Absyn.Exp Exp;
 nonterminal CPP.Absyn.Exp Exp1;
 nonterminal CPP.Absyn.Exp Exp2;
@@ -45,6 +44,7 @@ nonterminal CPP.Absyn.Exp Exp11;
 nonterminal CPP.Absyn.Exp Exp12;
 nonterminal CPP.Absyn.Exp Exp13;
 nonterminal CPP.Absyn.Exp Exp14;
+nonterminal CPP.Absyn.Exp Exp15;
 nonterminal CPP.Absyn.ListExp ListExp;
 nonterminal CPP.Absyn.Type Type;
 
@@ -66,7 +66,7 @@ terminal _SYMB_14;    //   while
 
 
 
-terminal Integer _INTEGER_;
+
 
 
 
@@ -100,9 +100,6 @@ Stm ::= Exp:p_1 _SYMB_5  {: RESULT = new CPP.Absyn.SExp(p_1); :}
   | _SYMB_2 ListStm:p_2 _SYMB_3  {: RESULT = new CPP.Absyn.SBlock(p_2); :}
   | _SYMB_10 _SYMB_0 Exp:p_3 _SYMB_1 Stm:p_5 _SYMB_9 Stm:p_7  {: RESULT = new CPP.Absyn.SIfElse(p_3,p_5,p_7); :}
 ;
-Exp15 ::= _INTEGER_:p_1  {: RESULT = new CPP.Absyn.EInt(p_1); :} 
-  | _SYMB_0 Exp:p_2 _SYMB_1  {: RESULT = p_2; :}
-;
 Exp ::= Exp1:p_1  {: RESULT = p_1; :} 
 ;
 Exp1 ::= Exp2:p_1  {: RESULT = p_1; :} 
@@ -132,6 +129,8 @@ Exp12 ::= Exp13:p_1  {: RESULT = p_1; :}
 Exp13 ::= Exp14:p_1  {: RESULT = p_1; :} 
 ;
 Exp14 ::= Exp15:p_1  {: RESULT = p_1; :} 
+;
+Exp15 ::= _SYMB_0 Exp:p_2 _SYMB_1  {: RESULT = p_2; :} 
 ;
 ListExp ::=  /* empty */  {: RESULT = new CPP.Absyn.ListExp(); :} 
   | Exp:p_1  {: RESULT = new CPP.Absyn.ListExp(); RESULT.addLast(p_1); :}

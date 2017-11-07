@@ -1,9 +1,10 @@
--- Program defifinitions
+-- Program defifinition
 PDefs. 	Program ::= [Def] ;
 
 terminator Def "" ;
 
 -- Comments
+comment 	"#" ;
 comment 	"//" ;
 comment 	"/*" "*/" ;
 
@@ -29,8 +30,13 @@ SBlock. 	Stm ::= "{" [Stm] "}" ;
 SIfElse.	Stm ::= "if" "(" Exp ")" Stm "else" Stm ;
 
 -- Coercions and sep
+EInt. 		Exp15 ::= Integer ;
+
 coercions Exp 15 ;
 separator Exp "," ;
+
+-- Qualified constants
+
 
 -- Types
 Tbool.		Type ::= "bool" ;

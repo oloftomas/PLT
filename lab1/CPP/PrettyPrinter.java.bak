@@ -368,13 +368,6 @@ public class PrettyPrinter
 
   private static void pp(CPP.Absyn.Exp foo, int _i_)
   {
-    if (foo instanceof CPP.Absyn.EInt)
-    {
-       CPP.Absyn.EInt _eint = (CPP.Absyn.EInt) foo;
-       if (_i_ > 15) render(_L_PAREN);
-       pp(_eint.integer_, 0);
-       if (_i_ > 15) render(_R_PAREN);
-    }
   }
 
   private static void pp(CPP.Absyn.ListExp foo, int _i_)
@@ -568,14 +561,6 @@ public class PrettyPrinter
 
   private static void sh(CPP.Absyn.Exp foo)
   {
-    if (foo instanceof CPP.Absyn.EInt)
-    {
-       CPP.Absyn.EInt _eint = (CPP.Absyn.EInt) foo;
-       render("(");
-       render("EInt");
-       sh(_eint.integer_);
-       render(")");
-    }
   }
 
   private static void sh(CPP.Absyn.ListExp foo)

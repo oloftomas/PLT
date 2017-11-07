@@ -39,7 +39,6 @@ IDENT = ({LETTER}|{DIGIT}|['_])
 <YYINITIAL>return { return new Symbol(sym._SYMB_12); }
 <YYINITIAL>void { return new Symbol(sym._SYMB_13); }
 <YYINITIAL>while { return new Symbol(sym._SYMB_14); }
-<YYINITIAL>"#"[^\n]*\n { /* skip */ }
 <YYINITIAL>"//"[^\n]*\n { /* skip */ }
 <YYINITIAL>"/*" { yybegin(COMMENT); }
 <COMMENT>"*/" { yybegin(YYINITIAL); }
