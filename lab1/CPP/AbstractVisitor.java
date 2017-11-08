@@ -9,23 +9,26 @@ public class AbstractVisitor<R,A> implements AllVisitor<R,A> {
     }
 /* Def */
     public R visit(CPP.Absyn.DFun p, A arg) { return visitDefault(p, arg); }
+    public R visit(CPP.Absyn.QConuse p, A arg) { return visitDefault(p, arg); }
     public R visitDefault(CPP.Absyn.Def p, A arg) {
       throw new IllegalArgumentException(this.getClass().getName() + ": " + p);
     }
-/* Arg */
-    public R visit(CPP.Absyn.ADecl p, A arg) { return visitDefault(p, arg); }
-    public R visitDefault(CPP.Absyn.Arg p, A arg) {
-      throw new IllegalArgumentException(this.getClass().getName() + ": " + p);
-    }
 /* Stm */
+    public R visit(CPP.Absyn.QCondec p, A arg) { return visitDefault(p, arg); }
     public R visit(CPP.Absyn.SExp p, A arg) { return visitDefault(p, arg); }
     public R visit(CPP.Absyn.SDecl p, A arg) { return visitDefault(p, arg); }
+    public R visit(CPP.Absyn.SDecls p, A arg) { return visitDefault(p, arg); }
     public R visit(CPP.Absyn.SInit p, A arg) { return visitDefault(p, arg); }
     public R visit(CPP.Absyn.SReturn p, A arg) { return visitDefault(p, arg); }
     public R visit(CPP.Absyn.SWhile p, A arg) { return visitDefault(p, arg); }
     public R visit(CPP.Absyn.SBlock p, A arg) { return visitDefault(p, arg); }
     public R visit(CPP.Absyn.SIfElse p, A arg) { return visitDefault(p, arg); }
     public R visitDefault(CPP.Absyn.Stm p, A arg) {
+      throw new IllegalArgumentException(this.getClass().getName() + ": " + p);
+    }
+/* Arg */
+    public R visit(CPP.Absyn.ADecl p, A arg) { return visitDefault(p, arg); }
+    public R visitDefault(CPP.Absyn.Arg p, A arg) {
       throw new IllegalArgumentException(this.getClass().getName() + ": " + p);
     }
 /* Exp */

@@ -34,21 +34,28 @@ public abstract class FoldVisitor<R,A> implements AllVisitor<R,A> {
       }
       return r;
     }
-
-/* Arg */
-    public R visit(CPP.Absyn.ADecl p, A arg) {
+    public R visit(CPP.Absyn.QConuse p, A arg) {
       R r = leaf(arg);
-      r = combine(p.type_.accept(this, arg), r, arg);
       return r;
     }
 
 /* Stm */
+    public R visit(CPP.Absyn.QCondec p, A arg) {
+      R r = leaf(arg);
+      r = combine(p.type_.accept(this, arg), r, arg);
+      return r;
+    }
     public R visit(CPP.Absyn.SExp p, A arg) {
       R r = leaf(arg);
       r = combine(p.exp_.accept(this, arg), r, arg);
       return r;
     }
     public R visit(CPP.Absyn.SDecl p, A arg) {
+      R r = leaf(arg);
+      r = combine(p.type_.accept(this, arg), r, arg);
+      return r;
+    }
+    public R visit(CPP.Absyn.SDecls p, A arg) {
       R r = leaf(arg);
       r = combine(p.type_.accept(this, arg), r, arg);
       return r;
@@ -83,6 +90,13 @@ public abstract class FoldVisitor<R,A> implements AllVisitor<R,A> {
       r = combine(p.exp_.accept(this, arg), r, arg);
       r = combine(p.stm_1.accept(this, arg), r, arg);
       r = combine(p.stm_2.accept(this, arg), r, arg);
+      return r;
+    }
+
+/* Arg */
+    public R visit(CPP.Absyn.ADecl p, A arg) {
+      R r = leaf(arg);
+      r = combine(p.type_.accept(this, arg), r, arg);
       return r;
     }
 

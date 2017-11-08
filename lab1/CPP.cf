@@ -12,17 +12,26 @@ DFun. 		Def ::= Type Id "(" [Arg] ")" "{" [Stm] "}" ;
 separator	Arg "," ;
 terminator 	Stm "" ;
 
+-- typedefs TODO
+
+-- using	(DOES NOT WORK WITH std::[type])
+QConuse. 	Def ::= "using" [Id] ";" ;
+
+-- QualCon Def (UGLY)
+QCondec.	Stm ::= Id "::" Type Id ";" ;
+
 -- Argument Decl
 ADecl. 		Arg ::= Type Id ;
 
 -- Statements (Expressions followed by ";")
-SExp.	Stm ::= Exp ";" ;
+SExp.		Stm ::= Exp ";" ;
 
 -- Statement (declaration)
-SDecl. 	Stm ::= Type Id ";" ;
-SInit. 	Stm ::= Type Id "=" Exp ";" ;
+SDecl. 		Stm ::= Type Id ";" ;
+SDecls.		Stm ::= Type Id "," [Id] ";" ;
+SInit. 		Stm ::= Type Id "=" Exp ";" ;
 
--- Statemens (return, while, ifelse, block)
+-- Statemens (return, while, block, ifelse)
 SReturn. 	Stm ::= "return" Exp ";" ;
 SWhile.		Stm ::= "while" "(" Exp ")" Stm ;
 SBlock. 	Stm ::= "{" [Stm] "}" ;
@@ -35,11 +44,8 @@ EQcon.		Exp15 ::= [Id] ;
 ELShift.	Exp10 ::= Exp10 "<<" Exp11 ;
 ERShift.	Exp10 ::= Exp10 ">>" Exp11 ;
 
-coercions Exp 15 ;
-separator Exp "," ;
-
--- Qualified constants
-
+coercions 	Exp 15 ;
+separator 	Exp "," ;
 
 -- Types
 Tbool.		Type ::= "bool" ;

@@ -6,8 +6,8 @@ import CPP.Absyn.*;
 public class ComposVisitor<A> implements
   CPP.Absyn.Program.Visitor<CPP.Absyn.Program,A>,
   CPP.Absyn.Def.Visitor<CPP.Absyn.Def,A>,
-  CPP.Absyn.Arg.Visitor<CPP.Absyn.Arg,A>,
   CPP.Absyn.Stm.Visitor<CPP.Absyn.Stm,A>,
+  CPP.Absyn.Arg.Visitor<CPP.Absyn.Arg,A>,
   CPP.Absyn.Exp.Visitor<CPP.Absyn.Exp,A>,
   CPP.Absyn.Type.Visitor<CPP.Absyn.Type,A>
 {
@@ -37,16 +37,19 @@ public class ComposVisitor<A> implements
         liststm_.add(x.accept(this,arg));
       }
       return new CPP.Absyn.DFun(type_, id_, listarg_, liststm_);
-    }
-/* Arg */
-    public Arg visit(CPP.Absyn.ADecl p, A arg)
+    }    public Def visit(CPP.Absyn.QConuse p, A arg)
     {
-      Type type_ = p.type_.accept(this, arg);
-      String id_ = p.id_;
-      return new CPP.Absyn.ADecl(type_, id_);
+      ListId listid_ = p.listid_;
+      return new CPP.Absyn.QConuse(listid_);
     }
 /* Stm */
-    public Stm visit(CPP.Absyn.SExp p, A arg)
+    public Stm visit(CPP.Absyn.QCondec p, A arg)
+    {
+      String id_1 = p.id_1;
+      Type type_ = p.type_.accept(this, arg);
+      String id_2 = p.id_2;
+      return new CPP.Absyn.QCondec(id_1, type_, id_2);
+    }    public Stm visit(CPP.Absyn.SExp p, A arg)
     {
       Exp exp_ = p.exp_.accept(this, arg);
       return new CPP.Absyn.SExp(exp_);
@@ -55,6 +58,12 @@ public class ComposVisitor<A> implements
       Type type_ = p.type_.accept(this, arg);
       String id_ = p.id_;
       return new CPP.Absyn.SDecl(type_, id_);
+    }    public Stm visit(CPP.Absyn.SDecls p, A arg)
+    {
+      Type type_ = p.type_.accept(this, arg);
+      String id_ = p.id_;
+      ListId listid_ = p.listid_;
+      return new CPP.Absyn.SDecls(type_, id_, listid_);
     }    public Stm visit(CPP.Absyn.SInit p, A arg)
     {
       Type type_ = p.type_.accept(this, arg);
@@ -84,6 +93,13 @@ public class ComposVisitor<A> implements
       Stm stm_1 = p.stm_1.accept(this, arg);
       Stm stm_2 = p.stm_2.accept(this, arg);
       return new CPP.Absyn.SIfElse(exp_, stm_1, stm_2);
+    }
+/* Arg */
+    public Arg visit(CPP.Absyn.ADecl p, A arg)
+    {
+      Type type_ = p.type_.accept(this, arg);
+      String id_ = p.id_;
+      return new CPP.Absyn.ADecl(type_, id_);
     }
 /* Exp */
     public Exp visit(CPP.Absyn.EInt p, A arg)

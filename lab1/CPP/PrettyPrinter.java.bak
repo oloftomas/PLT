@@ -138,21 +138,6 @@ public class PrettyPrinter
     buf_.delete(0,buf_.length());
     return temp;
   }
-  public static String print(CPP.Absyn.Arg foo)
-  {
-    pp(foo, 0);
-    trim();
-    String temp = buf_.toString();
-    buf_.delete(0,buf_.length());
-    return temp;
-  }
-  public static String show(CPP.Absyn.Arg foo)
-  {
-    sh(foo);
-    String temp = buf_.toString();
-    buf_.delete(0,buf_.length());
-    return temp;
-  }
   public static String print(CPP.Absyn.Stm foo)
   {
     pp(foo, 0);
@@ -162,6 +147,21 @@ public class PrettyPrinter
     return temp;
   }
   public static String show(CPP.Absyn.Stm foo)
+  {
+    sh(foo);
+    String temp = buf_.toString();
+    buf_.delete(0,buf_.length());
+    return temp;
+  }
+  public static String print(CPP.Absyn.Arg foo)
+  {
+    pp(foo, 0);
+    trim();
+    String temp = buf_.toString();
+    buf_.delete(0,buf_.length());
+    return temp;
+  }
+  public static String show(CPP.Absyn.Arg foo)
   {
     sh(foo);
     String temp = buf_.toString();
@@ -295,21 +295,20 @@ public class PrettyPrinter
        }
      }  }
 
-  private static void pp(CPP.Absyn.Arg foo, int _i_)
-  {
-    if (foo instanceof CPP.Absyn.ADecl)
-    {
-       CPP.Absyn.ADecl _adecl = (CPP.Absyn.ADecl) foo;
-       if (_i_ > 0) render(_L_PAREN);
-       pp(_adecl.type_, 0);
-       pp(_adecl.id_, 0);
-       if (_i_ > 0) render(_R_PAREN);
-    }
-  }
-
   private static void pp(CPP.Absyn.Stm foo, int _i_)
   {
-    if (foo instanceof CPP.Absyn.SExp)
+    if (foo instanceof CPP.Absyn.QCon)
+    {
+       CPP.Absyn.QCon _qcon = (CPP.Absyn.QCon) foo;
+       if (_i_ > 0) render(_L_PAREN);
+       pp(_qcon.id_1, 0);
+       render("::");
+       pp(_qcon.type_, 0);
+       pp(_qcon.id_2, 0);
+       render(";");
+       if (_i_ > 0) render(_R_PAREN);
+    }
+    else     if (foo instanceof CPP.Absyn.SExp)
     {
        CPP.Absyn.SExp _sexp = (CPP.Absyn.SExp) foo;
        if (_i_ > 0) render(_L_PAREN);
@@ -323,6 +322,17 @@ public class PrettyPrinter
        if (_i_ > 0) render(_L_PAREN);
        pp(_sdecl.type_, 0);
        pp(_sdecl.id_, 0);
+       render(";");
+       if (_i_ > 0) render(_R_PAREN);
+    }
+    else     if (foo instanceof CPP.Absyn.SDecls)
+    {
+       CPP.Absyn.SDecls _sdecls = (CPP.Absyn.SDecls) foo;
+       if (_i_ > 0) render(_L_PAREN);
+       pp(_sdecls.type_, 0);
+       pp(_sdecls.id_, 0);
+       render(",");
+       pp(_sdecls.listid_, 0);
        render(";");
        if (_i_ > 0) render(_R_PAREN);
     }
@@ -381,6 +391,18 @@ public class PrettyPrinter
     }
   }
 
+  private static void pp(CPP.Absyn.Arg foo, int _i_)
+  {
+    if (foo instanceof CPP.Absyn.ADecl)
+    {
+       CPP.Absyn.ADecl _adecl = (CPP.Absyn.ADecl) foo;
+       if (_i_ > 0) render(_L_PAREN);
+       pp(_adecl.type_, 0);
+       pp(_adecl.id_, 0);
+       if (_i_ > 0) render(_R_PAREN);
+    }
+  }
+
   private static void pp(CPP.Absyn.Exp foo, int _i_)
   {
     if (foo instanceof CPP.Absyn.EInt)
@@ -400,11 +422,9 @@ public class PrettyPrinter
     else     if (foo instanceof CPP.Absyn.EQcon)
     {
        CPP.Absyn.EQcon _eqcon = (CPP.Absyn.EQcon) foo;
-       if (_i_ > 14) render(_L_PAREN);
-       pp(_eqcon.exp_1, 14);
-       render("::");
-       pp(_eqcon.exp_2, 15);
-       if (_i_ > 14) render(_R_PAREN);
+       if (_i_ > 15) render(_L_PAREN);
+       pp(_eqcon.listid_, 0);
+       if (_i_ > 15) render(_R_PAREN);
     }
     else     if (foo instanceof CPP.Absyn.ELShift)
     {
@@ -423,17 +443,6 @@ public class PrettyPrinter
        render(">>");
        pp(_ershift.exp_2, 11);
        if (_i_ > 10) render(_R_PAREN);
-    }
-    else     if (foo instanceof CPP.Absyn.QCon)
-    {
-       CPP.Absyn.QCon _qcon = (CPP.Absyn.QCon) foo;
-       if (_i_ > 0) render(_L_PAREN);
-       pp(_qcon.type_1, 0);
-       pp(_qcon.listid_1, 0);
-       render("::");
-       pp(_qcon.type_2, 0);
-       pp(_qcon.listid_2, 0);
-       if (_i_ > 0) render(_R_PAREN);
     }
   }
 
@@ -494,7 +503,7 @@ public class PrettyPrinter
      {
        pp(it.next(), _i_);
        if (it.hasNext()) {
-         render(",");
+         render("::");
        } else {
          render("");
        }
@@ -564,21 +573,18 @@ public class PrettyPrinter
      }
   }
 
-  private static void sh(CPP.Absyn.Arg foo)
-  {
-    if (foo instanceof CPP.Absyn.ADecl)
-    {
-       CPP.Absyn.ADecl _adecl = (CPP.Absyn.ADecl) foo;
-       render("(");
-       render("ADecl");
-       sh(_adecl.type_);
-       sh(_adecl.id_);
-       render(")");
-    }
-  }
-
   private static void sh(CPP.Absyn.Stm foo)
   {
+    if (foo instanceof CPP.Absyn.QCon)
+    {
+       CPP.Absyn.QCon _qcon = (CPP.Absyn.QCon) foo;
+       render("(");
+       render("QCon");
+       sh(_qcon.id_1);
+       sh(_qcon.type_);
+       sh(_qcon.id_2);
+       render(")");
+    }
     if (foo instanceof CPP.Absyn.SExp)
     {
        CPP.Absyn.SExp _sexp = (CPP.Absyn.SExp) foo;
@@ -594,6 +600,18 @@ public class PrettyPrinter
        render("SDecl");
        sh(_sdecl.type_);
        sh(_sdecl.id_);
+       render(")");
+    }
+    if (foo instanceof CPP.Absyn.SDecls)
+    {
+       CPP.Absyn.SDecls _sdecls = (CPP.Absyn.SDecls) foo;
+       render("(");
+       render("SDecls");
+       sh(_sdecls.type_);
+       sh(_sdecls.id_);
+       render("[");
+       sh(_sdecls.listid_);
+       render("]");
        render(")");
     }
     if (foo instanceof CPP.Absyn.SInit)
@@ -645,6 +663,19 @@ public class PrettyPrinter
     }
   }
 
+  private static void sh(CPP.Absyn.Arg foo)
+  {
+    if (foo instanceof CPP.Absyn.ADecl)
+    {
+       CPP.Absyn.ADecl _adecl = (CPP.Absyn.ADecl) foo;
+       render("(");
+       render("ADecl");
+       sh(_adecl.type_);
+       sh(_adecl.id_);
+       render(")");
+    }
+  }
+
   private static void sh(CPP.Absyn.Exp foo)
   {
     if (foo instanceof CPP.Absyn.EInt)
@@ -668,8 +699,9 @@ public class PrettyPrinter
        CPP.Absyn.EQcon _eqcon = (CPP.Absyn.EQcon) foo;
        render("(");
        render("EQcon");
-       sh(_eqcon.exp_1);
-       sh(_eqcon.exp_2);
+       render("[");
+       sh(_eqcon.listid_);
+       render("]");
        render(")");
     }
     if (foo instanceof CPP.Absyn.ELShift)
@@ -688,21 +720,6 @@ public class PrettyPrinter
        render("ERShift");
        sh(_ershift.exp_1);
        sh(_ershift.exp_2);
-       render(")");
-    }
-    if (foo instanceof CPP.Absyn.QCon)
-    {
-       CPP.Absyn.QCon _qcon = (CPP.Absyn.QCon) foo;
-       render("(");
-       render("QCon");
-       sh(_qcon.type_1);
-       render("[");
-       sh(_qcon.listid_1);
-       render("]");
-       sh(_qcon.type_2);
-       render("[");
-       sh(_qcon.listid_2);
-       render("]");
        render(")");
     }
   }
