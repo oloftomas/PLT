@@ -5,6 +5,7 @@ public abstract class Exp implements java.io.Serializable {
   public interface Visitor <R,A> {
     public R visit(CPP.Absyn.EInt p, A arg);
     public R visit(CPP.Absyn.EString p, A arg);
+    public R visit(CPP.Absyn.EQcon p, A arg);
     public R visit(CPP.Absyn.ELShift p, A arg);
     public R visit(CPP.Absyn.ERShift p, A arg);
 

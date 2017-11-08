@@ -33,15 +33,16 @@ IDENT = ({LETTER}|{DIGIT}|['_])
 <YYINITIAL>= { return new Symbol(sym._SYMB_6); }
 <YYINITIAL><< { return new Symbol(sym._SYMB_7); }
 <YYINITIAL>>> { return new Symbol(sym._SYMB_8); }
-<YYINITIAL>bool { return new Symbol(sym._SYMB_9); }
-<YYINITIAL>double { return new Symbol(sym._SYMB_10); }
-<YYINITIAL>else { return new Symbol(sym._SYMB_11); }
-<YYINITIAL>if { return new Symbol(sym._SYMB_12); }
-<YYINITIAL>int { return new Symbol(sym._SYMB_13); }
-<YYINITIAL>return { return new Symbol(sym._SYMB_14); }
-<YYINITIAL>string { return new Symbol(sym._SYMB_15); }
-<YYINITIAL>void { return new Symbol(sym._SYMB_16); }
-<YYINITIAL>while { return new Symbol(sym._SYMB_17); }
+<YYINITIAL>:: { return new Symbol(sym._SYMB_9); }
+<YYINITIAL>bool { return new Symbol(sym._SYMB_10); }
+<YYINITIAL>double { return new Symbol(sym._SYMB_11); }
+<YYINITIAL>else { return new Symbol(sym._SYMB_12); }
+<YYINITIAL>if { return new Symbol(sym._SYMB_13); }
+<YYINITIAL>int { return new Symbol(sym._SYMB_14); }
+<YYINITIAL>return { return new Symbol(sym._SYMB_15); }
+<YYINITIAL>string { return new Symbol(sym._SYMB_16); }
+<YYINITIAL>void { return new Symbol(sym._SYMB_17); }
+<YYINITIAL>while { return new Symbol(sym._SYMB_18); }
 <YYINITIAL>"#"[^\n]*\n { /* skip */ }
 <YYINITIAL>"//"[^\n]*\n { /* skip */ }
 <YYINITIAL>"/*" { yybegin(COMMENT); }

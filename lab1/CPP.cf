@@ -31,6 +31,7 @@ SIfElse.	Stm ::= "if" "(" Exp ")" Stm "else" Stm ;
 -- Coercion levels
 EInt. 		Exp15 ::= Integer ;
 EString. 	Exp15 ::= String ;
+EQcon.		Exp15 ::= [Id] ;
 ELShift.	Exp10 ::= Exp10 "<<" Exp11 ;
 ERShift.	Exp10 ::= Exp10 ">>" Exp11 ;
 
@@ -38,7 +39,7 @@ coercions Exp 15 ;
 separator Exp "," ;
 
 -- Qualified constants
---QCon. 		Exp ::= Type [Id] "::" Type [Id] ;
+
 
 -- Types
 Tbool.		Type ::= "bool" ;
@@ -49,3 +50,4 @@ Tvoid.		Type ::= "void" ;
 
 -- Id
 token Id (letter (letter | digit | '_')*) ;
+separator nonempty Id "::" ;

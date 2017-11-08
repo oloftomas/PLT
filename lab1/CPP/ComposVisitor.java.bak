@@ -84,11 +84,6 @@ public class ComposVisitor<A> implements
       Stm stm_1 = p.stm_1.accept(this, arg);
       Stm stm_2 = p.stm_2.accept(this, arg);
       return new CPP.Absyn.SIfElse(exp_, stm_1, stm_2);
-    }    public Stm visit(CPP.Absyn.QCon p, A arg)
-    {
-      String id_1 = p.id_1;
-      String id_2 = p.id_2;
-      return new CPP.Absyn.QCon(id_1, id_2);
     }
 /* Exp */
     public Exp visit(CPP.Absyn.EInt p, A arg)
@@ -99,6 +94,11 @@ public class ComposVisitor<A> implements
     {
       String string_ = p.string_;
       return new CPP.Absyn.EString(string_);
+    }    public Exp visit(CPP.Absyn.EQcon p, A arg)
+    {
+      Exp exp_1 = p.exp_1.accept(this, arg);
+      Exp exp_2 = p.exp_2.accept(this, arg);
+      return new CPP.Absyn.EQcon(exp_1, exp_2);
     }    public Exp visit(CPP.Absyn.ELShift p, A arg)
     {
       Exp exp_1 = p.exp_1.accept(this, arg);
@@ -109,6 +109,13 @@ public class ComposVisitor<A> implements
       Exp exp_1 = p.exp_1.accept(this, arg);
       Exp exp_2 = p.exp_2.accept(this, arg);
       return new CPP.Absyn.ERShift(exp_1, exp_2);
+    }    public Exp visit(CPP.Absyn.QCon p, A arg)
+    {
+      Type type_1 = p.type_1.accept(this, arg);
+      ListId listid_1 = p.listid_1;
+      Type type_2 = p.type_2.accept(this, arg);
+      ListId listid_2 = p.listid_2;
+      return new CPP.Absyn.QCon(type_1, listid_1, type_2, listid_2);
     }
 /* Type */
     public Type visit(CPP.Absyn.Tbool p, A arg)

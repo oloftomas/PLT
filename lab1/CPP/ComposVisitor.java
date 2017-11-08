@@ -94,6 +94,10 @@ public class ComposVisitor<A> implements
     {
       String string_ = p.string_;
       return new CPP.Absyn.EString(string_);
+    }    public Exp visit(CPP.Absyn.EQcon p, A arg)
+    {
+      ListId listid_ = p.listid_;
+      return new CPP.Absyn.EQcon(listid_);
     }    public Exp visit(CPP.Absyn.ELShift p, A arg)
     {
       Exp exp_1 = p.exp_1.accept(this, arg);

@@ -30,11 +30,12 @@ public class AbstractVisitor<R,A> implements AllVisitor<R,A> {
     }
 /* Exp */
     public R visit(CPP.Absyn.EInt p, A arg) { return visitDefault(p, arg); }
-
     public R visit(CPP.Absyn.EString p, A arg) { return visitDefault(p, arg); }
+    public R visit(CPP.Absyn.EQcon p, A arg) { return visitDefault(p, arg); }
 
     public R visit(CPP.Absyn.ELShift p, A arg) { return visitDefault(p, arg); }
     public R visit(CPP.Absyn.ERShift p, A arg) { return visitDefault(p, arg); }
+
 
 
 

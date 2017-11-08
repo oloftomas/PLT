@@ -85,9 +85,14 @@ public class VisitSkel
     { /* Code For EInt Goes Here */
       //p.integer_;
       return null;
-    }        public R visit(CPP.Absyn.EString p, A arg)
+    }    public R visit(CPP.Absyn.EString p, A arg)
     { /* Code For EString Goes Here */
       //p.string_;
+      return null;
+    }    public R visit(CPP.Absyn.EQcon p, A arg)
+    { /* Code For EQcon Goes Here */
+      for (String x: p.listid_)
+      { /* ... */ }
       return null;
     }        public R visit(CPP.Absyn.ELShift p, A arg)
     { /* Code For ELShift Goes Here */
@@ -99,7 +104,7 @@ public class VisitSkel
       p.exp_1.accept(new ExpVisitor<R,A>(), arg);
       p.exp_2.accept(new ExpVisitor<R,A>(), arg);
       return null;
-    }                                                        
+    }                                                            
   }
   public class TypeVisitor<R,A> implements Type.Visitor<R,A>
   {

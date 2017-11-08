@@ -213,6 +213,21 @@ public class PrettyPrinter
     buf_.delete(0,buf_.length());
     return temp;
   }
+  public static String print(CPP.Absyn.ListId foo)
+  {
+    pp(foo, 0);
+    trim();
+    String temp = buf_.toString();
+    buf_.delete(0,buf_.length());
+    return temp;
+  }
+  public static String show(CPP.Absyn.ListId foo)
+  {
+    sh(foo);
+    String temp = buf_.toString();
+    buf_.delete(0,buf_.length());
+    return temp;
+  }
   /***   You shouldn't need to change anything beyond this point.   ***/
 
   private static void pp(CPP.Absyn.Program foo, int _i_)
@@ -378,9 +393,16 @@ public class PrettyPrinter
     else     if (foo instanceof CPP.Absyn.EString)
     {
        CPP.Absyn.EString _estring = (CPP.Absyn.EString) foo;
-       if (_i_ > 14) render(_L_PAREN);
+       if (_i_ > 15) render(_L_PAREN);
        printQuoted(_estring.string_);
-       if (_i_ > 14) render(_R_PAREN);
+       if (_i_ > 15) render(_R_PAREN);
+    }
+    else     if (foo instanceof CPP.Absyn.EQcon)
+    {
+       CPP.Absyn.EQcon _eqcon = (CPP.Absyn.EQcon) foo;
+       if (_i_ > 15) render(_L_PAREN);
+       pp(_eqcon.listid_, 0);
+       if (_i_ > 15) render(_R_PAREN);
     }
     else     if (foo instanceof CPP.Absyn.ELShift)
     {
@@ -452,6 +474,18 @@ public class PrettyPrinter
        if (_i_ > 0) render(_R_PAREN);
     }
   }
+
+  private static void pp(CPP.Absyn.ListId foo, int _i_)
+  {
+     for (java.util.Iterator<String> it = foo.iterator(); it.hasNext();)
+     {
+       pp(it.next(), _i_);
+       if (it.hasNext()) {
+         render("::");
+       } else {
+         render("");
+       }
+     }  }
 
 
   private static void sh(CPP.Absyn.Program foo)
@@ -616,6 +650,16 @@ public class PrettyPrinter
        sh(_estring.string_);
        render(")");
     }
+    if (foo instanceof CPP.Absyn.EQcon)
+    {
+       CPP.Absyn.EQcon _eqcon = (CPP.Absyn.EQcon) foo;
+       render("(");
+       render("EQcon");
+       render("[");
+       sh(_eqcon.listid_);
+       render("]");
+       render(")");
+    }
     if (foo instanceof CPP.Absyn.ELShift)
     {
        CPP.Absyn.ELShift _elshift = (CPP.Absyn.ELShift) foo;
@@ -673,6 +717,16 @@ public class PrettyPrinter
        CPP.Absyn.Tvoid _tvoid = (CPP.Absyn.Tvoid) foo;
        render("Tvoid");
     }
+  }
+
+  private static void sh(CPP.Absyn.ListId foo)
+  {
+     for (java.util.Iterator<String> it = foo.iterator(); it.hasNext();)
+     {
+       sh(it.next());
+       if (it.hasNext())
+         render(",");
+     }
   }
 
 

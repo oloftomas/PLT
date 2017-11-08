@@ -31,9 +31,9 @@ IDENT = ({LETTER}|{DIGIT}|['_])
 <YYINITIAL>, { return new Symbol(sym._SYMB_4); }
 <YYINITIAL>; { return new Symbol(sym._SYMB_5); }
 <YYINITIAL>= { return new Symbol(sym._SYMB_6); }
-<YYINITIAL><< { return new Symbol(sym._SYMB_7); }
-<YYINITIAL>>> { return new Symbol(sym._SYMB_8); }
-<YYINITIAL>:: { return new Symbol(sym._SYMB_9); }
+<YYINITIAL>:: { return new Symbol(sym._SYMB_7); }
+<YYINITIAL><< { return new Symbol(sym._SYMB_8); }
+<YYINITIAL>>> { return new Symbol(sym._SYMB_9); }
 <YYINITIAL>bool { return new Symbol(sym._SYMB_10); }
 <YYINITIAL>double { return new Symbol(sym._SYMB_11); }
 <YYINITIAL>else { return new Symbol(sym._SYMB_12); }
