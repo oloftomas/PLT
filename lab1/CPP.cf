@@ -14,11 +14,8 @@ terminator 	Stm "" ;
 
 -- typedefs TODO
 
--- using	(DOES NOT WORK WITH std::[type])
-QConuse. 	Def ::= "using" [Id] ";" ;
-
--- QualCon Def (UGLY)
-QCondec.	Stm ::= Id "::" Type Id ";" ;
+-- using
+QConuse.	Def ::= "using" [Id] ";" ;
 
 -- Argument Decl
 ADecl. 		Arg ::= Type Id ;
@@ -31,28 +28,59 @@ SDecl. 		Stm ::= Type Id ";" ;
 SDecls.		Stm ::= Type Id "," [Id] ";" ;
 SInit. 		Stm ::= Type Id "=" Exp ";" ;
 
+STypedef.	Stm ::= "typedef" [Id] Id";" ;
+
 -- Statemens (return, while, block, ifelse)
 SReturn. 	Stm ::= "return" Exp ";" ;
 SWhile.		Stm ::= "while" "(" Exp ")" Stm ;
 SBlock. 	Stm ::= "{" [Stm] "}" ;
 SIfElse.	Stm ::= "if" "(" Exp ")" Stm "else" Stm ;
 
--- Coercion levels
+-- Expressions, precedence levels
 EInt. 		Exp15 ::= Integer ;
-EString. 	Exp15 ::= String ;
+EString. 	Exp15 ::= [String] ;
+EDouble.	Exp15 ::= Double ;
 EQcon.		Exp15 ::= [Id] ;
-ELShift.	Exp10 ::= Exp10 "<<" Exp11 ;
-ERShift.	Exp10 ::= Exp10 ">>" Exp11 ;
+
+EIndex.		Exp14 ::= Exp14 "[" Exp "]" ;
+ECall. 		Exp14 ::= Exp14 "(" [Exp] ")" ;
+EDot.		Exp13 ::= Exp13 "." Exp ;
+EArrow. 	Exp13 ::= Exp13 "->" Id ;
+
+{-
+EMul. 		Exp11 ::= Exp11 "*" Exp12 ;
+EDiv. 		Exp11 ::= Exp11 "/" Exp12 ;
+EMod.		Exp11 ::= Exp11 "%" Exp12 ;
+-}
+
+ELShift.	Exp9 ::= Exp9 "<<" Exp10 ;
+ERShift.	Exp9 ::= Exp9 ">>" Exp10 ;
+
+{-
+EEq.		Exp7 ::= Exp7 "==" Exp8 ;
+ENeq.		Exp7 ::= Exp7 "!=" Exp8 ;
+
+EConj.		Exp3 ::= Exp3 "&&" Exp4 ;
+EDisj.		Exp2 ::= Exp2 "||" Exp3 ;
+
+EAss.		Exp1 ::= Exp2 "=" Exp1 ;
+EAssp.		Exp1 ::= Exp2 "+=" Exp1 ;
+EAssm.		Exp1 ::= Exp2 "-=" Exp1 ;
+
+ECond.		Exp1 ::= Exp2 "?" Exp ":" Exp1 ;
+-}
 
 coercions 	Exp 15 ;
 separator 	Exp "," ;
+
+separator 	String "" ;
 
 -- Types
 Tbool.		Type ::= "bool" ;
 Tdouble.	Type ::= "double" ;
 Tint.		Type ::= "int" ;
-Tstring. 	Type ::= "string" ;
 Tvoid.		Type ::= "void" ;
+Tid.		Type ::= [Id] ;
 
 -- Id
 token Id (letter (letter | digit | '_')*) ;

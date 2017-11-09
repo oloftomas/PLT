@@ -6,8 +6,8 @@ import CPP.Absyn.*;
 public class ComposVisitor<A> implements
   CPP.Absyn.Program.Visitor<CPP.Absyn.Program,A>,
   CPP.Absyn.Def.Visitor<CPP.Absyn.Def,A>,
-  CPP.Absyn.Stm.Visitor<CPP.Absyn.Stm,A>,
   CPP.Absyn.Arg.Visitor<CPP.Absyn.Arg,A>,
+  CPP.Absyn.Stm.Visitor<CPP.Absyn.Stm,A>,
   CPP.Absyn.Exp.Visitor<CPP.Absyn.Exp,A>,
   CPP.Absyn.Type.Visitor<CPP.Absyn.Type,A>
 {
@@ -42,14 +42,15 @@ public class ComposVisitor<A> implements
       ListId listid_ = p.listid_;
       return new CPP.Absyn.QConuse(listid_);
     }
-/* Stm */
-    public Stm visit(CPP.Absyn.QCondec p, A arg)
+/* Arg */
+    public Arg visit(CPP.Absyn.ADecl p, A arg)
     {
-      String id_1 = p.id_1;
       Type type_ = p.type_.accept(this, arg);
-      String id_2 = p.id_2;
-      return new CPP.Absyn.QCondec(id_1, type_, id_2);
-    }    public Stm visit(CPP.Absyn.SExp p, A arg)
+      String id_ = p.id_;
+      return new CPP.Absyn.ADecl(type_, id_);
+    }
+/* Stm */
+    public Stm visit(CPP.Absyn.SExp p, A arg)
     {
       Exp exp_ = p.exp_.accept(this, arg);
       return new CPP.Absyn.SExp(exp_);
@@ -70,6 +71,11 @@ public class ComposVisitor<A> implements
       String id_ = p.id_;
       Exp exp_ = p.exp_.accept(this, arg);
       return new CPP.Absyn.SInit(type_, id_, exp_);
+    }    public Stm visit(CPP.Absyn.STypedef p, A arg)
+    {
+      ListId listid_ = p.listid_;
+      String id_ = p.id_;
+      return new CPP.Absyn.STypedef(listid_, id_);
     }    public Stm visit(CPP.Absyn.SReturn p, A arg)
     {
       Exp exp_ = p.exp_.accept(this, arg);
@@ -94,13 +100,6 @@ public class ComposVisitor<A> implements
       Stm stm_2 = p.stm_2.accept(this, arg);
       return new CPP.Absyn.SIfElse(exp_, stm_1, stm_2);
     }
-/* Arg */
-    public Arg visit(CPP.Absyn.ADecl p, A arg)
-    {
-      Type type_ = p.type_.accept(this, arg);
-      String id_ = p.id_;
-      return new CPP.Absyn.ADecl(type_, id_);
-    }
 /* Exp */
     public Exp visit(CPP.Absyn.EInt p, A arg)
     {
@@ -108,12 +107,40 @@ public class ComposVisitor<A> implements
       return new CPP.Absyn.EInt(integer_);
     }    public Exp visit(CPP.Absyn.EString p, A arg)
     {
-      String string_ = p.string_;
-      return new CPP.Absyn.EString(string_);
+      ListString liststring_ = p.liststring_;
+      return new CPP.Absyn.EString(liststring_);
+    }    public Exp visit(CPP.Absyn.EDouble p, A arg)
+    {
+      Double double_ = p.double_;
+      return new CPP.Absyn.EDouble(double_);
     }    public Exp visit(CPP.Absyn.EQcon p, A arg)
     {
       ListId listid_ = p.listid_;
       return new CPP.Absyn.EQcon(listid_);
+    }    public Exp visit(CPP.Absyn.EIndex p, A arg)
+    {
+      Exp exp_1 = p.exp_1.accept(this, arg);
+      Exp exp_2 = p.exp_2.accept(this, arg);
+      return new CPP.Absyn.EIndex(exp_1, exp_2);
+    }    public Exp visit(CPP.Absyn.ECall p, A arg)
+    {
+      Exp exp_ = p.exp_.accept(this, arg);
+      ListExp listexp_ = new ListExp();
+      for (Exp x : p.listexp_)
+      {
+        listexp_.add(x.accept(this,arg));
+      }
+      return new CPP.Absyn.ECall(exp_, listexp_);
+    }    public Exp visit(CPP.Absyn.EDot p, A arg)
+    {
+      Exp exp_1 = p.exp_1.accept(this, arg);
+      Exp exp_2 = p.exp_2.accept(this, arg);
+      return new CPP.Absyn.EDot(exp_1, exp_2);
+    }    public Exp visit(CPP.Absyn.EArrow p, A arg)
+    {
+      Exp exp_ = p.exp_.accept(this, arg);
+      String id_ = p.id_;
+      return new CPP.Absyn.EArrow(exp_, id_);
     }    public Exp visit(CPP.Absyn.ELShift p, A arg)
     {
       Exp exp_1 = p.exp_1.accept(this, arg);
@@ -135,11 +162,12 @@ public class ComposVisitor<A> implements
     }    public Type visit(CPP.Absyn.Tint p, A arg)
     {
       return new CPP.Absyn.Tint();
-    }    public Type visit(CPP.Absyn.Tstring p, A arg)
-    {
-      return new CPP.Absyn.Tstring();
     }    public Type visit(CPP.Absyn.Tvoid p, A arg)
     {
       return new CPP.Absyn.Tvoid();
+    }    public Type visit(CPP.Absyn.Tid p, A arg)
+    {
+      ListId listid_ = p.listid_;
+      return new CPP.Absyn.Tid(listid_);
     }
 }

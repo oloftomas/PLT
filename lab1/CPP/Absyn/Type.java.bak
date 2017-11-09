@@ -8,7 +8,6 @@ public abstract class Type implements java.io.Serializable {
     public R visit(CPP.Absyn.Tint p, A arg);
     public R visit(CPP.Absyn.Tstring p, A arg);
     public R visit(CPP.Absyn.Tvoid p, A arg);
-    public R visit(CPP.Absyn.Tqcon p, A arg);
 
   }
 
