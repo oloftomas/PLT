@@ -29,6 +29,19 @@ public class VisitSkel
       for (Stm x: p.liststm_)
       { /* ... */ }
       return null;
+    }    public R visit(CPP.Absyn.DFunemp p, A arg)
+    { /* Code For DFunemp Goes Here */
+      p.type_.accept(new TypeVisitor<R,A>(), arg);
+      //p.id_;
+      for (Arg x: p.listarg_)
+      { /* ... */ }
+      return null;
+    }    public R visit(CPP.Absyn.DTypedef p, A arg)
+    { /* Code For DTypedef Goes Here */
+      for (String x: p.listid_)
+      { /* ... */ }
+      //p.id_;
+      return null;
     }    public R visit(CPP.Absyn.QConuse p, A arg)
     { /* Code For QConuse Goes Here */
       for (String x: p.listid_)
@@ -38,10 +51,20 @@ public class VisitSkel
   }
   public class ArgVisitor<R,A> implements Arg.Visitor<R,A>
   {
-    public R visit(CPP.Absyn.ADecl p, A arg)
+    public R visit(CPP.Absyn.ADeclemp p, A arg)
+    { /* Code For ADeclemp Goes Here */
+      p.type_.accept(new TypeVisitor<R,A>(), arg);
+      return null;
+    }    public R visit(CPP.Absyn.ADecl p, A arg)
     { /* Code For ADecl Goes Here */
       p.type_.accept(new TypeVisitor<R,A>(), arg);
       //p.id_;
+      return null;
+    }    public R visit(CPP.Absyn.ADeclass p, A arg)
+    { /* Code For ADeclass Goes Here */
+      p.type_.accept(new TypeVisitor<R,A>(), arg);
+      //p.id_;
+      p.exp_.accept(new ExpVisitor<R,A>(), arg);
       return null;
     }
   }
@@ -89,11 +112,30 @@ public class VisitSkel
       for (Stm x: p.liststm_)
       { /* ... */ }
       return null;
+    }    public R visit(CPP.Absyn.SIf p, A arg)
+    { /* Code For SIf Goes Here */
+      p.exp_.accept(new ExpVisitor<R,A>(), arg);
+      p.stm_.accept(new StmVisitor<R,A>(), arg);
+      return null;
     }    public R visit(CPP.Absyn.SIfElse p, A arg)
     { /* Code For SIfElse Goes Here */
       p.exp_.accept(new ExpVisitor<R,A>(), arg);
       p.stm_1.accept(new StmVisitor<R,A>(), arg);
       p.stm_2.accept(new StmVisitor<R,A>(), arg);
+      return null;
+    }    public R visit(CPP.Absyn.SFor p, A arg)
+    { /* Code For SFor Goes Here */
+      p.type_.accept(new TypeVisitor<R,A>(), arg);
+      //p.id_;
+      p.exp_1.accept(new ExpVisitor<R,A>(), arg);
+      p.exp_2.accept(new ExpVisitor<R,A>(), arg);
+      p.exp_3.accept(new ExpVisitor<R,A>(), arg);
+      p.stm_.accept(new StmVisitor<R,A>(), arg);
+      return null;
+    }    public R visit(CPP.Absyn.SDoWhile p, A arg)
+    { /* Code For SDoWhile Goes Here */
+      p.stm_.accept(new StmVisitor<R,A>(), arg);
+      p.exp_.accept(new ExpVisitor<R,A>(), arg);
       return null;
     }
   }
@@ -117,6 +159,10 @@ public class VisitSkel
       for (String x: p.listid_)
       { /* ... */ }
       return null;
+    }    public R visit(CPP.Absyn.EChar p, A arg)
+    { /* Code For EChar Goes Here */
+      //p.char_;
+      return null;
     }        public R visit(CPP.Absyn.EIndex p, A arg)
     { /* Code For EIndex Goes Here */
       p.exp_1.accept(new ExpVisitor<R,A>(), arg);
@@ -138,6 +184,55 @@ public class VisitSkel
       p.exp_.accept(new ExpVisitor<R,A>(), arg);
       //p.id_;
       return null;
+    }    public R visit(CPP.Absyn.EPInc p, A arg)
+    { /* Code For EPInc Goes Here */
+      p.exp_.accept(new ExpVisitor<R,A>(), arg);
+      return null;
+    }    public R visit(CPP.Absyn.EPDec p, A arg)
+    { /* Code For EPDec Goes Here */
+      p.exp_.accept(new ExpVisitor<R,A>(), arg);
+      return null;
+    }        public R visit(CPP.Absyn.Einc p, A arg)
+    { /* Code For Einc Goes Here */
+      p.exp_.accept(new ExpVisitor<R,A>(), arg);
+      return null;
+    }    public R visit(CPP.Absyn.Edec p, A arg)
+    { /* Code For Edec Goes Here */
+      p.exp_.accept(new ExpVisitor<R,A>(), arg);
+      return null;
+    }    public R visit(CPP.Absyn.EDeref p, A arg)
+    { /* Code For EDeref Goes Here */
+      p.exp_.accept(new ExpVisitor<R,A>(), arg);
+      return null;
+    }    public R visit(CPP.Absyn.ENeg p, A arg)
+    { /* Code For ENeg Goes Here */
+      p.exp_.accept(new ExpVisitor<R,A>(), arg);
+      return null;
+    }        public R visit(CPP.Absyn.EMul p, A arg)
+    { /* Code For EMul Goes Here */
+      p.exp_1.accept(new ExpVisitor<R,A>(), arg);
+      p.exp_2.accept(new ExpVisitor<R,A>(), arg);
+      return null;
+    }    public R visit(CPP.Absyn.EDiv p, A arg)
+    { /* Code For EDiv Goes Here */
+      p.exp_1.accept(new ExpVisitor<R,A>(), arg);
+      p.exp_2.accept(new ExpVisitor<R,A>(), arg);
+      return null;
+    }    public R visit(CPP.Absyn.EMod p, A arg)
+    { /* Code For EMod Goes Here */
+      p.exp_1.accept(new ExpVisitor<R,A>(), arg);
+      p.exp_2.accept(new ExpVisitor<R,A>(), arg);
+      return null;
+    }        public R visit(CPP.Absyn.EAdd p, A arg)
+    { /* Code For EAdd Goes Here */
+      p.exp_1.accept(new ExpVisitor<R,A>(), arg);
+      p.exp_2.accept(new ExpVisitor<R,A>(), arg);
+      return null;
+    }    public R visit(CPP.Absyn.ESub p, A arg)
+    { /* Code For ESub Goes Here */
+      p.exp_1.accept(new ExpVisitor<R,A>(), arg);
+      p.exp_2.accept(new ExpVisitor<R,A>(), arg);
+      return null;
     }        public R visit(CPP.Absyn.ELShift p, A arg)
     { /* Code For ELShift Goes Here */
       p.exp_1.accept(new ExpVisitor<R,A>(), arg);
@@ -148,11 +243,92 @@ public class VisitSkel
       p.exp_1.accept(new ExpVisitor<R,A>(), arg);
       p.exp_2.accept(new ExpVisitor<R,A>(), arg);
       return null;
-    }                                                    
+    }        public R visit(CPP.Absyn.ELt p, A arg)
+    { /* Code For ELt Goes Here */
+      p.exp_1.accept(new ExpVisitor<R,A>(), arg);
+      p.exp_2.accept(new ExpVisitor<R,A>(), arg);
+      return null;
+    }    public R visit(CPP.Absyn.EGt p, A arg)
+    { /* Code For EGt Goes Here */
+      p.exp_1.accept(new ExpVisitor<R,A>(), arg);
+      p.exp_2.accept(new ExpVisitor<R,A>(), arg);
+      return null;
+    }    public R visit(CPP.Absyn.ELteq p, A arg)
+    { /* Code For ELteq Goes Here */
+      p.exp_1.accept(new ExpVisitor<R,A>(), arg);
+      p.exp_2.accept(new ExpVisitor<R,A>(), arg);
+      return null;
+    }    public R visit(CPP.Absyn.EGteq p, A arg)
+    { /* Code For EGteq Goes Here */
+      p.exp_1.accept(new ExpVisitor<R,A>(), arg);
+      p.exp_2.accept(new ExpVisitor<R,A>(), arg);
+      return null;
+    }        public R visit(CPP.Absyn.EEq p, A arg)
+    { /* Code For EEq Goes Here */
+      p.exp_1.accept(new ExpVisitor<R,A>(), arg);
+      p.exp_2.accept(new ExpVisitor<R,A>(), arg);
+      return null;
+    }    public R visit(CPP.Absyn.ENeq p, A arg)
+    { /* Code For ENeq Goes Here */
+      p.exp_1.accept(new ExpVisitor<R,A>(), arg);
+      p.exp_2.accept(new ExpVisitor<R,A>(), arg);
+      return null;
+    }        public R visit(CPP.Absyn.EConj p, A arg)
+    { /* Code For EConj Goes Here */
+      p.exp_1.accept(new ExpVisitor<R,A>(), arg);
+      p.exp_2.accept(new ExpVisitor<R,A>(), arg);
+      return null;
+    }        public R visit(CPP.Absyn.EDisj p, A arg)
+    { /* Code For EDisj Goes Here */
+      p.exp_1.accept(new ExpVisitor<R,A>(), arg);
+      p.exp_2.accept(new ExpVisitor<R,A>(), arg);
+      return null;
+    }        public R visit(CPP.Absyn.EAss p, A arg)
+    { /* Code For EAss Goes Here */
+      p.exp_1.accept(new ExpVisitor<R,A>(), arg);
+      p.exp_2.accept(new ExpVisitor<R,A>(), arg);
+      return null;
+    }    public R visit(CPP.Absyn.EAssp p, A arg)
+    { /* Code For EAssp Goes Here */
+      p.exp_1.accept(new ExpVisitor<R,A>(), arg);
+      p.exp_2.accept(new ExpVisitor<R,A>(), arg);
+      return null;
+    }    public R visit(CPP.Absyn.EAssm p, A arg)
+    { /* Code For EAssm Goes Here */
+      p.exp_1.accept(new ExpVisitor<R,A>(), arg);
+      p.exp_2.accept(new ExpVisitor<R,A>(), arg);
+      return null;
+    }    public R visit(CPP.Absyn.ECond p, A arg)
+    { /* Code For ECond Goes Here */
+      p.exp_1.accept(new ExpVisitor<R,A>(), arg);
+      p.exp_2.accept(new ExpVisitor<R,A>(), arg);
+      p.exp_3.accept(new ExpVisitor<R,A>(), arg);
+      return null;
+    }        public R visit(CPP.Absyn.EThrow p, A arg)
+    { /* Code For EThrow Goes Here */
+      p.exp_.accept(new ExpVisitor<R,A>(), arg);
+      return null;
+    }                
   }
   public class TypeVisitor<R,A> implements Type.Visitor<R,A>
   {
-    public R visit(CPP.Absyn.Tbool p, A arg)
+    public R visit(CPP.Absyn.Ttype1 p, A arg)
+    { /* Code For Ttype1 Goes Here */
+      p.type_.accept(new TypeVisitor<R,A>(), arg);
+      return null;
+    }    public R visit(CPP.Absyn.Ttype2 p, A arg)
+    { /* Code For Ttype2 Goes Here */
+      p.type_.accept(new TypeVisitor<R,A>(), arg);
+      return null;
+    }    public R visit(CPP.Absyn.Ttype3 p, A arg)
+    { /* Code For Ttype3 Goes Here */
+      p.type_.accept(new TypeVisitor<R,A>(), arg);
+      return null;
+    }    public R visit(CPP.Absyn.Ttype4 p, A arg)
+    { /* Code For Ttype4 Goes Here */
+      p.type_.accept(new TypeVisitor<R,A>(), arg);
+      return null;
+    }    public R visit(CPP.Absyn.Tbool p, A arg)
     { /* Code For Tbool Goes Here */
       return null;
     }    public R visit(CPP.Absyn.Tdouble p, A arg)

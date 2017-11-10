@@ -32,50 +32,77 @@ nonterminal CPP.Absyn.Stm Stm;
 nonterminal CPP.Absyn.Exp Exp15;
 nonterminal CPP.Absyn.Exp Exp14;
 nonterminal CPP.Absyn.Exp Exp13;
+nonterminal CPP.Absyn.Exp Exp12;
+nonterminal CPP.Absyn.Exp Exp11;
+nonterminal CPP.Absyn.Exp Exp10;
 nonterminal CPP.Absyn.Exp Exp9;
-nonterminal CPP.Absyn.Exp Exp;
-nonterminal CPP.Absyn.Exp Exp1;
-nonterminal CPP.Absyn.Exp Exp2;
+nonterminal CPP.Absyn.Exp Exp8;
+nonterminal CPP.Absyn.Exp Exp7;
 nonterminal CPP.Absyn.Exp Exp3;
+nonterminal CPP.Absyn.Exp Exp2;
+nonterminal CPP.Absyn.Exp Exp1;
+nonterminal CPP.Absyn.Exp Exp;
 nonterminal CPP.Absyn.Exp Exp4;
 nonterminal CPP.Absyn.Exp Exp5;
 nonterminal CPP.Absyn.Exp Exp6;
-nonterminal CPP.Absyn.Exp Exp7;
-nonterminal CPP.Absyn.Exp Exp8;
-nonterminal CPP.Absyn.Exp Exp10;
-nonterminal CPP.Absyn.Exp Exp11;
-nonterminal CPP.Absyn.Exp Exp12;
 nonterminal CPP.Absyn.ListExp ListExp;
 nonterminal CPP.Absyn.ListString ListString;
 nonterminal CPP.Absyn.Type Type;
+nonterminal CPP.Absyn.Type Type1;
 nonterminal CPP.Absyn.ListId ListId;
 
 terminal _SYMB_0;    //   (
 terminal _SYMB_1;    //   )
 terminal _SYMB_2;    //   {
 terminal _SYMB_3;    //   }
-terminal _SYMB_4;    //   ,
-terminal _SYMB_5;    //   ;
+terminal _SYMB_4;    //   ;
+terminal _SYMB_5;    //   ,
 terminal _SYMB_6;    //   =
 terminal _SYMB_7;    //   [
 terminal _SYMB_8;    //   ]
-terminal _SYMB_9;    //   ->
-terminal _SYMB_10;    //   <<
-terminal _SYMB_11;    //   >>
-terminal _SYMB_12;    //   ::
-terminal _SYMB_13;    //   bool
-terminal _SYMB_14;    //   double
-terminal _SYMB_15;    //   else
-terminal _SYMB_16;    //   if
-terminal _SYMB_17;    //   int
-terminal _SYMB_18;    //   return
-terminal _SYMB_19;    //   typedef
-terminal _SYMB_20;    //   using
-terminal _SYMB_21;    //   void
-terminal _SYMB_22;    //   while
+terminal _SYMB_9;    //   .
+terminal _SYMB_10;    //   ->
+terminal _SYMB_11;    //   ++
+terminal _SYMB_12;    //   --
+terminal _SYMB_13;    //   *
+terminal _SYMB_14;    //   !
+terminal _SYMB_15;    //   /
+terminal _SYMB_16;    //   %
+terminal _SYMB_17;    //   +
+terminal _SYMB_18;    //   -
+terminal _SYMB_19;    //   <<
+terminal _SYMB_20;    //   >>
+terminal _SYMB_21;    //   <
+terminal _SYMB_22;    //   >
+terminal _SYMB_23;    //   <=
+terminal _SYMB_24;    //   >=
+terminal _SYMB_25;    //   ==
+terminal _SYMB_26;    //   !=
+terminal _SYMB_27;    //   &&
+terminal _SYMB_28;    //   ||
+terminal _SYMB_29;    //   +=
+terminal _SYMB_30;    //   -=
+terminal _SYMB_31;    //   ?
+terminal _SYMB_32;    //   :
+terminal _SYMB_33;    //   &
+terminal _SYMB_34;    //   ::
+terminal _SYMB_35;    //   bool
+terminal _SYMB_36;    //   const
+terminal _SYMB_37;    //   do
+terminal _SYMB_38;    //   double
+terminal _SYMB_39;    //   else
+terminal _SYMB_40;    //   for
+terminal _SYMB_41;    //   if
+terminal _SYMB_42;    //   int
+terminal _SYMB_43;    //   return
+terminal _SYMB_44;    //   throw
+terminal _SYMB_45;    //   typedef
+terminal _SYMB_46;    //   using
+terminal _SYMB_47;    //   void
+terminal _SYMB_48;    //   while
 
 terminal String _STRING_;
-
+terminal Character _CHAR_;
 terminal Integer _INTEGER_;
 terminal Double _DOUBLE_;
 
@@ -92,50 +119,94 @@ ListDef ::=  /* empty */  {: RESULT = new CPP.Absyn.ListDef(); :}
   | ListDef:p_1 Def:p_2  {: RESULT = p_1; p_1.addLast(p_2); :}
 ;
 Def ::= Type:p_1 Id:p_2 _SYMB_0 ListArg:p_4 _SYMB_1 _SYMB_2 ListStm:p_7 _SYMB_3  {: RESULT = new CPP.Absyn.DFun(p_1,p_2,p_4,p_7); :} 
-  | _SYMB_20 ListId:p_2 _SYMB_5  {: RESULT = new CPP.Absyn.QConuse(p_2); :}
+  | Type:p_1 Id:p_2 _SYMB_0 ListArg:p_4 _SYMB_1 _SYMB_4  {: RESULT = new CPP.Absyn.DFunemp(p_1,p_2,p_4); :}
+  | _SYMB_45 ListId:p_2 Id:p_3 _SYMB_4  {: RESULT = new CPP.Absyn.DTypedef(p_2,p_3); :}
+  | _SYMB_46 ListId:p_2 _SYMB_4  {: RESULT = new CPP.Absyn.QConuse(p_2); :}
 ;
 ListArg ::=  /* empty */  {: RESULT = new CPP.Absyn.ListArg(); :} 
   | Arg:p_1  {: RESULT = new CPP.Absyn.ListArg(); RESULT.addLast(p_1); :}
-  | Arg:p_1 _SYMB_4 ListArg:p_3  {: RESULT = p_3; p_3.addFirst(p_1); :}
+  | Arg:p_1 _SYMB_5 ListArg:p_3  {: RESULT = p_3; p_3.addFirst(p_1); :}
 ;
 ListStm ::=  /* empty */  {: RESULT = new CPP.Absyn.ListStm(); :} 
   | ListStm:p_1 Stm:p_2  {: RESULT = p_1; p_1.addLast(p_2); :}
 ;
-Arg ::= Type:p_1 Id:p_2  {: RESULT = new CPP.Absyn.ADecl(p_1,p_2); :} 
+Arg ::= Type:p_1  {: RESULT = new CPP.Absyn.ADeclemp(p_1); :} 
+  | Type:p_1 Id:p_2  {: RESULT = new CPP.Absyn.ADecl(p_1,p_2); :}
+  | Type:p_1 Id:p_2 _SYMB_6 Exp:p_4  {: RESULT = new CPP.Absyn.ADeclass(p_1,p_2,p_4); :}
 ;
-Stm ::= Exp:p_1 _SYMB_5  {: RESULT = new CPP.Absyn.SExp(p_1); :} 
-  | Type:p_1 Id:p_2 _SYMB_5  {: RESULT = new CPP.Absyn.SDecl(p_1,p_2); :}
-  | Type:p_1 Id:p_2 _SYMB_4 ListId:p_4 _SYMB_5  {: RESULT = new CPP.Absyn.SDecls(p_1,p_2,p_4); :}
-  | Type:p_1 Id:p_2 _SYMB_6 Exp:p_4 _SYMB_5  {: RESULT = new CPP.Absyn.SInit(p_1,p_2,p_4); :}
-  | _SYMB_19 ListId:p_2 Id:p_3 _SYMB_5  {: RESULT = new CPP.Absyn.STypedef(p_2,p_3); :}
-  | _SYMB_18 Exp:p_2 _SYMB_5  {: RESULT = new CPP.Absyn.SReturn(p_2); :}
-  | _SYMB_22 _SYMB_0 Exp:p_3 _SYMB_1 Stm:p_5  {: RESULT = new CPP.Absyn.SWhile(p_3,p_5); :}
+Stm ::= Exp:p_1 _SYMB_4  {: RESULT = new CPP.Absyn.SExp(p_1); :} 
+  | Type:p_1 Id:p_2 _SYMB_4  {: RESULT = new CPP.Absyn.SDecl(p_1,p_2); :}
+  | Type:p_1 Id:p_2 _SYMB_5 ListId:p_4 _SYMB_4  {: RESULT = new CPP.Absyn.SDecls(p_1,p_2,p_4); :}
+  | Type:p_1 Id:p_2 _SYMB_6 Exp:p_4 _SYMB_4  {: RESULT = new CPP.Absyn.SInit(p_1,p_2,p_4); :}
+  | _SYMB_45 ListId:p_2 Id:p_3 _SYMB_4  {: RESULT = new CPP.Absyn.STypedef(p_2,p_3); :}
+  | _SYMB_43 Exp:p_2 _SYMB_4  {: RESULT = new CPP.Absyn.SReturn(p_2); :}
+  | _SYMB_48 _SYMB_0 Exp:p_3 _SYMB_1 Stm:p_5  {: RESULT = new CPP.Absyn.SWhile(p_3,p_5); :}
   | _SYMB_2 ListStm:p_2 _SYMB_3  {: RESULT = new CPP.Absyn.SBlock(p_2); :}
-  | _SYMB_16 _SYMB_0 Exp:p_3 _SYMB_1 Stm:p_5 _SYMB_15 Stm:p_7  {: RESULT = new CPP.Absyn.SIfElse(p_3,p_5,p_7); :}
+  | _SYMB_41 _SYMB_0 Exp:p_3 _SYMB_1 Stm:p_5  {: RESULT = new CPP.Absyn.SIf(p_3,p_5); :}
+  | _SYMB_41 _SYMB_0 Exp:p_3 _SYMB_1 Stm:p_5 _SYMB_39 Stm:p_7  {: RESULT = new CPP.Absyn.SIfElse(p_3,p_5,p_7); :}
+  | _SYMB_40 _SYMB_0 Type:p_3 Id:p_4 _SYMB_6 Exp:p_6 _SYMB_4 Exp:p_8 _SYMB_4 Exp:p_10 _SYMB_1 Stm:p_12  {: RESULT = new CPP.Absyn.SFor(p_3,p_4,p_6,p_8,p_10,p_12); :}
+  | _SYMB_37 Stm:p_2 _SYMB_4 _SYMB_48 _SYMB_0 Exp:p_6 _SYMB_1  {: RESULT = new CPP.Absyn.SDowhile(p_2,p_6); :}
 ;
 Exp15 ::= _INTEGER_:p_1  {: RESULT = new CPP.Absyn.EInt(p_1); :} 
   | ListString:p_1  {: RESULT = new CPP.Absyn.EString(p_1); :}
   | _DOUBLE_:p_1  {: RESULT = new CPP.Absyn.EDouble(p_1); :}
   | ListId:p_1  {: RESULT = new CPP.Absyn.EQcon(p_1); :}
+  | _CHAR_:p_1  {: RESULT = new CPP.Absyn.EChar(p_1); :}
   | _SYMB_0 Exp:p_2 _SYMB_1  {: RESULT = p_2; :}
 ;
 Exp14 ::= Exp14:p_1 _SYMB_7 Exp:p_3 _SYMB_8  {: RESULT = new CPP.Absyn.EIndex(p_1,p_3); :} 
+  | Exp14:p_1 _SYMB_0 ListExp:p_3 _SYMB_1  {: RESULT = new CPP.Absyn.ECall(p_1,p_3); :}
   | Exp15:p_1  {: RESULT = p_1; :}
 ;
-Exp13 ::= Exp13:p_1 _SYMB_9 Id:p_3  {: RESULT = new CPP.Absyn.EArrow(p_1,p_3); :} 
+Exp13 ::= Exp13:p_1 _SYMB_9 Exp14:p_3  {: RESULT = new CPP.Absyn.EDot(p_1,p_3); :} 
+  | Exp13:p_1 _SYMB_10 Id:p_3  {: RESULT = new CPP.Absyn.EArrow(p_1,p_3); :}
+  | Exp13:p_1 _SYMB_11  {: RESULT = new CPP.Absyn.EInc(p_1); :}
+  | Exp13:p_1 _SYMB_12  {: RESULT = new CPP.Absyn.EDec(p_1); :}
   | Exp14:p_1  {: RESULT = p_1; :}
 ;
-Exp9 ::= Exp9:p_1 _SYMB_10 Exp10:p_3  {: RESULT = new CPP.Absyn.ELShift(p_1,p_3); :} 
-  | Exp9:p_1 _SYMB_11 Exp10:p_3  {: RESULT = new CPP.Absyn.ERShift(p_1,p_3); :}
+Exp12 ::= _SYMB_11 Exp12:p_2  {: RESULT = new CPP.Absyn.EPinc(p_2); :} 
+  | _SYMB_12 Exp12:p_2  {: RESULT = new CPP.Absyn.EPdec(p_2); :}
+  | _SYMB_13 Exp12:p_2  {: RESULT = new CPP.Absyn.EDeref(p_2); :}
+  | _SYMB_14 Exp12:p_2  {: RESULT = new CPP.Absyn.ENeg(p_2); :}
+  | Exp13:p_1  {: RESULT = p_1; :}
+;
+Exp11 ::= Exp11:p_1 _SYMB_13 Exp12:p_3  {: RESULT = new CPP.Absyn.EMul(p_1,p_3); :} 
+  | Exp11:p_1 _SYMB_15 Exp12:p_3  {: RESULT = new CPP.Absyn.EDiv(p_1,p_3); :}
+  | Exp11:p_1 _SYMB_16 Exp12:p_3  {: RESULT = new CPP.Absyn.EMod(p_1,p_3); :}
+  | Exp12:p_1  {: RESULT = p_1; :}
+;
+Exp10 ::= Exp10:p_1 _SYMB_17 Exp11:p_3  {: RESULT = new CPP.Absyn.EAdd(p_1,p_3); :} 
+  | Exp10:p_1 _SYMB_18 Exp11:p_3  {: RESULT = new CPP.Absyn.ESub(p_1,p_3); :}
+  | Exp11:p_1  {: RESULT = p_1; :}
+;
+Exp9 ::= Exp9:p_1 _SYMB_19 Exp10:p_3  {: RESULT = new CPP.Absyn.ELShift(p_1,p_3); :} 
+  | Exp9:p_1 _SYMB_20 Exp10:p_3  {: RESULT = new CPP.Absyn.ERShift(p_1,p_3); :}
   | Exp10:p_1  {: RESULT = p_1; :}
 ;
-Exp ::= Exp1:p_1  {: RESULT = p_1; :} 
+Exp8 ::= Exp8:p_1 _SYMB_21 Exp9:p_3  {: RESULT = new CPP.Absyn.ELt(p_1,p_3); :} 
+  | Exp8:p_1 _SYMB_22 Exp9:p_3  {: RESULT = new CPP.Absyn.EGt(p_1,p_3); :}
+  | Exp8:p_1 _SYMB_23 Exp9:p_3  {: RESULT = new CPP.Absyn.ELteq(p_1,p_3); :}
+  | Exp8:p_1 _SYMB_24 Exp9:p_3  {: RESULT = new CPP.Absyn.EGteq(p_1,p_3); :}
+  | Exp9:p_1  {: RESULT = p_1; :}
 ;
-Exp1 ::= Exp2:p_1  {: RESULT = p_1; :} 
+Exp7 ::= Exp7:p_1 _SYMB_25 Exp8:p_3  {: RESULT = new CPP.Absyn.EEq(p_1,p_3); :} 
+  | Exp7:p_1 _SYMB_26 Exp8:p_3  {: RESULT = new CPP.Absyn.ENeq(p_1,p_3); :}
+  | Exp8:p_1  {: RESULT = p_1; :}
 ;
-Exp2 ::= Exp3:p_1  {: RESULT = p_1; :} 
+Exp3 ::= Exp3:p_1 _SYMB_27 Exp4:p_3  {: RESULT = new CPP.Absyn.EConj(p_1,p_3); :} 
+  | Exp4:p_1  {: RESULT = p_1; :}
 ;
-Exp3 ::= Exp4:p_1  {: RESULT = p_1; :} 
+Exp2 ::= Exp2:p_1 _SYMB_28 Exp3:p_3  {: RESULT = new CPP.Absyn.EDisj(p_1,p_3); :} 
+  | Exp3:p_1  {: RESULT = p_1; :}
+;
+Exp1 ::= Exp2:p_1 _SYMB_6 Exp1:p_3  {: RESULT = new CPP.Absyn.EAss(p_1,p_3); :} 
+  | Exp2:p_1 _SYMB_29 Exp1:p_3  {: RESULT = new CPP.Absyn.EAssp(p_1,p_3); :}
+  | Exp2:p_1 _SYMB_30 Exp1:p_3  {: RESULT = new CPP.Absyn.EAssm(p_1,p_3); :}
+  | Exp2:p_1 _SYMB_31 Exp:p_3 _SYMB_32 Exp1:p_5  {: RESULT = new CPP.Absyn.ECond(p_1,p_3,p_5); :}
+  | Exp2:p_1  {: RESULT = p_1; :}
+;
+Exp ::= _SYMB_44 Exp:p_2  {: RESULT = new CPP.Absyn.EThrow(p_2); :} 
+  | Exp1:p_1  {: RESULT = p_1; :}
 ;
 Exp4 ::= Exp5:p_1  {: RESULT = p_1; :} 
 ;
@@ -143,30 +214,25 @@ Exp5 ::= Exp6:p_1  {: RESULT = p_1; :}
 ;
 Exp6 ::= Exp7:p_1  {: RESULT = p_1; :} 
 ;
-Exp7 ::= Exp8:p_1  {: RESULT = p_1; :} 
-;
-Exp8 ::= Exp9:p_1  {: RESULT = p_1; :} 
-;
-Exp10 ::= Exp11:p_1  {: RESULT = p_1; :} 
-;
-Exp11 ::= Exp12:p_1  {: RESULT = p_1; :} 
-;
-Exp12 ::= Exp13:p_1  {: RESULT = p_1; :} 
-;
 ListExp ::=  /* empty */  {: RESULT = new CPP.Absyn.ListExp(); :} 
   | Exp:p_1  {: RESULT = new CPP.Absyn.ListExp(); RESULT.addLast(p_1); :}
-  | Exp:p_1 _SYMB_4 ListExp:p_3  {: RESULT = p_3; p_3.addFirst(p_1); :}
+  | Exp:p_1 _SYMB_5 ListExp:p_3  {: RESULT = p_3; p_3.addFirst(p_1); :}
 ;
-ListString ::=  /* empty */  {: RESULT = new CPP.Absyn.ListString(); :} 
+ListString ::= _STRING_:p_1  {: RESULT = new CPP.Absyn.ListString(); RESULT.addLast(p_1); :} 
   | _STRING_:p_1 ListString:p_2  {: RESULT = p_2; p_2.addFirst(p_1); :}
 ;
-Type ::= _SYMB_13  {: RESULT = new CPP.Absyn.Tbool(); :} 
-  | _SYMB_14  {: RESULT = new CPP.Absyn.Tdouble(); :}
-  | _SYMB_17  {: RESULT = new CPP.Absyn.Tint(); :}
-  | _SYMB_21  {: RESULT = new CPP.Absyn.Tvoid(); :}
+Type ::= Type1:p_1  {: RESULT = new CPP.Absyn.Ttype1(p_1); :} 
+  | Type1:p_1 _SYMB_33  {: RESULT = new CPP.Absyn.Ttype2(p_1); :}
+  | _SYMB_36 Type1:p_2  {: RESULT = new CPP.Absyn.Ttype3(p_2); :}
+  | _SYMB_36 Type1:p_2 _SYMB_33  {: RESULT = new CPP.Absyn.Ttype4(p_2); :}
+;
+Type1 ::= _SYMB_35  {: RESULT = new CPP.Absyn.Tbool(); :} 
+  | _SYMB_38  {: RESULT = new CPP.Absyn.Tdouble(); :}
+  | _SYMB_42  {: RESULT = new CPP.Absyn.Tint(); :}
+  | _SYMB_47  {: RESULT = new CPP.Absyn.Tvoid(); :}
   | ListId:p_1  {: RESULT = new CPP.Absyn.Tid(p_1); :}
 ;
 ListId ::= Id:p_1  {: RESULT = new CPP.Absyn.ListId(); RESULT.addLast(p_1); :} 
-  | Id:p_1 _SYMB_12 ListId:p_3  {: RESULT = p_3; p_3.addFirst(p_1); :}
+  | Id:p_1 _SYMB_34 ListId:p_3  {: RESULT = p_3; p_3.addFirst(p_1); :}
 ;
 

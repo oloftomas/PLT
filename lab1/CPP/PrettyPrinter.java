@@ -284,6 +284,28 @@ public class PrettyPrinter
        render("}");
        if (_i_ > 0) render(_R_PAREN);
     }
+    else     if (foo instanceof CPP.Absyn.DFunemp)
+    {
+       CPP.Absyn.DFunemp _dfunemp = (CPP.Absyn.DFunemp) foo;
+       if (_i_ > 0) render(_L_PAREN);
+       pp(_dfunemp.type_, 0);
+       pp(_dfunemp.id_, 0);
+       render("(");
+       pp(_dfunemp.listarg_, 0);
+       render(")");
+       render(";");
+       if (_i_ > 0) render(_R_PAREN);
+    }
+    else     if (foo instanceof CPP.Absyn.DTypedef)
+    {
+       CPP.Absyn.DTypedef _dtypedef = (CPP.Absyn.DTypedef) foo;
+       if (_i_ > 0) render(_L_PAREN);
+       render("typedef");
+       pp(_dtypedef.listid_, 0);
+       pp(_dtypedef.id_, 0);
+       render(";");
+       if (_i_ > 0) render(_R_PAREN);
+    }
     else     if (foo instanceof CPP.Absyn.QConuse)
     {
        CPP.Absyn.QConuse _qconuse = (CPP.Absyn.QConuse) foo;
@@ -321,12 +343,29 @@ public class PrettyPrinter
 
   private static void pp(CPP.Absyn.Arg foo, int _i_)
   {
-    if (foo instanceof CPP.Absyn.ADecl)
+    if (foo instanceof CPP.Absyn.ADeclemp)
+    {
+       CPP.Absyn.ADeclemp _adeclemp = (CPP.Absyn.ADeclemp) foo;
+       if (_i_ > 0) render(_L_PAREN);
+       pp(_adeclemp.type_, 0);
+       if (_i_ > 0) render(_R_PAREN);
+    }
+    else     if (foo instanceof CPP.Absyn.ADecl)
     {
        CPP.Absyn.ADecl _adecl = (CPP.Absyn.ADecl) foo;
        if (_i_ > 0) render(_L_PAREN);
        pp(_adecl.type_, 0);
        pp(_adecl.id_, 0);
+       if (_i_ > 0) render(_R_PAREN);
+    }
+    else     if (foo instanceof CPP.Absyn.ADeclass)
+    {
+       CPP.Absyn.ADeclass _adeclass = (CPP.Absyn.ADeclass) foo;
+       if (_i_ > 0) render(_L_PAREN);
+       pp(_adeclass.type_, 0);
+       pp(_adeclass.id_, 0);
+       render("=");
+       pp(_adeclass.exp_, 0);
        if (_i_ > 0) render(_R_PAREN);
     }
   }
@@ -411,6 +450,17 @@ public class PrettyPrinter
        render("}");
        if (_i_ > 0) render(_R_PAREN);
     }
+    else     if (foo instanceof CPP.Absyn.SIf)
+    {
+       CPP.Absyn.SIf _sif = (CPP.Absyn.SIf) foo;
+       if (_i_ > 0) render(_L_PAREN);
+       render("if");
+       render("(");
+       pp(_sif.exp_, 0);
+       render(")");
+       pp(_sif.stm_, 0);
+       if (_i_ > 0) render(_R_PAREN);
+    }
     else     if (foo instanceof CPP.Absyn.SIfElse)
     {
        CPP.Absyn.SIfElse _sifelse = (CPP.Absyn.SIfElse) foo;
@@ -422,6 +472,37 @@ public class PrettyPrinter
        pp(_sifelse.stm_1, 0);
        render("else");
        pp(_sifelse.stm_2, 0);
+       if (_i_ > 0) render(_R_PAREN);
+    }
+    else     if (foo instanceof CPP.Absyn.SFor)
+    {
+       CPP.Absyn.SFor _sfor = (CPP.Absyn.SFor) foo;
+       if (_i_ > 0) render(_L_PAREN);
+       render("for");
+       render("(");
+       pp(_sfor.type_, 0);
+       pp(_sfor.id_, 0);
+       render("=");
+       pp(_sfor.exp_1, 0);
+       render(";");
+       pp(_sfor.exp_2, 0);
+       render(";");
+       pp(_sfor.exp_3, 0);
+       render(")");
+       pp(_sfor.stm_, 0);
+       if (_i_ > 0) render(_R_PAREN);
+    }
+    else     if (foo instanceof CPP.Absyn.SDoWhile)
+    {
+       CPP.Absyn.SDoWhile _sdowhile = (CPP.Absyn.SDoWhile) foo;
+       if (_i_ > 0) render(_L_PAREN);
+       render("do");
+       pp(_sdowhile.stm_, 0);
+       render("while");
+       render("(");
+       pp(_sdowhile.exp_, 0);
+       render(")");
+       render(";");
        if (_i_ > 0) render(_R_PAREN);
     }
   }
@@ -456,6 +537,13 @@ public class PrettyPrinter
        pp(_eqcon.listid_, 0);
        if (_i_ > 15) render(_R_PAREN);
     }
+    else     if (foo instanceof CPP.Absyn.EChar)
+    {
+       CPP.Absyn.EChar _echar = (CPP.Absyn.EChar) foo;
+       if (_i_ > 15) render(_L_PAREN);
+       pp(_echar.char_, 0);
+       if (_i_ > 15) render(_R_PAREN);
+    }
     else     if (foo instanceof CPP.Absyn.EIndex)
     {
        CPP.Absyn.EIndex _eindex = (CPP.Absyn.EIndex) foo;
@@ -482,7 +570,7 @@ public class PrettyPrinter
        if (_i_ > 13) render(_L_PAREN);
        pp(_edot.exp_1, 13);
        render(".");
-       pp(_edot.exp_2, 0);
+       pp(_edot.exp_2, 14);
        if (_i_ > 13) render(_R_PAREN);
     }
     else     if (foo instanceof CPP.Absyn.EArrow)
@@ -493,6 +581,99 @@ public class PrettyPrinter
        render("->");
        pp(_earrow.id_, 0);
        if (_i_ > 13) render(_R_PAREN);
+    }
+    else     if (foo instanceof CPP.Absyn.EPInc)
+    {
+       CPP.Absyn.EPInc _epinc = (CPP.Absyn.EPInc) foo;
+       if (_i_ > 13) render(_L_PAREN);
+       pp(_epinc.exp_, 13);
+       render("++");
+       if (_i_ > 13) render(_R_PAREN);
+    }
+    else     if (foo instanceof CPP.Absyn.EPDec)
+    {
+       CPP.Absyn.EPDec _epdec = (CPP.Absyn.EPDec) foo;
+       if (_i_ > 13) render(_L_PAREN);
+       pp(_epdec.exp_, 13);
+       render("--");
+       if (_i_ > 13) render(_R_PAREN);
+    }
+    else     if (foo instanceof CPP.Absyn.Einc)
+    {
+       CPP.Absyn.Einc _einc = (CPP.Absyn.Einc) foo;
+       if (_i_ > 12) render(_L_PAREN);
+       render("++");
+       pp(_einc.exp_, 12);
+       if (_i_ > 12) render(_R_PAREN);
+    }
+    else     if (foo instanceof CPP.Absyn.Edec)
+    {
+       CPP.Absyn.Edec _edec = (CPP.Absyn.Edec) foo;
+       if (_i_ > 12) render(_L_PAREN);
+       render("--");
+       pp(_edec.exp_, 12);
+       if (_i_ > 12) render(_R_PAREN);
+    }
+    else     if (foo instanceof CPP.Absyn.EDeref)
+    {
+       CPP.Absyn.EDeref _ederef = (CPP.Absyn.EDeref) foo;
+       if (_i_ > 12) render(_L_PAREN);
+       render("*");
+       pp(_ederef.exp_, 12);
+       if (_i_ > 12) render(_R_PAREN);
+    }
+    else     if (foo instanceof CPP.Absyn.ENeg)
+    {
+       CPP.Absyn.ENeg _eneg = (CPP.Absyn.ENeg) foo;
+       if (_i_ > 12) render(_L_PAREN);
+       render("!");
+       pp(_eneg.exp_, 12);
+       if (_i_ > 12) render(_R_PAREN);
+    }
+    else     if (foo instanceof CPP.Absyn.EMul)
+    {
+       CPP.Absyn.EMul _emul = (CPP.Absyn.EMul) foo;
+       if (_i_ > 11) render(_L_PAREN);
+       pp(_emul.exp_1, 11);
+       render("*");
+       pp(_emul.exp_2, 12);
+       if (_i_ > 11) render(_R_PAREN);
+    }
+    else     if (foo instanceof CPP.Absyn.EDiv)
+    {
+       CPP.Absyn.EDiv _ediv = (CPP.Absyn.EDiv) foo;
+       if (_i_ > 11) render(_L_PAREN);
+       pp(_ediv.exp_1, 11);
+       render("/");
+       pp(_ediv.exp_2, 12);
+       if (_i_ > 11) render(_R_PAREN);
+    }
+    else     if (foo instanceof CPP.Absyn.EMod)
+    {
+       CPP.Absyn.EMod _emod = (CPP.Absyn.EMod) foo;
+       if (_i_ > 11) render(_L_PAREN);
+       pp(_emod.exp_1, 11);
+       render("%");
+       pp(_emod.exp_2, 12);
+       if (_i_ > 11) render(_R_PAREN);
+    }
+    else     if (foo instanceof CPP.Absyn.EAdd)
+    {
+       CPP.Absyn.EAdd _eadd = (CPP.Absyn.EAdd) foo;
+       if (_i_ > 10) render(_L_PAREN);
+       pp(_eadd.exp_1, 10);
+       render("+");
+       pp(_eadd.exp_2, 11);
+       if (_i_ > 10) render(_R_PAREN);
+    }
+    else     if (foo instanceof CPP.Absyn.ESub)
+    {
+       CPP.Absyn.ESub _esub = (CPP.Absyn.ESub) foo;
+       if (_i_ > 10) render(_L_PAREN);
+       pp(_esub.exp_1, 10);
+       render("-");
+       pp(_esub.exp_2, 11);
+       if (_i_ > 10) render(_R_PAREN);
     }
     else     if (foo instanceof CPP.Absyn.ELShift)
     {
@@ -511,6 +692,124 @@ public class PrettyPrinter
        render(">>");
        pp(_ershift.exp_2, 10);
        if (_i_ > 9) render(_R_PAREN);
+    }
+    else     if (foo instanceof CPP.Absyn.ELt)
+    {
+       CPP.Absyn.ELt _elt = (CPP.Absyn.ELt) foo;
+       if (_i_ > 8) render(_L_PAREN);
+       pp(_elt.exp_1, 8);
+       render("<");
+       pp(_elt.exp_2, 9);
+       if (_i_ > 8) render(_R_PAREN);
+    }
+    else     if (foo instanceof CPP.Absyn.EGt)
+    {
+       CPP.Absyn.EGt _egt = (CPP.Absyn.EGt) foo;
+       if (_i_ > 8) render(_L_PAREN);
+       pp(_egt.exp_1, 8);
+       render(">");
+       pp(_egt.exp_2, 9);
+       if (_i_ > 8) render(_R_PAREN);
+    }
+    else     if (foo instanceof CPP.Absyn.ELteq)
+    {
+       CPP.Absyn.ELteq _elteq = (CPP.Absyn.ELteq) foo;
+       if (_i_ > 8) render(_L_PAREN);
+       pp(_elteq.exp_1, 8);
+       render("<=");
+       pp(_elteq.exp_2, 9);
+       if (_i_ > 8) render(_R_PAREN);
+    }
+    else     if (foo instanceof CPP.Absyn.EGteq)
+    {
+       CPP.Absyn.EGteq _egteq = (CPP.Absyn.EGteq) foo;
+       if (_i_ > 8) render(_L_PAREN);
+       pp(_egteq.exp_1, 8);
+       render(">=");
+       pp(_egteq.exp_2, 9);
+       if (_i_ > 8) render(_R_PAREN);
+    }
+    else     if (foo instanceof CPP.Absyn.EEq)
+    {
+       CPP.Absyn.EEq _eeq = (CPP.Absyn.EEq) foo;
+       if (_i_ > 7) render(_L_PAREN);
+       pp(_eeq.exp_1, 7);
+       render("==");
+       pp(_eeq.exp_2, 8);
+       if (_i_ > 7) render(_R_PAREN);
+    }
+    else     if (foo instanceof CPP.Absyn.ENeq)
+    {
+       CPP.Absyn.ENeq _eneq = (CPP.Absyn.ENeq) foo;
+       if (_i_ > 7) render(_L_PAREN);
+       pp(_eneq.exp_1, 7);
+       render("!=");
+       pp(_eneq.exp_2, 8);
+       if (_i_ > 7) render(_R_PAREN);
+    }
+    else     if (foo instanceof CPP.Absyn.EConj)
+    {
+       CPP.Absyn.EConj _econj = (CPP.Absyn.EConj) foo;
+       if (_i_ > 3) render(_L_PAREN);
+       pp(_econj.exp_1, 3);
+       render("&&");
+       pp(_econj.exp_2, 4);
+       if (_i_ > 3) render(_R_PAREN);
+    }
+    else     if (foo instanceof CPP.Absyn.EDisj)
+    {
+       CPP.Absyn.EDisj _edisj = (CPP.Absyn.EDisj) foo;
+       if (_i_ > 2) render(_L_PAREN);
+       pp(_edisj.exp_1, 2);
+       render("||");
+       pp(_edisj.exp_2, 3);
+       if (_i_ > 2) render(_R_PAREN);
+    }
+    else     if (foo instanceof CPP.Absyn.EAss)
+    {
+       CPP.Absyn.EAss _eass = (CPP.Absyn.EAss) foo;
+       if (_i_ > 1) render(_L_PAREN);
+       pp(_eass.exp_1, 2);
+       render("=");
+       pp(_eass.exp_2, 1);
+       if (_i_ > 1) render(_R_PAREN);
+    }
+    else     if (foo instanceof CPP.Absyn.EAssp)
+    {
+       CPP.Absyn.EAssp _eassp = (CPP.Absyn.EAssp) foo;
+       if (_i_ > 1) render(_L_PAREN);
+       pp(_eassp.exp_1, 2);
+       render("+=");
+       pp(_eassp.exp_2, 1);
+       if (_i_ > 1) render(_R_PAREN);
+    }
+    else     if (foo instanceof CPP.Absyn.EAssm)
+    {
+       CPP.Absyn.EAssm _eassm = (CPP.Absyn.EAssm) foo;
+       if (_i_ > 1) render(_L_PAREN);
+       pp(_eassm.exp_1, 2);
+       render("-=");
+       pp(_eassm.exp_2, 1);
+       if (_i_ > 1) render(_R_PAREN);
+    }
+    else     if (foo instanceof CPP.Absyn.ECond)
+    {
+       CPP.Absyn.ECond _econd = (CPP.Absyn.ECond) foo;
+       if (_i_ > 1) render(_L_PAREN);
+       pp(_econd.exp_1, 2);
+       render("?");
+       pp(_econd.exp_2, 0);
+       render(":");
+       pp(_econd.exp_3, 1);
+       if (_i_ > 1) render(_R_PAREN);
+    }
+    else     if (foo instanceof CPP.Absyn.EThrow)
+    {
+       CPP.Absyn.EThrow _ethrow = (CPP.Absyn.EThrow) foo;
+       if (_i_ > 0) render(_L_PAREN);
+       render("throw");
+       pp(_ethrow.exp_, 0);
+       if (_i_ > 0) render(_R_PAREN);
     }
   }
 
@@ -540,40 +839,72 @@ public class PrettyPrinter
 
   private static void pp(CPP.Absyn.Type foo, int _i_)
   {
-    if (foo instanceof CPP.Absyn.Tbool)
+    if (foo instanceof CPP.Absyn.Ttype1)
+    {
+       CPP.Absyn.Ttype1 _ttype1 = (CPP.Absyn.Ttype1) foo;
+       if (_i_ > 0) render(_L_PAREN);
+       pp(_ttype1.type_, 1);
+       if (_i_ > 0) render(_R_PAREN);
+    }
+    else     if (foo instanceof CPP.Absyn.Ttype2)
+    {
+       CPP.Absyn.Ttype2 _ttype2 = (CPP.Absyn.Ttype2) foo;
+       if (_i_ > 0) render(_L_PAREN);
+       pp(_ttype2.type_, 1);
+       render("&");
+       if (_i_ > 0) render(_R_PAREN);
+    }
+    else     if (foo instanceof CPP.Absyn.Ttype3)
+    {
+       CPP.Absyn.Ttype3 _ttype3 = (CPP.Absyn.Ttype3) foo;
+       if (_i_ > 0) render(_L_PAREN);
+       render("const");
+       pp(_ttype3.type_, 1);
+       if (_i_ > 0) render(_R_PAREN);
+    }
+    else     if (foo instanceof CPP.Absyn.Ttype4)
+    {
+       CPP.Absyn.Ttype4 _ttype4 = (CPP.Absyn.Ttype4) foo;
+       if (_i_ > 0) render(_L_PAREN);
+       render("const");
+       pp(_ttype4.type_, 1);
+       render("&");
+       if (_i_ > 0) render(_R_PAREN);
+    }
+    else     if (foo instanceof CPP.Absyn.Tbool)
     {
        CPP.Absyn.Tbool _tbool = (CPP.Absyn.Tbool) foo;
-       if (_i_ > 0) render(_L_PAREN);
+       if (_i_ > 1) render(_L_PAREN);
        render("bool");
-       if (_i_ > 0) render(_R_PAREN);
+       if (_i_ > 1) render(_R_PAREN);
     }
     else     if (foo instanceof CPP.Absyn.Tdouble)
     {
        CPP.Absyn.Tdouble _tdouble = (CPP.Absyn.Tdouble) foo;
-       if (_i_ > 0) render(_L_PAREN);
+       if (_i_ > 1) render(_L_PAREN);
        render("double");
-       if (_i_ > 0) render(_R_PAREN);
+       if (_i_ > 1) render(_R_PAREN);
     }
     else     if (foo instanceof CPP.Absyn.Tint)
     {
        CPP.Absyn.Tint _tint = (CPP.Absyn.Tint) foo;
-       if (_i_ > 0) render(_L_PAREN);
+       if (_i_ > 1) render(_L_PAREN);
        render("int");
-       if (_i_ > 0) render(_R_PAREN);
+       if (_i_ > 1) render(_R_PAREN);
     }
     else     if (foo instanceof CPP.Absyn.Tvoid)
     {
        CPP.Absyn.Tvoid _tvoid = (CPP.Absyn.Tvoid) foo;
-       if (_i_ > 0) render(_L_PAREN);
+       if (_i_ > 1) render(_L_PAREN);
        render("void");
-       if (_i_ > 0) render(_R_PAREN);
+       if (_i_ > 1) render(_R_PAREN);
     }
     else     if (foo instanceof CPP.Absyn.Tid)
     {
        CPP.Absyn.Tid _tid = (CPP.Absyn.Tid) foo;
-       if (_i_ > 0) render(_L_PAREN);
+       if (_i_ > 1) render(_L_PAREN);
        pp(_tid.listid_, 0);
-       if (_i_ > 0) render(_R_PAREN);
+       if (_i_ > 1) render(_R_PAREN);
     }
   }
 
@@ -631,6 +962,29 @@ public class PrettyPrinter
        render("]");
        render(")");
     }
+    if (foo instanceof CPP.Absyn.DFunemp)
+    {
+       CPP.Absyn.DFunemp _dfunemp = (CPP.Absyn.DFunemp) foo;
+       render("(");
+       render("DFunemp");
+       sh(_dfunemp.type_);
+       sh(_dfunemp.id_);
+       render("[");
+       sh(_dfunemp.listarg_);
+       render("]");
+       render(")");
+    }
+    if (foo instanceof CPP.Absyn.DTypedef)
+    {
+       CPP.Absyn.DTypedef _dtypedef = (CPP.Absyn.DTypedef) foo;
+       render("(");
+       render("DTypedef");
+       render("[");
+       sh(_dtypedef.listid_);
+       render("]");
+       sh(_dtypedef.id_);
+       render(")");
+    }
     if (foo instanceof CPP.Absyn.QConuse)
     {
        CPP.Absyn.QConuse _qconuse = (CPP.Absyn.QConuse) foo;
@@ -665,6 +1019,14 @@ public class PrettyPrinter
 
   private static void sh(CPP.Absyn.Arg foo)
   {
+    if (foo instanceof CPP.Absyn.ADeclemp)
+    {
+       CPP.Absyn.ADeclemp _adeclemp = (CPP.Absyn.ADeclemp) foo;
+       render("(");
+       render("ADeclemp");
+       sh(_adeclemp.type_);
+       render(")");
+    }
     if (foo instanceof CPP.Absyn.ADecl)
     {
        CPP.Absyn.ADecl _adecl = (CPP.Absyn.ADecl) foo;
@@ -672,6 +1034,16 @@ public class PrettyPrinter
        render("ADecl");
        sh(_adecl.type_);
        sh(_adecl.id_);
+       render(")");
+    }
+    if (foo instanceof CPP.Absyn.ADeclass)
+    {
+       CPP.Absyn.ADeclass _adeclass = (CPP.Absyn.ADeclass) foo;
+       render("(");
+       render("ADeclass");
+       sh(_adeclass.type_);
+       sh(_adeclass.id_);
+       sh(_adeclass.exp_);
        render(")");
     }
   }
@@ -755,6 +1127,15 @@ public class PrettyPrinter
        render("]");
        render(")");
     }
+    if (foo instanceof CPP.Absyn.SIf)
+    {
+       CPP.Absyn.SIf _sif = (CPP.Absyn.SIf) foo;
+       render("(");
+       render("SIf");
+       sh(_sif.exp_);
+       sh(_sif.stm_);
+       render(")");
+    }
     if (foo instanceof CPP.Absyn.SIfElse)
     {
        CPP.Absyn.SIfElse _sifelse = (CPP.Absyn.SIfElse) foo;
@@ -763,6 +1144,28 @@ public class PrettyPrinter
        sh(_sifelse.exp_);
        sh(_sifelse.stm_1);
        sh(_sifelse.stm_2);
+       render(")");
+    }
+    if (foo instanceof CPP.Absyn.SFor)
+    {
+       CPP.Absyn.SFor _sfor = (CPP.Absyn.SFor) foo;
+       render("(");
+       render("SFor");
+       sh(_sfor.type_);
+       sh(_sfor.id_);
+       sh(_sfor.exp_1);
+       sh(_sfor.exp_2);
+       sh(_sfor.exp_3);
+       sh(_sfor.stm_);
+       render(")");
+    }
+    if (foo instanceof CPP.Absyn.SDoWhile)
+    {
+       CPP.Absyn.SDoWhile _sdowhile = (CPP.Absyn.SDoWhile) foo;
+       render("(");
+       render("SDoWhile");
+       sh(_sdowhile.stm_);
+       sh(_sdowhile.exp_);
        render(")");
     }
   }
@@ -805,6 +1208,14 @@ public class PrettyPrinter
        render("]");
        render(")");
     }
+    if (foo instanceof CPP.Absyn.EChar)
+    {
+       CPP.Absyn.EChar _echar = (CPP.Absyn.EChar) foo;
+       render("(");
+       render("EChar");
+       sh(_echar.char_);
+       render(")");
+    }
     if (foo instanceof CPP.Absyn.EIndex)
     {
        CPP.Absyn.EIndex _eindex = (CPP.Absyn.EIndex) foo;
@@ -843,6 +1254,99 @@ public class PrettyPrinter
        sh(_earrow.id_);
        render(")");
     }
+    if (foo instanceof CPP.Absyn.EPInc)
+    {
+       CPP.Absyn.EPInc _epinc = (CPP.Absyn.EPInc) foo;
+       render("(");
+       render("EPInc");
+       sh(_epinc.exp_);
+       render(")");
+    }
+    if (foo instanceof CPP.Absyn.EPDec)
+    {
+       CPP.Absyn.EPDec _epdec = (CPP.Absyn.EPDec) foo;
+       render("(");
+       render("EPDec");
+       sh(_epdec.exp_);
+       render(")");
+    }
+    if (foo instanceof CPP.Absyn.Einc)
+    {
+       CPP.Absyn.Einc _einc = (CPP.Absyn.Einc) foo;
+       render("(");
+       render("Einc");
+       sh(_einc.exp_);
+       render(")");
+    }
+    if (foo instanceof CPP.Absyn.Edec)
+    {
+       CPP.Absyn.Edec _edec = (CPP.Absyn.Edec) foo;
+       render("(");
+       render("Edec");
+       sh(_edec.exp_);
+       render(")");
+    }
+    if (foo instanceof CPP.Absyn.EDeref)
+    {
+       CPP.Absyn.EDeref _ederef = (CPP.Absyn.EDeref) foo;
+       render("(");
+       render("EDeref");
+       sh(_ederef.exp_);
+       render(")");
+    }
+    if (foo instanceof CPP.Absyn.ENeg)
+    {
+       CPP.Absyn.ENeg _eneg = (CPP.Absyn.ENeg) foo;
+       render("(");
+       render("ENeg");
+       sh(_eneg.exp_);
+       render(")");
+    }
+    if (foo instanceof CPP.Absyn.EMul)
+    {
+       CPP.Absyn.EMul _emul = (CPP.Absyn.EMul) foo;
+       render("(");
+       render("EMul");
+       sh(_emul.exp_1);
+       sh(_emul.exp_2);
+       render(")");
+    }
+    if (foo instanceof CPP.Absyn.EDiv)
+    {
+       CPP.Absyn.EDiv _ediv = (CPP.Absyn.EDiv) foo;
+       render("(");
+       render("EDiv");
+       sh(_ediv.exp_1);
+       sh(_ediv.exp_2);
+       render(")");
+    }
+    if (foo instanceof CPP.Absyn.EMod)
+    {
+       CPP.Absyn.EMod _emod = (CPP.Absyn.EMod) foo;
+       render("(");
+       render("EMod");
+       sh(_emod.exp_1);
+       sh(_emod.exp_2);
+       render(")");
+    }
+    if (foo instanceof CPP.Absyn.EAdd)
+    {
+       CPP.Absyn.EAdd _eadd = (CPP.Absyn.EAdd) foo;
+       render("(");
+       render("EAdd");
+       sh(_eadd.exp_1);
+       sh(_eadd.exp_2);
+       render(")");
+    }
+    if (foo instanceof CPP.Absyn.ESub)
+    {
+       CPP.Absyn.ESub _esub = (CPP.Absyn.ESub) foo;
+       render("(");
+       render("ESub");
+       sh(_esub.exp_1);
+       sh(_esub.exp_2);
+       render(")");
+    }
     if (foo instanceof CPP.Absyn.ELShift)
     {
        CPP.Absyn.ELShift _elshift = (CPP.Absyn.ELShift) foo;
@@ -859,6 +1363,123 @@ public class PrettyPrinter
        render("ERShift");
        sh(_ershift.exp_1);
        sh(_ershift.exp_2);
+       render(")");
+    }
+    if (foo instanceof CPP.Absyn.ELt)
+    {
+       CPP.Absyn.ELt _elt = (CPP.Absyn.ELt) foo;
+       render("(");
+       render("ELt");
+       sh(_elt.exp_1);
+       sh(_elt.exp_2);
+       render(")");
+    }
+    if (foo instanceof CPP.Absyn.EGt)
+    {
+       CPP.Absyn.EGt _egt = (CPP.Absyn.EGt) foo;
+       render("(");
+       render("EGt");
+       sh(_egt.exp_1);
+       sh(_egt.exp_2);
+       render(")");
+    }
+    if (foo instanceof CPP.Absyn.ELteq)
+    {
+       CPP.Absyn.ELteq _elteq = (CPP.Absyn.ELteq) foo;
+       render("(");
+       render("ELteq");
+       sh(_elteq.exp_1);
+       sh(_elteq.exp_2);
+       render(")");
+    }
+    if (foo instanceof CPP.Absyn.EGteq)
+    {
+       CPP.Absyn.EGteq _egteq = (CPP.Absyn.EGteq) foo;
+       render("(");
+       render("EGteq");
+       sh(_egteq.exp_1);
+       sh(_egteq.exp_2);
+       render(")");
+    }
+    if (foo instanceof CPP.Absyn.EEq)
+    {
+       CPP.Absyn.EEq _eeq = (CPP.Absyn.EEq) foo;
+       render("(");
+       render("EEq");
+       sh(_eeq.exp_1);
+       sh(_eeq.exp_2);
+       render(")");
+    }
+    if (foo instanceof CPP.Absyn.ENeq)
+    {
+       CPP.Absyn.ENeq _eneq = (CPP.Absyn.ENeq) foo;
+       render("(");
+       render("ENeq");
+       sh(_eneq.exp_1);
+       sh(_eneq.exp_2);
+       render(")");
+    }
+    if (foo instanceof CPP.Absyn.EConj)
+    {
+       CPP.Absyn.EConj _econj = (CPP.Absyn.EConj) foo;
+       render("(");
+       render("EConj");
+       sh(_econj.exp_1);
+       sh(_econj.exp_2);
+       render(")");
+    }
+    if (foo instanceof CPP.Absyn.EDisj)
+    {
+       CPP.Absyn.EDisj _edisj = (CPP.Absyn.EDisj) foo;
+       render("(");
+       render("EDisj");
+       sh(_edisj.exp_1);
+       sh(_edisj.exp_2);
+       render(")");
+    }
+    if (foo instanceof CPP.Absyn.EAss)
+    {
+       CPP.Absyn.EAss _eass = (CPP.Absyn.EAss) foo;
+       render("(");
+       render("EAss");
+       sh(_eass.exp_1);
+       sh(_eass.exp_2);
+       render(")");
+    }
+    if (foo instanceof CPP.Absyn.EAssp)
+    {
+       CPP.Absyn.EAssp _eassp = (CPP.Absyn.EAssp) foo;
+       render("(");
+       render("EAssp");
+       sh(_eassp.exp_1);
+       sh(_eassp.exp_2);
+       render(")");
+    }
+    if (foo instanceof CPP.Absyn.EAssm)
+    {
+       CPP.Absyn.EAssm _eassm = (CPP.Absyn.EAssm) foo;
+       render("(");
+       render("EAssm");
+       sh(_eassm.exp_1);
+       sh(_eassm.exp_2);
+       render(")");
+    }
+    if (foo instanceof CPP.Absyn.ECond)
+    {
+       CPP.Absyn.ECond _econd = (CPP.Absyn.ECond) foo;
+       render("(");
+       render("ECond");
+       sh(_econd.exp_1);
+       sh(_econd.exp_2);
+       sh(_econd.exp_3);
+       render(")");
+    }
+    if (foo instanceof CPP.Absyn.EThrow)
+    {
+       CPP.Absyn.EThrow _ethrow = (CPP.Absyn.EThrow) foo;
+       render("(");
+       render("EThrow");
+       sh(_ethrow.exp_);
        render(")");
     }
   }
@@ -885,6 +1506,38 @@ public class PrettyPrinter
 
   private static void sh(CPP.Absyn.Type foo)
   {
+    if (foo instanceof CPP.Absyn.Ttype1)
+    {
+       CPP.Absyn.Ttype1 _ttype1 = (CPP.Absyn.Ttype1) foo;
+       render("(");
+       render("Ttype1");
+       sh(_ttype1.type_);
+       render(")");
+    }
+    if (foo instanceof CPP.Absyn.Ttype2)
+    {
+       CPP.Absyn.Ttype2 _ttype2 = (CPP.Absyn.Ttype2) foo;
+       render("(");
+       render("Ttype2");
+       sh(_ttype2.type_);
+       render(")");
+    }
+    if (foo instanceof CPP.Absyn.Ttype3)
+    {
+       CPP.Absyn.Ttype3 _ttype3 = (CPP.Absyn.Ttype3) foo;
+       render("(");
+       render("Ttype3");
+       sh(_ttype3.type_);
+       render(")");
+    }
+    if (foo instanceof CPP.Absyn.Ttype4)
+    {
+       CPP.Absyn.Ttype4 _ttype4 = (CPP.Absyn.Ttype4) foo;
+       render("(");
+       render("Ttype4");
+       sh(_ttype4.type_);
+       render(")");
+    }
     if (foo instanceof CPP.Absyn.Tbool)
     {
        CPP.Absyn.Tbool _tbool = (CPP.Absyn.Tbool) foo;

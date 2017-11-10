@@ -7,12 +7,37 @@ public abstract class Exp implements java.io.Serializable {
     public R visit(CPP.Absyn.EString p, A arg);
     public R visit(CPP.Absyn.EDouble p, A arg);
     public R visit(CPP.Absyn.EQcon p, A arg);
+    public R visit(CPP.Absyn.EChar p, A arg);
     public R visit(CPP.Absyn.EIndex p, A arg);
     public R visit(CPP.Absyn.ECall p, A arg);
     public R visit(CPP.Absyn.EDot p, A arg);
     public R visit(CPP.Absyn.EArrow p, A arg);
+    public R visit(CPP.Absyn.EPInc p, A arg);
+    public R visit(CPP.Absyn.EPDec p, A arg);
+    public R visit(CPP.Absyn.Einc p, A arg);
+    public R visit(CPP.Absyn.Edec p, A arg);
+    public R visit(CPP.Absyn.EDeref p, A arg);
+    public R visit(CPP.Absyn.ENeg p, A arg);
+    public R visit(CPP.Absyn.EMul p, A arg);
+    public R visit(CPP.Absyn.EDiv p, A arg);
+    public R visit(CPP.Absyn.EMod p, A arg);
+    public R visit(CPP.Absyn.EAdd p, A arg);
+    public R visit(CPP.Absyn.ESub p, A arg);
     public R visit(CPP.Absyn.ELShift p, A arg);
     public R visit(CPP.Absyn.ERShift p, A arg);
+    public R visit(CPP.Absyn.ELt p, A arg);
+    public R visit(CPP.Absyn.EGt p, A arg);
+    public R visit(CPP.Absyn.ELteq p, A arg);
+    public R visit(CPP.Absyn.EGteq p, A arg);
+    public R visit(CPP.Absyn.EEq p, A arg);
+    public R visit(CPP.Absyn.ENeq p, A arg);
+    public R visit(CPP.Absyn.EConj p, A arg);
+    public R visit(CPP.Absyn.EDisj p, A arg);
+    public R visit(CPP.Absyn.EAss p, A arg);
+    public R visit(CPP.Absyn.EAssp p, A arg);
+    public R visit(CPP.Absyn.EAssm p, A arg);
+    public R visit(CPP.Absyn.ECond p, A arg);
+    public R visit(CPP.Absyn.EThrow p, A arg);
 
   }
 
