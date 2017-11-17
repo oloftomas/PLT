@@ -11,22 +11,32 @@ newtype Id = Id String deriving (Eq, Ord, Show, Read)
 data Program = Prog [Def]
   deriving (Eq, Ord, Show, Read)
 
-data Def = DFun Type Id [Arg] [Stm] | QConuse [Id]
+data Def
+    = DFun Type Id [Arg] [Stm]
+    | DFunemp Type Id [Arg]
+    | DTypedef [Id] Id
+    | DTypedeft Type Id
+    | DVardeq [TypeN]
+    | QConuse [Id]
   deriving (Eq, Ord, Show, Read)
 
-data Arg = ADecl Type Id
+data Arg = ADeclemp Type | ADecl Type Id | ADeclass Type Id Exp
   deriving (Eq, Ord, Show, Read)
 
 data Stm
     = SExp Exp
     | SDecl Type Id
-    | SDecls Type Id [Id]
-    | SInit Type Id Exp
+    | SDecls Type Id [TypeN]
+    | SInit Type [TypeN]
     | STypedef [Id] Id
+    | STypedeft Type Id
     | SReturn Exp
     | SWhile Exp Stm
     | SBlock [Stm]
+    | SIf Exp Stm
     | SIfElse Exp Stm Stm
+    | SFor Arg Exp Exp Stm
+    | SDoWhile Stm Exp
   deriving (Eq, Ord, Show, Read)
 
 data Exp
@@ -34,15 +44,15 @@ data Exp
     | EString [String]
     | EDouble Double
     | EQcon [Id]
+    | EChar Char
     | EIndex Exp Exp
     | ECall Exp [Exp]
-    | ECalle Exp
     | EDot Exp Exp
-    | EArrow Exp Id
-    | EInc Exp
-    | EDec Exp
-    | EPinc Exp
-    | EPdec Exp
+    | EArrow Exp Exp
+    | EPInc Exp
+    | EPDec Exp
+    | Einc Exp
+    | Edec Exp
     | EDeref Exp
     | ENeg Exp
     | EMul Exp Exp
@@ -52,6 +62,10 @@ data Exp
     | ESub Exp Exp
     | ELShift Exp Exp
     | ERShift Exp Exp
+    | ELt Exp Exp
+    | EGt Exp Exp
+    | ELteq Exp Exp
+    | EGteq Exp Exp
     | EEq Exp Exp
     | ENeq Exp Exp
     | EConj Exp Exp
@@ -60,8 +74,25 @@ data Exp
     | EAssp Exp Exp
     | EAssm Exp Exp
     | ECond Exp Exp Exp
+    | EThrow Exp
   deriving (Eq, Ord, Show, Read)
 
-data Type = Tbool | Tdouble | Tint | Tvoid | Tid [Id]
+data Type
+    = Ttype1 Type
+    | Ttype2 Type
+    | Ttype3 Type
+    | Ttype4 Type
+    | Tbool
+    | Tdouble
+    | Tint
+    | Tvoid
+    | Tid [Id]
+  deriving (Eq, Ord, Show, Read)
+
+data TypeN
+    = Tname1 Id
+    | Tname2 Type Id
+    | Tnameinit1 Id Exp
+    | Tnameinit2 Type Id Exp
   deriving (Eq, Ord, Show, Read)
 

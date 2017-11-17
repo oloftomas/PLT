@@ -5,9 +5,9 @@ public abstract class Stm implements java.io.Serializable {
   public interface Visitor <R,A> {
     public R visit(CPP.Absyn.SExp p, A arg);
     public R visit(CPP.Absyn.SDecl p, A arg);
-    public R visit(CPP.Absyn.SDecls p, A arg);
     public R visit(CPP.Absyn.SInit p, A arg);
     public R visit(CPP.Absyn.STypedef p, A arg);
+    public R visit(CPP.Absyn.STypedeft p, A arg);
     public R visit(CPP.Absyn.SReturn p, A arg);
     public R visit(CPP.Absyn.SWhile p, A arg);
     public R visit(CPP.Absyn.SBlock p, A arg);

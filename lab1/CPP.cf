@@ -15,6 +15,11 @@ terminator 	Stm "" ;
 
 -- typedefs
 DTypedef.	Def ::= "typedef" [Id] Id ";" ;
+DTypedeft.	Def ::= "typedef" Type Id ";" ;
+
+-- variable def
+DVardeq.	Def ::= [TypeN] ";" ;
+--DVarinit.	Def ::= Type Id "=" Exp ";" ;
 
 -- using
 QConuse.	Def ::= "using" [Id] ";" ;
@@ -31,10 +36,11 @@ SExp.		Stm ::= Exp ";" ;
 
 -- Statement (declaration)
 SDecl. 		Stm ::= Type Id ";" ;
-SDecls.		Stm ::= Type Id "," [Id] ";" ;
-SInit. 		Stm ::= Type Id "=" Exp ";" ;
+SDecls.		Stm ::= Type Id "," [TypeN] ";" ;
+SInit. 		Stm ::= Type [TypeN] ";" ;
 
-STypedef.	Stm ::= "typedef" [Id] Id";" ;
+STypedef.	Stm ::= "typedef" [Id] Id ";" ;
+STypedeft.	Stm ::= "typedef" Type Id ";" ;
 
 -- Statemens (return, while, block, ifelse)
 SReturn. 	Stm ::= "return" Exp ";" ;
@@ -42,7 +48,7 @@ SWhile.		Stm ::= "while" "(" Exp ")" Stm ;
 SBlock. 	Stm ::= "{" [Stm] "}" ;
 SIf.		Stm ::= "if" "(" Exp ")" Stm ;
 SIfElse.	Stm ::= "if" "(" Exp ")" Stm "else" Stm ;
-SFor.		Stm ::= "for" "(" Type Id "=" Exp ";" Exp ";" Exp ")" Stm ;
+SFor.		Stm ::= "for" "(" Arg ";" Exp ";" Exp ")" Stm ;
 SDoWhile.	Stm ::= "do" Stm "while" "(" Exp ")" ";" ;
 
 
@@ -57,7 +63,7 @@ EChar.		Exp15 ::= Char ;
 EIndex.		Exp14 ::= Exp14 "[" Exp "]" ;
 ECall. 		Exp14 ::= Exp14 "(" [Exp] ")" ;
 EDot.		Exp13 ::= Exp13 "." Exp14 ;
-EArrow. 	Exp13 ::= Exp13 "->" Id ;
+EArrow. 	Exp13 ::= Exp13 "->" Exp14 ;
 
 EPInc.		Exp13 ::= Exp13 "++" ;
 EPDec.		Exp13 ::= Exp13 "--" ;
@@ -115,6 +121,14 @@ Tint.		Type1 ::= "int" ;
 Tvoid.		Type1 ::= "void" ;
 Tid.		Type1 ::= [Id] ;
 
+Tname1.		TypeN ::= Id ;
+Tname2.		TypeN ::= Type Id;
+Tnameinit1.	TypeN ::= Id "=" Exp ;
+Tnameinit2.	TypeN ::= Type Id "=" Exp ;
+
+separator nonempty TypeN "," ;
+
 -- Id
 token Id (letter (letter | digit | '_')*) ;
 separator nonempty Id "::" ;
+

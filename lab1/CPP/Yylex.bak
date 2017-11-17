@@ -61,17 +61,18 @@ IDENT = ({LETTER}|{DIGIT}|['_])
 <YYINITIAL>:: { return new Symbol(sym._SYMB_34); }
 <YYINITIAL>bool { return new Symbol(sym._SYMB_35); }
 <YYINITIAL>const { return new Symbol(sym._SYMB_36); }
-<YYINITIAL>double { return new Symbol(sym._SYMB_37); }
-<YYINITIAL>else { return new Symbol(sym._SYMB_38); }
-<YYINITIAL>for { return new Symbol(sym._SYMB_39); }
-<YYINITIAL>if { return new Symbol(sym._SYMB_40); }
-<YYINITIAL>int { return new Symbol(sym._SYMB_41); }
-<YYINITIAL>return { return new Symbol(sym._SYMB_42); }
-<YYINITIAL>throw { return new Symbol(sym._SYMB_43); }
-<YYINITIAL>typedef { return new Symbol(sym._SYMB_44); }
-<YYINITIAL>using { return new Symbol(sym._SYMB_45); }
-<YYINITIAL>void { return new Symbol(sym._SYMB_46); }
-<YYINITIAL>while { return new Symbol(sym._SYMB_47); }
+<YYINITIAL>do { return new Symbol(sym._SYMB_37); }
+<YYINITIAL>double { return new Symbol(sym._SYMB_38); }
+<YYINITIAL>else { return new Symbol(sym._SYMB_39); }
+<YYINITIAL>for { return new Symbol(sym._SYMB_40); }
+<YYINITIAL>if { return new Symbol(sym._SYMB_41); }
+<YYINITIAL>int { return new Symbol(sym._SYMB_42); }
+<YYINITIAL>return { return new Symbol(sym._SYMB_43); }
+<YYINITIAL>throw { return new Symbol(sym._SYMB_44); }
+<YYINITIAL>typedef { return new Symbol(sym._SYMB_45); }
+<YYINITIAL>using { return new Symbol(sym._SYMB_46); }
+<YYINITIAL>void { return new Symbol(sym._SYMB_47); }
+<YYINITIAL>while { return new Symbol(sym._SYMB_48); }
 <YYINITIAL>"#"[^\n]*\n { /* skip */ }
 <YYINITIAL>"//"[^\n]*\n { /* skip */ }
 <YYINITIAL>"/*" { yybegin(COMMENT); }
@@ -80,6 +81,7 @@ IDENT = ({LETTER}|{DIGIT}|['_])
 <COMMENT>[\n] { /* skip */ }
 
 <YYINITIAL>{LETTER}({LETTER}|{DIGIT}|_)* { return new Symbol(sym.Id, yytext().intern()); }
+<YYINITIAL>{LETTER}({LETTER}|{DIGIT}|_)* { return new Symbol(sym.Name, yytext().intern()); }
 <YYINITIAL>"\"" { yybegin(STRING); }
 <STRING>\\ { yybegin(ESCAPED); }
 <STRING>\" { String foo = pstring; pstring = new String(); yybegin(YYINITIAL); return new Symbol(sym._STRING_, foo.intern()); }

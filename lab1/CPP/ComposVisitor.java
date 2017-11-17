@@ -9,7 +9,8 @@ public class ComposVisitor<A> implements
   CPP.Absyn.Arg.Visitor<CPP.Absyn.Arg,A>,
   CPP.Absyn.Stm.Visitor<CPP.Absyn.Stm,A>,
   CPP.Absyn.Exp.Visitor<CPP.Absyn.Exp,A>,
-  CPP.Absyn.Type.Visitor<CPP.Absyn.Type,A>
+  CPP.Absyn.Type.Visitor<CPP.Absyn.Type,A>,
+  CPP.Absyn.Typen.Visitor<CPP.Absyn.Typen,A>
 {
 /* Program */
     public Program visit(CPP.Absyn.Prog p, A arg)
@@ -52,6 +53,25 @@ public class ComposVisitor<A> implements
       ListId listid_ = p.listid_;
       String id_ = p.id_;
       return new CPP.Absyn.DTypedef(listid_, id_);
+    }    public Def visit(CPP.Absyn.DTypedeft p, A arg)
+    {
+      Type type_ = p.type_.accept(this, arg);
+      String id_ = p.id_;
+      return new CPP.Absyn.DTypedeft(type_, id_);
+    }    public Def visit(CPP.Absyn.DVardeq p, A arg)
+    {
+      ListTypen listtypen_ = new ListTypen();
+      for (Typen x : p.listtypen_)
+      {
+        listtypen_.add(x.accept(this,arg));
+      }
+      return new CPP.Absyn.DVardeq(listtypen_);
+    }    public Def visit(CPP.Absyn.DVarass p, A arg)
+    {
+      Type type_ = p.type_.accept(this, arg);
+      String id_ = p.id_;
+      Exp exp_ = p.exp_.accept(this, arg);
+      return new CPP.Absyn.DVarass(type_, id_, exp_);
     }    public Def visit(CPP.Absyn.QConuse p, A arg)
     {
       ListId listid_ = p.listid_;
@@ -81,15 +101,12 @@ public class ComposVisitor<A> implements
       return new CPP.Absyn.SExp(exp_);
     }    public Stm visit(CPP.Absyn.SDecl p, A arg)
     {
-      Type type_ = p.type_.accept(this, arg);
-      String id_ = p.id_;
-      return new CPP.Absyn.SDecl(type_, id_);
-    }    public Stm visit(CPP.Absyn.SDecls p, A arg)
-    {
-      Type type_ = p.type_.accept(this, arg);
-      String id_ = p.id_;
-      ListId listid_ = p.listid_;
-      return new CPP.Absyn.SDecls(type_, id_, listid_);
+      ListTypen listtypen_ = new ListTypen();
+      for (Typen x : p.listtypen_)
+      {
+        listtypen_.add(x.accept(this,arg));
+      }
+      return new CPP.Absyn.SDecl(listtypen_);
     }    public Stm visit(CPP.Absyn.SInit p, A arg)
     {
       Type type_ = p.type_.accept(this, arg);
@@ -101,6 +118,11 @@ public class ComposVisitor<A> implements
       ListId listid_ = p.listid_;
       String id_ = p.id_;
       return new CPP.Absyn.STypedef(listid_, id_);
+    }    public Stm visit(CPP.Absyn.STypedeft p, A arg)
+    {
+      Type type_ = p.type_.accept(this, arg);
+      String id_ = p.id_;
+      return new CPP.Absyn.STypedeft(type_, id_);
     }    public Stm visit(CPP.Absyn.SReturn p, A arg)
     {
       Exp exp_ = p.exp_.accept(this, arg);
@@ -131,13 +153,11 @@ public class ComposVisitor<A> implements
       return new CPP.Absyn.SIfElse(exp_, stm_1, stm_2);
     }    public Stm visit(CPP.Absyn.SFor p, A arg)
     {
-      Type type_ = p.type_.accept(this, arg);
-      String id_ = p.id_;
+      Arg arg_ = p.arg_.accept(this, arg);
       Exp exp_1 = p.exp_1.accept(this, arg);
       Exp exp_2 = p.exp_2.accept(this, arg);
-      Exp exp_3 = p.exp_3.accept(this, arg);
       Stm stm_ = p.stm_.accept(this, arg);
-      return new CPP.Absyn.SFor(type_, id_, exp_1, exp_2, exp_3, stm_);
+      return new CPP.Absyn.SFor(arg_, exp_1, exp_2, stm_);
     }    public Stm visit(CPP.Absyn.SDoWhile p, A arg)
     {
       Stm stm_ = p.stm_.accept(this, arg);
@@ -347,5 +367,16 @@ public class ComposVisitor<A> implements
     {
       ListId listid_ = p.listid_;
       return new CPP.Absyn.Tid(listid_);
+    }
+/* Typen */
+    public Typen visit(CPP.Absyn.Tname p, A arg)
+    {
+      String id_ = p.id_;
+      return new CPP.Absyn.Tname(id_);
+    }    public Typen visit(CPP.Absyn.Tnames p, A arg)
+    {
+      Type type_ = p.type_.accept(this, arg);
+      String id_ = p.id_;
+      return new CPP.Absyn.Tnames(type_, id_);
     }
 }

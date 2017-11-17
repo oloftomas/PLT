@@ -18,36 +18,46 @@ transProgram x = case x of
 transDef :: Def -> Result
 transDef x = case x of
   DFun type_ id args stms -> failure x
+  DFunemp type_ id args -> failure x
+  DTypedef ids id -> failure x
+  DTypedeft type_ id -> failure x
+  DVardeq typens -> failure x
   QConuse ids -> failure x
 transArg :: Arg -> Result
 transArg x = case x of
+  ADeclemp type_ -> failure x
   ADecl type_ id -> failure x
+  ADeclass type_ id exp -> failure x
 transStm :: Stm -> Result
 transStm x = case x of
   SExp exp -> failure x
   SDecl type_ id -> failure x
-  SDecls type_ id ids -> failure x
-  SInit type_ id exp -> failure x
+  SDecls type_ id typens -> failure x
+  SInit type_ typens -> failure x
   STypedef ids id -> failure x
+  STypedeft type_ id -> failure x
   SReturn exp -> failure x
   SWhile exp stm -> failure x
   SBlock stms -> failure x
+  SIf exp stm -> failure x
   SIfElse exp stm1 stm2 -> failure x
+  SFor arg exp1 exp2 stm -> failure x
+  SDoWhile stm exp -> failure x
 transExp :: Exp -> Result
 transExp x = case x of
   EInt integer -> failure x
   EString strings -> failure x
   EDouble double -> failure x
   EQcon ids -> failure x
+  EChar char -> failure x
   EIndex exp1 exp2 -> failure x
   ECall exp exps -> failure x
-  ECalle exp -> failure x
   EDot exp1 exp2 -> failure x
-  EArrow exp id -> failure x
-  EInc exp -> failure x
-  EDec exp -> failure x
-  EPinc exp -> failure x
-  EPdec exp -> failure x
+  EArrow exp1 exp2 -> failure x
+  EPInc exp -> failure x
+  EPDec exp -> failure x
+  Einc exp -> failure x
+  Edec exp -> failure x
   EDeref exp -> failure x
   ENeg exp -> failure x
   EMul exp1 exp2 -> failure x
@@ -57,6 +67,10 @@ transExp x = case x of
   ESub exp1 exp2 -> failure x
   ELShift exp1 exp2 -> failure x
   ERShift exp1 exp2 -> failure x
+  ELt exp1 exp2 -> failure x
+  EGt exp1 exp2 -> failure x
+  ELteq exp1 exp2 -> failure x
+  EGteq exp1 exp2 -> failure x
   EEq exp1 exp2 -> failure x
   ENeq exp1 exp2 -> failure x
   EConj exp1 exp2 -> failure x
@@ -65,11 +79,22 @@ transExp x = case x of
   EAssp exp1 exp2 -> failure x
   EAssm exp1 exp2 -> failure x
   ECond exp1 exp2 exp3 -> failure x
+  EThrow exp -> failure x
 transType :: Type -> Result
 transType x = case x of
+  Ttype1 type_ -> failure x
+  Ttype2 type_ -> failure x
+  Ttype3 type_ -> failure x
+  Ttype4 type_ -> failure x
   Tbool -> failure x
   Tdouble -> failure x
   Tint -> failure x
   Tvoid -> failure x
   Tid ids -> failure x
+transTypeN :: TypeN -> Result
+transTypeN x = case x of
+  Tname1 id -> failure x
+  Tname2 type_ id -> failure x
+  Tnameinit1 id exp -> failure x
+  Tnameinit2 type_ id exp -> failure x
 
