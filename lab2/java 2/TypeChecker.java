@@ -6,9 +6,10 @@ public class TypeChecker {
 
     public void typecheck(Program p) {
         /*	
-
         	PASS 1
 			
+			PDefs pd = p.accept();
+
 			foreach in p
 				add all functions to signature list:
 					implement program visitor
@@ -21,28 +22,59 @@ public class TypeChecker {
         */
 		Env env = new Env();
 
+		// build symbol table
+		env.signature = p.accept(new ProgramVisitor(), null);
+
+
     }
 
-    // Program visitor, dont know about <Def,Env>
-    public class ProgramVisitor implements Program.Visitor<Def,Env> {
-    	public Def visit(PDefs p, Env env) {
+    // Program visitor
+    public class ProgramVisitor implements Program.Visitor<Map<String,FunType>,Object> {
+    	public Map<String,FunType> visit(PDefs p, Object o) {
+    		Map<String,FunType> sigMap = new HashMap<String,FunType>();
+    		SigElement temp;
+    		int i = 0;
     		for (Def x : p.listdef_) {
-
+    			temp = x.accept(new DefVisitor(), null);
+    			sigMap.put(temp.id, temp.funType);
     		}
-    		return null;
+    		return sigMap;
     	}
     }
 
-    // Def visitor, dont know about <Env,Env>
-    public class DefVisitor implements Def.Visitor<Env,Env> {
-    	// create FunType objs
-    	public Env visit(DFun p, Env env) {
-    		p.type_.accept(new TypeVisitor<TypeCode,Type>(), env);
-
+    // Def visitor
+    public class DefVisitor implements Def.Visitor<SigElement,Object> {
+    	public SigElement visit(DFun p, Object o) {
     		
+    		LinkedList<Type> argTypeList = new LinkedList<Type>();
+    		for (Arg a : p.listarg_) {
+    			argTypeList.push(a.accept(new ArgVisitor(), null));
+    		}
+
+    		// create FunType obj
+    		FunType ft = new FunType(argTypeList, p.type_);
+
+    		SigElement sigElem = new SigElement();
+    		sigElem.id = p.id_;
+    		sigElem.funType = ft;
+
+    		return sigElem;
     	}
     }
 
+    // Help class for (String,FunType) tuple
+    public class SigElement {
+    	public String id;
+    	public FunType funType;
+    }
+
+    public class ArgVisitor implements Arg.Visitor<Type,Object> {
+    	public Type visit(ADecl p, Object o) {
+    		return p.type_;
+    	}
+    }
+
+/*
     // Checking statements, copied from book
     public class CheckStm implements Stm.Visitor<Env,Env> {
     	public Env visit(SDecls p, Env env) {
@@ -81,7 +113,6 @@ public class TypeChecker {
     	public Type visit(EDouble p, Env env) {
 
     	}
-
     	// ...
 
     }
@@ -89,21 +120,22 @@ public class TypeChecker {
  
     public class TypeVisitor implements Type.Visitor<TypeCode,Type> {
     	public TypeCode visit(Type_bool p, Type ty) {
-    		return TypeCode.CBool;
+
     	}
 
     	public TypeCode visit(Type_int p, Type ty) {
-    		return TypeCode.CInt;
+    		
     	}
 
     	public TypeCode visit(Type_double p, Type ty) {
-    		return TypeCode.CDouble;
+    		
     	}
 
     	public TypeCode visit(Type_void p, Type ty) {
-    		return TypeCode.CVoid;
+    		
     	}    	
     }
+*/
     /*
     public static TypeCode typeCode(Type ty) {
 		if (ty.equals(new Type_int())) {
@@ -120,13 +152,13 @@ public class TypeChecker {
 	*/
 
     // Function Type
-    // WHEN CREATED?
     public static class FunType {
     	public LinkedList<Type> args;
     	public Type val;
 
-    	FunType() {
-
+    	FunType(LinkedList<Type> tlist, Type ty) {
+    		args = tlist;
+    		val = ty;
     	}
 
     }
@@ -135,13 +167,12 @@ public class TypeChecker {
     // in pass 1 : Add ALL function defs to sig by using update meths
     // in pass 2 : use Env but remove contexts that are out of scope
     public static class Env {
-    	public Map<String, FunType> signature;
-    	public LinkedList<Map<String,Type>> contexts;
+    	public static Map<String, FunType> signature;
+    	public static LinkedList<Map<String,Type>> contexts;
 
     	// Constructor
     	public Env() {
-    		signature.clear();
-    		contexts.clear();
+
     	}
 
     	/* int main() { 
@@ -154,7 +185,7 @@ public class TypeChecker {
 
 
     	public static Type lookVar(String id) {
-    		return null;	 
+    		return null;
     	}
 
     	public static FunType lookFun(String id) {
