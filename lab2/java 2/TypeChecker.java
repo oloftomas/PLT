@@ -12,7 +12,7 @@ public class TypeChecker {
 			foreach in p
 				add all functions to signature list:
 					implement program visitor
-					also def visitor
+					and def visitor
 
 
 			PASS 2
@@ -23,18 +23,28 @@ public class TypeChecker {
 
     }
 
-    public static class ProgramVisitor implements Program.Visitor<Env,Env> {
-    	public Env visit(PDefs p, Env env) {
+    // Program visitor, dont know about <Def,Env>
+    public class ProgramVisitor implements Program.Visitor<Def,Env> {
+    	public Def visit(PDefs p, Env env) {
+    		for (Def x : p.listdef_) {
 
+    		}
+    		return null;
     	}
     }
 
-    public static class DefVisitor implements Def.Visitor<,> {
-    	// create FunType obj
+    // Def visitor, dont know about <Env,Env>
+    public class DefVisitor implements Def.Visitor<Env,Env> {
+    	// create FunType objs
+    	public Env visit(DFun p, Env env) {
+    		p.type_.accept(new TypeVisitor<TypeCode,Type>(), env);
+
+    		
+    	}
     }
 
-    // Checking statements
-    public static class CheckStm implements Stm.Visitor<Env,Env> {
+    // Checking statements, copied from book
+    public class CheckStm implements Stm.Visitor<Env,Env> {
     	public Env visit(SDecls p, Env env) {
     		env.updateVar(p.id_, p.type_);
     		return env;
@@ -76,9 +86,23 @@ public class TypeChecker {
 
     }
 
-    
-    public static class TypeVisitor implements Type.Visitor<,> {
+ 
+    public class TypeVisitor implements Type.Visitor<TypeCode,Type> {
+    	public TypeCode visit(Type_bool p, Type ty) {
+    		return TypeCode.CBool;
+    	}
 
+    	public TypeCode visit(Type_int p, Type ty) {
+    		return TypeCode.CInt;
+    	}
+
+    	public TypeCode visit(Type_double p, Type ty) {
+    		return TypeCode.CDouble;
+    	}
+
+    	public TypeCode visit(Type_void p, Type ty) {
+    		return TypeCode.CVoid;
+    	}    	
     }
     /*
     public static TypeCode typeCode(Type ty) {
@@ -130,7 +154,7 @@ public class TypeChecker {
 
 
     	public static Type lookVar(String id) {
-    		 
+    		return null;	 
     	}
 
     	public static FunType lookFun(String id) {
