@@ -7,25 +7,15 @@ public class TypeChecker {
 	private Map<String,FunType> signature;
 	private List<Map<String,Type>> contexts;
 
+	private Type returnType;
+
+	public final Type BOOL   = new Type_bool();
+	public final Type INT    = new Type_int();
+	public final Type DOUBLE = new Type_double();
+	public final Type VOID   = new Type_void();
+
     public void typecheck(Program p) {
-        /*	
-        	PASS 1
-			
-			PDefs pd = p.accept();
-
-			foreach in p
-				add all functions to signature list:
-					implement program visitor
-					and def visitor
-
-
-			PASS 2
-			implement ALL visitors down to Exp
-			do checkerino
-        */
-
-		// build symbol table
-		//env.signature = p.accept(new ProgramVisitor(), null);
+		// build symbol table and check program
 		p.accept(new ProgramVisitor(), null);
 
     }
@@ -37,20 +27,33 @@ public class TypeChecker {
 
     		// TODO add primitive functions (printInt, printDouble etc)
 
-    		// Add all defs to signature
+    		// Build symbol table
     		for (Def d : p.listdef_) {
     			d.accept(new DefToSigVisitor(), null);
     		}
 
+    		// Check for main function
+    		FunType ft = signature.get("main");
+    		if (ft == null) {
+    			throw new TypeException("function main undefined");
+    		}
+    		if (!ft.retType.equals(INT)) {
+    			throw new TypeException("function main should return int");
+    		}
+    		if (!ft.args.isEmpty()) {
+    			throw new TypeException("function main does not take arguments");
+    		}
+
     		// Check definitions
     		for (Def d : p.listdef_) {
-    			//d.accept(new DefVisitor(), null);
+    			d.accept(new DefVisitor(), null);
     		}
 
     		return null;
     	}
     }
 
+    // Def visitor for adding to signature
     public class DefToSigVisitor implements Def.Visitor<Object,Object> {
     	public Object visit(DFun p, Object o) {
     		// check in function is already defined
@@ -66,24 +69,23 @@ public class TypeChecker {
     }
 
     // Def visitor
-    public class DefVisitor implements Def.Visitor<SigElement,Object> {
-    	public SigElement visit(DFun p, Object o) {
+    public class DefVisitor implements Def.Visitor<Object,Object> {
+    	public Object visit(DFun p, Object o) {
     		
-    		// reimplement whole thing but update signature throughout
-    		// and not with only returns
-    		if (signature.containsKey(p.id_)) {
-    			throw new TypeException("function " + p.id_ + " already declared");
-    		}
+    		// set return type and context
+    		returnType = p.type_;
+    		contexts = new LinkedList();
+    		contexts.add(new HashMap());
 
-    		LinkedList<Type> argTypeList = new LinkedList<Type>();
+    		// add arguments to context
     		for (Arg a : p.listarg_) {
-    			argTypeList.push(a.accept(new ArgVisitor(), null));
+    			a.accept(new ArgVisitor(), null);
     		}
 
-    		// create FunType obj
-    		//FunType ft = new FunType(argTypeList, p.type_);
-
-    		//SigElement sigElem = new SigElement(p.id_, ft);
+    		// check function statements
+    		for (Stm s : p.liststm_) {
+    			s.accept(new StmVisitor(), null);
+    		}
 
     		return null;
     	}
@@ -100,126 +102,248 @@ public class TypeChecker {
     	}
     }
 
-    // Help class for (String,FunType) tuple
-    public class SigElement {
-    	final String id;
-    	final FunType funType;
+    // Argument Visitor
+    public class ArgVisitor implements Arg.Visitor<Object,Object> {
+    	public Object visit(ADecl p, Object o) {
+    		newVar(p.id_, p.type_);
 
-    	public SigElement(String s, FunType ft) {
-    		id = s;
-    		funType = ft;
+    		return null;
     	}
     }
 
-    public class ArgVisitor implements Arg.Visitor<Type,Object> {
-    	public Type visit(ADecl p, Object o) {
-    		return p.type_;
+    // Statement Visitor
+    public class StmVisitor implements Stm.Visitor<Object,Object> {
+    	public Object visit(SExp p, Object o) {
+    		p.exp_.accept(new ExpVisitor(), null);
+    		return null;
+    	}
+    	public Object visit(SDecls p, Object o) {
+    		return null;	
+    	}
+    	public Object visit(SInit p, Object o) {
+    		Type t = p.exp_.accept(new ExpVisitor(), null);
+    		check(p.type_, t);
+    		newVar(p.id_, p.type_);
+    		return null;
+    		
+    	}
+    	public Object visit(SReturn p, Object o) {
+    		return null;
+    	}
+    	public Object visit(SWhile p, Object o) {
+    		return null;
+    	}
+    	public Object visit(SBlock p, Object o) {
+    		return null;
+    	}
+    	public Object visit(SIfElse p, Object o) {
+    		return null;
     	}
     }
 
-/*
-    // Checking statements, copied from book
-    public class CheckStm implements Stm.Visitor<Env,Env> {
-    	public Env visit(SDecls p, Env env) {
-    		env.updateVar(p.id_, p.type_);
-    		return env;
+    // Expression Visitor
+    public class ExpVisitor implements Exp.Visitor<Type,Object> {
+    	// Literals
+    	public Type visit(ETrue p, Object o) {
+    		return BOOL;
+    	}
+    	public Type visit(EFalse p, Object o) {
+    		return BOOL;
+    	}
+    	public Type visit(EInt p, Object o) {
+    		return INT;
+    	}
+    	public Type visit(EDouble p, Object o) {
+    		return DOUBLE;
+    	}
+    	public Type visit(EId p, Object o) {
+    		return lookupVar(p.id_);
     	}
 
-    	public Env visit(SExp p, Env env) {
-    		inferExp(p.exp_, env);
-    		return env;
+    	// Function call
+    	public Type visit(EApp p, Object o) {
+    		//Check if function is defined
+    		FunType ft = signature.get(p.id_);
+    		if (ft == null) {
+    			throw new TypeException("undefined function " + p.id_);
+    		}
+
+    		if (ft.args.size() != p.listexp_.size()) {
+    			throw new TypeException("Function " + p.id_ + " does not have correct number of arguments");
+    		}
+
+    		int i = 0;
+    		for (Exp e : p.listexp_) {
+    			ADecl a = (ADecl)(ft.args.get(i));
+    			check(a.type_, e.accept(new ExpVisitor(), null));
+    			i++;
+    		}
+    		return ft.retType;
     	}
 
-    	public Env visit(SInit p, Env env) {
-    		
+    	// Arithmetics and comparison
+    	public Type visit(EPostIncr p, Object o) {
+    		return isNumType(lookupVar(p.id_));
+    	}
+    	public Type visit(EPostDecr p, Object o) {
+    		return isNumType(lookupVar(p.id_));
+    	}
+    	public Type visit(EPreIncr p, Object o) {
+    		return isNumType(lookupVar(p.id_));	
+    	}
+    	public Type visit(EPreDecr p, Object o) {
+    		return isNumType(lookupVar(p.id_));
+    	}
+    	public Type visit(ETimes p, Object o) {
+			return isEqualTypes(isNumType(p.exp_1.accept(this, null)),
+								isNumType(p.exp_2.accept(this, null)));
+    	}
+    	public Type visit(EDiv p, Object o) {
+    		return isEqualTypes(isNumType(p.exp_1.accept(this, null)),
+								isNumType(p.exp_2.accept(this, null)));
+    	}
+    	public Type visit(EPlus p, Object o) {
+    		return isEqualTypes(isNumType(p.exp_1.accept(this, null)),
+								isNumType(p.exp_2.accept(this, null)));
+    	}
+    	public Type visit(EMinus p, Object o) {
+    		return isEqualTypes(isNumType(p.exp_1.accept(this, null)),
+								isNumType(p.exp_2.accept(this, null)));
     	}
 
-    	//...
-    }
+    	public Type visit(ELt p, Object o) {
+    		Type t1 = isNumType(p.exp_1.accept(this, null));
+    		Type t2 = isNumType(p.exp_2.accept(this, null));
 
-    // Check Exp class or use infer smart...
+    		Type dummy = isEqualTypes(t1,t2);
+    		return BOOL;
+    	}
+    	public Type visit(EGt p, Object o) {
+    		Type t1 = isNumType(p.exp_1.accept(this, null));
+    		Type t2 = isNumType(p.exp_2.accept(this, null));
 
-    // Infering Expressions 
-    public static class InferExp implements Exp.Visitor<Type,Env> {
-    	public Type visit(ETrue p, Env env) {
+    		Type dummy = isEqualTypes(t1,t2);
+    		return BOOL;
+    	}
+    	public Type visit(ELtEq p, Object o) {
+    		Type t1 = isNumType(p.exp_1.accept(this, null));
+    		Type t2 = isNumType(p.exp_2.accept(this, null));
 
+    		Type dummy = isEqualTypes(t1,t2);
+    		return BOOL;
+    	}
+    	public Type visit(EGtEq p, Object o) {
+    		Type t1 = isNumType(p.exp_1.accept(this, null));
+    		Type t2 = isNumType(p.exp_2.accept(this, null));
+
+    		Type dummy = isEqualTypes(t1,t2);
+    		return BOOL;
     	}
 
-    	public Type visit(EFalse p, Env env) {
+    	// Equality/inequality
+    	public Type visit(EEq p, Object o) {
+    		Type t1 = p.exp_1.accept(this, null);
+    		Type t2 = p.exp_2.accept(this, null);
 
+    		if (!isEqualTypes(t1,t2).equals(VOID)) {
+    			return BOOL;
+    		}
+    		throw new TypeException("Equality cannot operate on void");
+    	}
+    	public Type visit(ENEq p, Object o) {
+    		Type t1 = p.exp_1.accept(this, null);
+    		Type t2 = p.exp_2.accept(this, null);
+
+    		if (!isEqualTypes(t1,t2).equals(VOID)) {
+    			return BOOL;
+    		}
+    		throw new TypeException("Inequality cannot operate on void");
     	}
 
-    	public Type visit(EInt p, Env env) {
-    		
+    	// Logic
+    	public Type visit(EAnd p, Object o) {
+    		Type t1 = p.exp_1.accept(this, null);
+    		Type t2 = p.exp_2.accept(this, null);
+
+    		check(BOOL,t1);
+    		check(BOOL,t2);
+
+    		return isEqualTypes(t1,t2);
+    	}
+    	public Type visit(EOr p, Object o) {
+    		Type t1 = p.exp_1.accept(this, null);
+    		Type t2 = p.exp_2.accept(this, null);
+
+    		check(BOOL,t1);
+    		check(BOOL,t2);
+
+    		return isEqualTypes(t1,t2);
     	}
 
-    	public Type visit(EDouble p, Env env) {
-
-    	}
-    	// ...
-
-    }
-
- 
-    public class TypeVisitor implements Type.Visitor<TypeCode,Type> {
-    	public TypeCode visit(Type_bool p, Type ty) {
-
-    	}
-
-    	public TypeCode visit(Type_int p, Type ty) {
-    		
-    	}
-
-    	public TypeCode visit(Type_double p, Type ty) {
-    		
-    	}
-
-    	public TypeCode visit(Type_void p, Type ty) {
-    		
-    	}    	
-    }
-*/
-
-    // Environment class
-    // in pass 1 : Add ALL function defs to sig by using update meths
-    // in pass 2 : use Env but remove contexts that are out of scope
-
-    /*
-    public static class Env {
-    	public static Map<String, FunType> signature;
-    	public static LinkedList<Map<String,Type>> contexts;
-
-    	// Constructor
-    	public Env() {
-
-    	}
-
-    	public static Type lookVar(String id) {
+    	public Type visit(EAss p, Object o) {
     		return null;
     	}
 
-    	public static FunType lookFun(String id) {
-    		if (signature.containsKey(id)) {
-    			return signature.get(id);
-    		} else {
-    			throw new TypeException("Function " + id + " does not exist");
+    }
+
+    // Add variable to context
+    public void newVar(String id, Type ty) {
+    	// Get top context block
+    	Map<String,Type> m = contexts.get(0);
+
+    	// Check if variable is already declared
+    	if (m.containsKey(id)) {
+    		throw new TypeException("var " + id + " is already declared in this scope");
+    	}
+    	m.put(id,ty);
+    }
+
+    // Add new top block to contexts
+    public void newBlock() {
+    	contexts.add(0, new HashMap());
+    }
+
+    // Remove top block from contexts
+    public void popBlock() {
+    	contexts.remove(0);
+    }
+
+    public Type lookupVar(String id) {
+    	for (Map<String,Type> m : contexts) {
+    		Type t = m.get(id);
+    		if (t != null) {
+    			return t;
     		}
     	}
+    	throw new TypeException("unbound variable " + id);
+    }
 
-    	public static void updateVar(String id, Type ty) {
-
-    	}
-
-    	public static void updateFun(String id, FunType ft) {
-    		if (!signature.containsKey(id)) {
-    			signature.put(id,ft);
-    		} else {
-    			throw new TypeException("Function " + id + " does not exist");
-    		}
+    public String isVar(Exp e) {
+    	if (e instanceof EId) {
+    		return ((EId)e).id_;
+    	} else {
+    		throw new TypeException("expected variable, found " + e);
     	}
     }
-	*/
-    // TypeCode for type comparisson
-    public static enum TypeCode { CInt, CDouble, CBool, CVoid }
+
+    public void check(Type t, Type u) {
+    	if (!t.equals(u)) {
+    		throw new TypeException("Expected type " + t + " but found type " + u);
+    	}
+    }
+
+    public Type isNumType(Type t) {
+    	if (!t.equals(INT) && !t.equals(DOUBLE)) {
+    		throw new TypeException("expected expression of numeric type");
+    	}
+    	return t;
+    }
+
+    public Type isEqualTypes(Type t, Type u) {
+    	if (!t.equals(u)) {
+    		throw new TypeException("expected types " + t + " and " + u + " to be equal");
+    	}
+    	return t;
+    }
 
 }
