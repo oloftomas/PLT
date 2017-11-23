@@ -4,6 +4,9 @@ import java.io.*;
 
 public class TypeChecker {
 
+	private Map<String,FunType> signature;
+	private List<Map<String,Type>> contexts;
+
     public void typecheck(Program p) {
         /*	
         	PASS 1
@@ -20,25 +23,45 @@ public class TypeChecker {
 			implement ALL visitors down to Exp
 			do checkerino
         */
-		Env env = new Env();
 
 		// build symbol table
-		env.signature = p.accept(new ProgramVisitor(), null);
-
+		//env.signature = p.accept(new ProgramVisitor(), null);
+		p.accept(new ProgramVisitor(), null);
 
     }
 
     // Program visitor
-    public class ProgramVisitor implements Program.Visitor<Map<String,FunType>,Object> {
-    	public Map<String,FunType> visit(PDefs p, Object o) {
-    		Map<String,FunType> sigMap = new HashMap<String,FunType>();
-    		SigElement temp;
-    		int i = 0;
-    		for (Def x : p.listdef_) {
-    			temp = x.accept(new DefVisitor(), null);
-    			sigMap.put(temp.id, temp.funType);
+    public class ProgramVisitor implements Program.Visitor<Object,Object> {
+    	public Object visit(PDefs p, Object o) {
+    		signature = new HashMap<String,FunType>();
+
+    		// TODO add primitive functions (printInt, printDouble etc)
+
+    		// Add all defs to signature
+    		for (Def d : p.listdef_) {
+    			d.accept(new DefToSigVisitor(), null);
     		}
-    		return sigMap;
+
+    		// Check definitions
+    		for (Def d : p.listdef_) {
+    			//d.accept(new DefVisitor(), null);
+    		}
+
+    		return null;
+    	}
+    }
+
+    public class DefToSigVisitor implements Def.Visitor<Object,Object> {
+    	public Object visit(DFun p, Object o) {
+    		// check in function is already defined
+    		if (signature.containsKey(p.id_)) {
+    			throw new TypeException("Function " + p.id_ + " already defined");
+    		}
+    		// Add function to signature
+    		FunType ft = new FunType(p.listarg_, p.type_);
+    		signature.put(p.id_, ft);
+
+    		return null;
     	}
     }
 
@@ -46,26 +69,46 @@ public class TypeChecker {
     public class DefVisitor implements Def.Visitor<SigElement,Object> {
     	public SigElement visit(DFun p, Object o) {
     		
+    		// reimplement whole thing but update signature throughout
+    		// and not with only returns
+    		if (signature.containsKey(p.id_)) {
+    			throw new TypeException("function " + p.id_ + " already declared");
+    		}
+
     		LinkedList<Type> argTypeList = new LinkedList<Type>();
     		for (Arg a : p.listarg_) {
     			argTypeList.push(a.accept(new ArgVisitor(), null));
     		}
 
     		// create FunType obj
-    		FunType ft = new FunType(argTypeList, p.type_);
+    		//FunType ft = new FunType(argTypeList, p.type_);
 
-    		SigElement sigElem = new SigElement();
-    		sigElem.id = p.id_;
-    		sigElem.funType = ft;
+    		//SigElement sigElem = new SigElement(p.id_, ft);
 
-    		return sigElem;
+    		return null;
+    	}
+    }
+
+    // Function Type
+    public class FunType {
+    	public ListArg args;
+    	public Type retType;
+
+    	FunType(ListArg alist, Type ty) {
+    		args = alist;
+    		retType = ty;
     	}
     }
 
     // Help class for (String,FunType) tuple
     public class SigElement {
-    	public String id;
-    	public FunType funType;
+    	final String id;
+    	final FunType funType;
+
+    	public SigElement(String s, FunType ft) {
+    		id = s;
+    		funType = ft;
+    	}
     }
 
     public class ArgVisitor implements Arg.Visitor<Type,Object> {
@@ -136,36 +179,12 @@ public class TypeChecker {
     	}    	
     }
 */
-    /*
-    public static TypeCode typeCode(Type ty) {
-		if (ty.equals(new Type_int())) {
-			return TypeCode.CInt;
-		} else if (ty.equals(new Type_double())) {
-			return TypeCode.CDouble;
-		} else if (ty.equals(new Type_bool())) {
-			return TypeCode.CBool;
-		} else if (ty.equals(new Type_void())) {
-			return TypeCode.CVoid;
-		}
-		return null;
-	}
-	*/
-
-    // Function Type
-    public static class FunType {
-    	public LinkedList<Type> args;
-    	public Type val;
-
-    	FunType(LinkedList<Type> tlist, Type ty) {
-    		args = tlist;
-    		val = ty;
-    	}
-
-    }
 
     // Environment class
     // in pass 1 : Add ALL function defs to sig by using update meths
     // in pass 2 : use Env but remove contexts that are out of scope
+
+    /*
     public static class Env {
     	public static Map<String, FunType> signature;
     	public static LinkedList<Map<String,Type>> contexts;
@@ -174,15 +193,6 @@ public class TypeChecker {
     	public Env() {
 
     	}
-
-    	/* int main() { 
-    		int x; 
-    		if(1) {
-    			bool x;
-    			 
-    		}
-    	*/
-
 
     	public static Type lookVar(String id) {
     		return null;
@@ -208,7 +218,7 @@ public class TypeChecker {
     		}
     	}
     }
-
+	*/
     // TypeCode for type comparisson
     public static enum TypeCode { CInt, CDouble, CBool, CVoid }
 
