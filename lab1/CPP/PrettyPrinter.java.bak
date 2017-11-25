@@ -350,9 +350,6 @@ public class PrettyPrinter
     {
        CPP.Absyn.DVardeq _dvardeq = (CPP.Absyn.DVardeq) foo;
        if (_i_ > 0) render(_L_PAREN);
-       pp(_dvardeq.type_, 0);
-       pp(_dvardeq.id_, 0);
-       render(",");
        pp(_dvardeq.listtypen_, 0);
        render(";");
        if (_i_ > 0) render(_R_PAREN);
@@ -1087,8 +1084,6 @@ public class PrettyPrinter
        CPP.Absyn.DVardeq _dvardeq = (CPP.Absyn.DVardeq) foo;
        render("(");
        render("DVardeq");
-       sh(_dvardeq.type_);
-       sh(_dvardeq.id_);
        render("[");
        sh(_dvardeq.listtypen_);
        render("]");

@@ -10,5 +10,5 @@ public interface AllVisitor<R,A> extends
   CPP.Absyn.Stm.Visitor<R,A>,
   CPP.Absyn.Exp.Visitor<R,A>,
   CPP.Absyn.Type.Visitor<R,A>,
-  CPP.Absyn.Typen.Visitor<R,A>
+  CPP.Absyn.TypeN.Visitor<R,A>
 {}

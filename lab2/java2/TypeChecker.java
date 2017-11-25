@@ -15,17 +15,18 @@ public class TypeChecker {
 	public final Type VOID   = new Type_void();
 
     public void typecheck(Program p) {
-		// build symbol table and check program
 		p.accept(new ProgramVisitor(), null);
-
     }
 
     // Program visitor
     public class ProgramVisitor implements Program.Visitor<Object,Object> {
     	public Object visit(PDefs p, Object o) {
     		signature = new HashMap<String,FunType>();
-
     		// TODO add primitive functions (printInt, printDouble etc)
+    		signature.put("printInt", new FunType(singleArg(INT), VOID));
+    		signature.put("readInt", new FunType(new ListArg(), INT));
+    		signature.put("printDouble", new FunType(singleArg(DOUBLE), VOID));
+    		signature.put("readDouble", new FunType(new ListArg(), DOUBLE));
 
     		// Build symbol table
     		for (Def d : p.listdef_) {
@@ -51,6 +52,12 @@ public class TypeChecker {
 
     		return null;
     	}
+    }
+
+    public ListArg singleArg(Type ty) {
+    	ListArg la = new ListArg();
+    	la.add(new ADecl(ty, "x"));
+    	return la;
     }
 
     // Def visitor for adding to signature
@@ -118,25 +125,61 @@ public class TypeChecker {
     		return null;
     	}
     	public Object visit(SDecls p, Object o) {
+    		// Add all <Id,Type>-pairs from p.listid_ to current block
+    		for (String s : p.listid_) {
+    			newVar(s, p.type_);
+    		}
     		return null;	
     	}
     	public Object visit(SInit p, Object o) {
+    		// Get type of initexp
     		Type t = p.exp_.accept(new ExpVisitor(), null);
+    		// Check if type matches with vartype
     		check(p.type_, t);
+    		// Add var to current block
     		newVar(p.id_, p.type_);
     		return null;
     		
     	}
     	public Object visit(SReturn p, Object o) {
+    		// Check that return exp is same type as function type
+    		Type t = isEqualTypes(returnType, p.exp_.accept(new ExpVisitor(), null));
+    		if (t.equals(VOID)) {
+    			throw new TypeException("Return expression should not be void");
+    		}
     		return null;
     	}
     	public Object visit(SWhile p, Object o) {
+    		// Check that expression is bool
+    		check(BOOL, p.exp_.accept(new ExpVisitor(), null));
+    		// Add, visit and remove statement block
+            newBlock();
+    		p.stm_.accept(this, null);
+            popBlock();
     		return null;
     	}
     	public Object visit(SBlock p, Object o) {
+    		// Add new top block
+    		newBlock();
+    		// Visit all statements in the new block
+    		for (Stm s : p.liststm_) {
+    			s.accept(new StmVisitor(), null);
+    		}
+            // Remove top block
+            popBlock();
     		return null;
     	}
     	public Object visit(SIfElse p, Object o) {
+    		// Check that expression is bool
+    		check(BOOL, p.exp_.accept(new ExpVisitor(), null));
+    		// Visit if statement
+            newBlock();
+    		p.stm_1.accept(this, null);
+            popBlock();
+    		// Visit else statement
+            newBlock();
+    		p.stm_2.accept(this, null);
+            popBlock();
     		return null;
     	}
     }
@@ -281,7 +324,10 @@ public class TypeChecker {
     	}
 
     	public Type visit(EAss p, Object o) {
-    		return null;
+    		// Check if variable is declared and same type as expression
+    		Type t = isEqualTypes(lookupVar(p.id_), p.exp_.accept(this, null));
+
+    		return t;
     	}
 
     }

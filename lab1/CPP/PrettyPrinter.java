@@ -228,7 +228,7 @@ public class PrettyPrinter
     buf_.delete(0,buf_.length());
     return temp;
   }
-  public static String print(CPP.Absyn.Typen foo)
+  public static String print(CPP.Absyn.TypeN foo)
   {
     pp(foo, 0);
     trim();
@@ -236,14 +236,14 @@ public class PrettyPrinter
     buf_.delete(0,buf_.length());
     return temp;
   }
-  public static String show(CPP.Absyn.Typen foo)
+  public static String show(CPP.Absyn.TypeN foo)
   {
     sh(foo);
     String temp = buf_.toString();
     buf_.delete(0,buf_.length());
     return temp;
   }
-  public static String print(CPP.Absyn.ListTypen foo)
+  public static String print(CPP.Absyn.ListTypeN foo)
   {
     pp(foo, 0);
     trim();
@@ -251,7 +251,7 @@ public class PrettyPrinter
     buf_.delete(0,buf_.length());
     return temp;
   }
-  public static String show(CPP.Absyn.ListTypen foo)
+  public static String show(CPP.Absyn.ListTypeN foo)
   {
     sh(foo);
     String temp = buf_.toString();
@@ -354,17 +354,6 @@ public class PrettyPrinter
        render(";");
        if (_i_ > 0) render(_R_PAREN);
     }
-    else     if (foo instanceof CPP.Absyn.DVarass)
-    {
-       CPP.Absyn.DVarass _dvarass = (CPP.Absyn.DVarass) foo;
-       if (_i_ > 0) render(_L_PAREN);
-       pp(_dvarass.type_, 0);
-       pp(_dvarass.id_, 0);
-       render("=");
-       pp(_dvarass.exp_, 0);
-       render(";");
-       if (_i_ > 0) render(_R_PAREN);
-    }
     else     if (foo instanceof CPP.Absyn.QConuse)
     {
        CPP.Absyn.QConuse _qconuse = (CPP.Absyn.QConuse) foo;
@@ -443,7 +432,19 @@ public class PrettyPrinter
     {
        CPP.Absyn.SDecl _sdecl = (CPP.Absyn.SDecl) foo;
        if (_i_ > 0) render(_L_PAREN);
-       pp(_sdecl.listtypen_, 0);
+       pp(_sdecl.type_, 0);
+       pp(_sdecl.id_, 0);
+       render(";");
+       if (_i_ > 0) render(_R_PAREN);
+    }
+    else     if (foo instanceof CPP.Absyn.SDecls)
+    {
+       CPP.Absyn.SDecls _sdecls = (CPP.Absyn.SDecls) foo;
+       if (_i_ > 0) render(_L_PAREN);
+       pp(_sdecls.type_, 0);
+       pp(_sdecls.id_, 0);
+       render(",");
+       pp(_sdecls.listtypen_, 0);
        render(";");
        if (_i_ > 0) render(_R_PAREN);
     }
@@ -452,9 +453,7 @@ public class PrettyPrinter
        CPP.Absyn.SInit _sinit = (CPP.Absyn.SInit) foo;
        if (_i_ > 0) render(_L_PAREN);
        pp(_sinit.type_, 0);
-       pp(_sinit.id_, 0);
-       render("=");
-       pp(_sinit.exp_, 0);
+       pp(_sinit.listtypen_, 0);
        render(";");
        if (_i_ > 0) render(_R_PAREN);
     }
@@ -631,9 +630,9 @@ public class PrettyPrinter
     {
        CPP.Absyn.EArrow _earrow = (CPP.Absyn.EArrow) foo;
        if (_i_ > 13) render(_L_PAREN);
-       pp(_earrow.exp_, 13);
+       pp(_earrow.exp_1, 13);
        render("->");
-       pp(_earrow.id_, 0);
+       pp(_earrow.exp_2, 14);
        if (_i_ > 13) render(_R_PAREN);
     }
     else     if (foo instanceof CPP.Absyn.EPInc)
@@ -962,28 +961,47 @@ public class PrettyPrinter
     }
   }
 
-  private static void pp(CPP.Absyn.Typen foo, int _i_)
+  private static void pp(CPP.Absyn.TypeN foo, int _i_)
   {
-    if (foo instanceof CPP.Absyn.Tname)
+    if (foo instanceof CPP.Absyn.Tname1)
     {
-       CPP.Absyn.Tname _tname = (CPP.Absyn.Tname) foo;
+       CPP.Absyn.Tname1 _tname1 = (CPP.Absyn.Tname1) foo;
        if (_i_ > 0) render(_L_PAREN);
-       pp(_tname.id_, 0);
+       pp(_tname1.id_, 0);
        if (_i_ > 0) render(_R_PAREN);
     }
-    else     if (foo instanceof CPP.Absyn.Tnames)
+    else     if (foo instanceof CPP.Absyn.Tname2)
     {
-       CPP.Absyn.Tnames _tnames = (CPP.Absyn.Tnames) foo;
+       CPP.Absyn.Tname2 _tname2 = (CPP.Absyn.Tname2) foo;
        if (_i_ > 0) render(_L_PAREN);
-       pp(_tnames.type_, 0);
-       pp(_tnames.id_, 0);
+       pp(_tname2.type_, 0);
+       pp(_tname2.id_, 0);
+       if (_i_ > 0) render(_R_PAREN);
+    }
+    else     if (foo instanceof CPP.Absyn.Tnameinit1)
+    {
+       CPP.Absyn.Tnameinit1 _tnameinit1 = (CPP.Absyn.Tnameinit1) foo;
+       if (_i_ > 0) render(_L_PAREN);
+       pp(_tnameinit1.id_, 0);
+       render("=");
+       pp(_tnameinit1.exp_, 0);
+       if (_i_ > 0) render(_R_PAREN);
+    }
+    else     if (foo instanceof CPP.Absyn.Tnameinit2)
+    {
+       CPP.Absyn.Tnameinit2 _tnameinit2 = (CPP.Absyn.Tnameinit2) foo;
+       if (_i_ > 0) render(_L_PAREN);
+       pp(_tnameinit2.type_, 0);
+       pp(_tnameinit2.id_, 0);
+       render("=");
+       pp(_tnameinit2.exp_, 0);
        if (_i_ > 0) render(_R_PAREN);
     }
   }
 
-  private static void pp(CPP.Absyn.ListTypen foo, int _i_)
+  private static void pp(CPP.Absyn.ListTypeN foo, int _i_)
   {
-     for (java.util.Iterator<Typen> it = foo.iterator(); it.hasNext();)
+     for (java.util.Iterator<TypeN> it = foo.iterator(); it.hasNext();)
      {
        pp(it.next(), _i_);
        if (it.hasNext()) {
@@ -1089,16 +1107,6 @@ public class PrettyPrinter
        render("]");
        render(")");
     }
-    if (foo instanceof CPP.Absyn.DVarass)
-    {
-       CPP.Absyn.DVarass _dvarass = (CPP.Absyn.DVarass) foo;
-       render("(");
-       render("DVarass");
-       sh(_dvarass.type_);
-       sh(_dvarass.id_);
-       sh(_dvarass.exp_);
-       render(")");
-    }
     if (foo instanceof CPP.Absyn.QConuse)
     {
        CPP.Absyn.QConuse _qconuse = (CPP.Absyn.QConuse) foo;
@@ -1177,8 +1185,19 @@ public class PrettyPrinter
        CPP.Absyn.SDecl _sdecl = (CPP.Absyn.SDecl) foo;
        render("(");
        render("SDecl");
+       sh(_sdecl.type_);
+       sh(_sdecl.id_);
+       render(")");
+    }
+    if (foo instanceof CPP.Absyn.SDecls)
+    {
+       CPP.Absyn.SDecls _sdecls = (CPP.Absyn.SDecls) foo;
+       render("(");
+       render("SDecls");
+       sh(_sdecls.type_);
+       sh(_sdecls.id_);
        render("[");
-       sh(_sdecl.listtypen_);
+       sh(_sdecls.listtypen_);
        render("]");
        render(")");
     }
@@ -1188,8 +1207,9 @@ public class PrettyPrinter
        render("(");
        render("SInit");
        sh(_sinit.type_);
-       sh(_sinit.id_);
-       sh(_sinit.exp_);
+       render("[");
+       sh(_sinit.listtypen_);
+       render("]");
        render(")");
     }
     if (foo instanceof CPP.Absyn.STypedef)
@@ -1360,8 +1380,8 @@ public class PrettyPrinter
        CPP.Absyn.EArrow _earrow = (CPP.Absyn.EArrow) foo;
        render("(");
        render("EArrow");
-       sh(_earrow.exp_);
-       sh(_earrow.id_);
+       sh(_earrow.exp_1);
+       sh(_earrow.exp_2);
        render(")");
     }
     if (foo instanceof CPP.Absyn.EPInc)
@@ -1680,30 +1700,49 @@ public class PrettyPrinter
     }
   }
 
-  private static void sh(CPP.Absyn.Typen foo)
+  private static void sh(CPP.Absyn.TypeN foo)
   {
-    if (foo instanceof CPP.Absyn.Tname)
+    if (foo instanceof CPP.Absyn.Tname1)
     {
-       CPP.Absyn.Tname _tname = (CPP.Absyn.Tname) foo;
+       CPP.Absyn.Tname1 _tname1 = (CPP.Absyn.Tname1) foo;
        render("(");
-       render("Tname");
-       sh(_tname.id_);
+       render("Tname1");
+       sh(_tname1.id_);
        render(")");
     }
-    if (foo instanceof CPP.Absyn.Tnames)
+    if (foo instanceof CPP.Absyn.Tname2)
     {
-       CPP.Absyn.Tnames _tnames = (CPP.Absyn.Tnames) foo;
+       CPP.Absyn.Tname2 _tname2 = (CPP.Absyn.Tname2) foo;
        render("(");
-       render("Tnames");
-       sh(_tnames.type_);
-       sh(_tnames.id_);
+       render("Tname2");
+       sh(_tname2.type_);
+       sh(_tname2.id_);
+       render(")");
+    }
+    if (foo instanceof CPP.Absyn.Tnameinit1)
+    {
+       CPP.Absyn.Tnameinit1 _tnameinit1 = (CPP.Absyn.Tnameinit1) foo;
+       render("(");
+       render("Tnameinit1");
+       sh(_tnameinit1.id_);
+       sh(_tnameinit1.exp_);
+       render(")");
+    }
+    if (foo instanceof CPP.Absyn.Tnameinit2)
+    {
+       CPP.Absyn.Tnameinit2 _tnameinit2 = (CPP.Absyn.Tnameinit2) foo;
+       render("(");
+       render("Tnameinit2");
+       sh(_tnameinit2.type_);
+       sh(_tnameinit2.id_);
+       sh(_tnameinit2.exp_);
        render(")");
     }
   }
 
-  private static void sh(CPP.Absyn.ListTypen foo)
+  private static void sh(CPP.Absyn.ListTypeN foo)
   {
-     for (java.util.Iterator<Typen> it = foo.iterator(); it.hasNext();)
+     for (java.util.Iterator<TypeN> it = foo.iterator(); it.hasNext();)
      {
        sh(it.next());
        if (it.hasNext())

@@ -49,14 +49,8 @@ public class VisitSkel
       return null;
     }    public R visit(CPP.Absyn.DVardeq p, A arg)
     { /* Code For DVardeq Goes Here */
-      for (Typen x: p.listtypen_)
+      for (TypeN x: p.listtypen_)
       { /* ... */ }
-      return null;
-    }    public R visit(CPP.Absyn.DVarass p, A arg)
-    { /* Code For DVarass Goes Here */
-      p.type_.accept(new TypeVisitor<R,A>(), arg);
-      //p.id_;
-      p.exp_.accept(new ExpVisitor<R,A>(), arg);
       return null;
     }    public R visit(CPP.Absyn.QConuse p, A arg)
     { /* Code For QConuse Goes Here */
@@ -92,14 +86,21 @@ public class VisitSkel
       return null;
     }    public R visit(CPP.Absyn.SDecl p, A arg)
     { /* Code For SDecl Goes Here */
-      for (Typen x: p.listtypen_)
+      p.type_.accept(new TypeVisitor<R,A>(), arg);
+      //p.id_;
+      return null;
+    }    public R visit(CPP.Absyn.SDecls p, A arg)
+    { /* Code For SDecls Goes Here */
+      p.type_.accept(new TypeVisitor<R,A>(), arg);
+      //p.id_;
+      for (TypeN x: p.listtypen_)
       { /* ... */ }
       return null;
     }    public R visit(CPP.Absyn.SInit p, A arg)
     { /* Code For SInit Goes Here */
       p.type_.accept(new TypeVisitor<R,A>(), arg);
-      //p.id_;
-      p.exp_.accept(new ExpVisitor<R,A>(), arg);
+      for (TypeN x: p.listtypen_)
+      { /* ... */ }
       return null;
     }    public R visit(CPP.Absyn.STypedef p, A arg)
     { /* Code For STypedef Goes Here */
@@ -193,8 +194,8 @@ public class VisitSkel
       return null;
     }    public R visit(CPP.Absyn.EArrow p, A arg)
     { /* Code For EArrow Goes Here */
-      p.exp_.accept(new ExpVisitor<R,A>(), arg);
-      //p.id_;
+      p.exp_1.accept(new ExpVisitor<R,A>(), arg);
+      p.exp_2.accept(new ExpVisitor<R,A>(), arg);
       return null;
     }    public R visit(CPP.Absyn.EPInc p, A arg)
     { /* Code For EPInc Goes Here */
@@ -359,16 +360,27 @@ public class VisitSkel
       return null;
     }
   }
-  public class TypenVisitor<R,A> implements Typen.Visitor<R,A>
+  public class TypeNVisitor<R,A> implements TypeN.Visitor<R,A>
   {
-    public R visit(CPP.Absyn.Tname p, A arg)
-    { /* Code For Tname Goes Here */
+    public R visit(CPP.Absyn.Tname1 p, A arg)
+    { /* Code For Tname1 Goes Here */
       //p.id_;
       return null;
-    }    public R visit(CPP.Absyn.Tnames p, A arg)
-    { /* Code For Tnames Goes Here */
+    }    public R visit(CPP.Absyn.Tname2 p, A arg)
+    { /* Code For Tname2 Goes Here */
       p.type_.accept(new TypeVisitor<R,A>(), arg);
       //p.id_;
+      return null;
+    }    public R visit(CPP.Absyn.Tnameinit1 p, A arg)
+    { /* Code For Tnameinit1 Goes Here */
+      //p.id_;
+      p.exp_.accept(new ExpVisitor<R,A>(), arg);
+      return null;
+    }    public R visit(CPP.Absyn.Tnameinit2 p, A arg)
+    { /* Code For Tnameinit2 Goes Here */
+      p.type_.accept(new TypeVisitor<R,A>(), arg);
+      //p.id_;
+      p.exp_.accept(new ExpVisitor<R,A>(), arg);
       return null;
     }
   }

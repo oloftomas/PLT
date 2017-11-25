@@ -54,7 +54,6 @@ public abstract class FoldVisitor<R,A> implements AllVisitor<R,A> {
     }
     public R visit(CPP.Absyn.DVardeq p, A arg) {
       R r = leaf(arg);
-      r = combine(p.type_.accept(this, arg), r, arg);
       for (Typen x : p.listtypen_)
       {
         r = combine(x.accept(this, arg), r, arg);

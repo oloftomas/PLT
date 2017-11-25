@@ -60,14 +60,12 @@ public class ComposVisitor<A> implements
       return new CPP.Absyn.DTypedeft(type_, id_);
     }    public Def visit(CPP.Absyn.DVardeq p, A arg)
     {
-      Type type_ = p.type_.accept(this, arg);
-      String id_ = p.id_;
       ListTypen listtypen_ = new ListTypen();
       for (Typen x : p.listtypen_)
       {
         listtypen_.add(x.accept(this,arg));
       }
-      return new CPP.Absyn.DVardeq(type_, id_, listtypen_);
+      return new CPP.Absyn.DVardeq(listtypen_);
     }    public Def visit(CPP.Absyn.DVarass p, A arg)
     {
       Type type_ = p.type_.accept(this, arg);

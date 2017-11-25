@@ -124,7 +124,7 @@ Def ::= Type:p_1 Id:p_2 _SYMB_0 ListArg:p_4 _SYMB_1 _SYMB_2 ListStm:p_7 _SYMB_3 
   | Type:p_1 Id:p_2 _SYMB_0 ListArg:p_4 _SYMB_1 _SYMB_4  {: RESULT = new CPP.Absyn.DFunemp(p_1,p_2,p_4); :}
   | _SYMB_45 ListId:p_2 Id:p_3 _SYMB_4  {: RESULT = new CPP.Absyn.DTypedef(p_2,p_3); :}
   | _SYMB_45 Type:p_2 Id:p_3 _SYMB_4  {: RESULT = new CPP.Absyn.DTypedeft(p_2,p_3); :}
-  | Type:p_1 Id:p_2 _SYMB_5 ListTypen:p_4 _SYMB_4  {: RESULT = new CPP.Absyn.DVardeq(p_1,p_2,p_4); :}
+  | ListTypen:p_1 _SYMB_4  {: RESULT = new CPP.Absyn.DVardeq(p_1); :}
   | Type:p_1 Id:p_2 _SYMB_6 Exp:p_4 _SYMB_4  {: RESULT = new CPP.Absyn.DVarass(p_1,p_2,p_4); :}
   | _SYMB_46 ListId:p_2 _SYMB_4  {: RESULT = new CPP.Absyn.QConuse(p_2); :}
 ;

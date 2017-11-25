@@ -8,7 +8,6 @@ public abstract class Def implements java.io.Serializable {
     public R visit(CPP.Absyn.DTypedef p, A arg);
     public R visit(CPP.Absyn.DTypedeft p, A arg);
     public R visit(CPP.Absyn.DVardeq p, A arg);
-    public R visit(CPP.Absyn.DVarass p, A arg);
     public R visit(CPP.Absyn.QConuse p, A arg);
 
   }

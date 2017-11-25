@@ -49,8 +49,6 @@ public class VisitSkel
       return null;
     }    public R visit(CPP.Absyn.DVardeq p, A arg)
     { /* Code For DVardeq Goes Here */
-      p.type_.accept(new TypeVisitor<R,A>(), arg);
-      //p.id_;
       for (Typen x: p.listtypen_)
       { /* ... */ }
       return null;

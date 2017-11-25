@@ -13,7 +13,6 @@ public class AbstractVisitor<R,A> implements AllVisitor<R,A> {
     public R visit(CPP.Absyn.DTypedef p, A arg) { return visitDefault(p, arg); }
     public R visit(CPP.Absyn.DTypedeft p, A arg) { return visitDefault(p, arg); }
     public R visit(CPP.Absyn.DVardeq p, A arg) { return visitDefault(p, arg); }
-    public R visit(CPP.Absyn.DVarass p, A arg) { return visitDefault(p, arg); }
     public R visit(CPP.Absyn.QConuse p, A arg) { return visitDefault(p, arg); }
     public R visitDefault(CPP.Absyn.Def p, A arg) {
       throw new IllegalArgumentException(this.getClass().getName() + ": " + p);
@@ -28,6 +27,7 @@ public class AbstractVisitor<R,A> implements AllVisitor<R,A> {
 /* Stm */
     public R visit(CPP.Absyn.SExp p, A arg) { return visitDefault(p, arg); }
     public R visit(CPP.Absyn.SDecl p, A arg) { return visitDefault(p, arg); }
+    public R visit(CPP.Absyn.SDecls p, A arg) { return visitDefault(p, arg); }
     public R visit(CPP.Absyn.SInit p, A arg) { return visitDefault(p, arg); }
     public R visit(CPP.Absyn.STypedef p, A arg) { return visitDefault(p, arg); }
     public R visit(CPP.Absyn.STypedeft p, A arg) { return visitDefault(p, arg); }
@@ -109,10 +109,12 @@ public class AbstractVisitor<R,A> implements AllVisitor<R,A> {
     public R visitDefault(CPP.Absyn.Type p, A arg) {
       throw new IllegalArgumentException(this.getClass().getName() + ": " + p);
     }
-/* Typen */
-    public R visit(CPP.Absyn.Tname p, A arg) { return visitDefault(p, arg); }
-    public R visit(CPP.Absyn.Tnames p, A arg) { return visitDefault(p, arg); }
-    public R visitDefault(CPP.Absyn.Typen p, A arg) {
+/* TypeN */
+    public R visit(CPP.Absyn.Tname1 p, A arg) { return visitDefault(p, arg); }
+    public R visit(CPP.Absyn.Tname2 p, A arg) { return visitDefault(p, arg); }
+    public R visit(CPP.Absyn.Tnameinit1 p, A arg) { return visitDefault(p, arg); }
+    public R visit(CPP.Absyn.Tnameinit2 p, A arg) { return visitDefault(p, arg); }
+    public R visitDefault(CPP.Absyn.TypeN p, A arg) {
       throw new IllegalArgumentException(this.getClass().getName() + ": " + p);
     }
 
