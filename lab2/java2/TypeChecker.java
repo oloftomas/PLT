@@ -14,6 +14,7 @@ public class TypeChecker {
 	public final Type DOUBLE = new Type_double();
 	public final Type VOID   = new Type_void();
 
+    // Entry point
     public void typecheck(Program p) {
 		p.accept(new ProgramVisitor(), null);
     }
@@ -63,7 +64,7 @@ public class TypeChecker {
     // Def visitor for adding to signature
     public class DefToSigVisitor implements Def.Visitor<Object,Object> {
     	public Object visit(DFun p, Object o) {
-    		// check in function is already defined
+    		// check if function is already defined
     		if (signature.containsKey(p.id_)) {
     			throw new TypeException("Function " + p.id_ + " already defined");
     		}
@@ -139,7 +140,6 @@ public class TypeChecker {
     		// Add var to current block
     		newVar(p.id_, p.type_);
     		return null;
-    		
     	}
     	public Object visit(SReturn p, Object o) {
     		// Check that return exp is same type as function type
