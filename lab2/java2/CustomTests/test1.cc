@@ -1,6 +1,6 @@
 int main () {
-  int i = 2;
-  int x = 3;
+  int i = 0;
+  int x = 5;
 
   int y = 5 + i*i-x+i;
 
@@ -21,6 +21,11 @@ int main () {
 
   int funCall = test();
   printInt(funCall);
+
+  while(i < x) {
+  	printInt(i);
+  	i++;
+  }
 
 }
 

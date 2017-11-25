@@ -81,10 +81,27 @@ public class Interpreter {
     		throw new ReturnException(v);
     	}
     	public Value visit(SWhile p, Object o) {
-    		Value v1 = p.exp_.accept(new ExpVisitor(), null);
+    		Value v;
+    		Boolean newBlockCreated = false;
+    		while (((VBool)p.exp_.accept(new ExpVisitor(), null)).value) {
+    			if (!newBlockCreated) {
+    				newBlock();
+    				newBlockCreated = true;
+    			}
+    			v = p.stm_.accept(this, null);
+    		}
+    		if(newBlockCreated) {
+	    		popBlock();	
+    		}
+    		
     		return null;
     	}
     	public Value visit(SBlock p, Object o) {
+    		newBlock();
+    		for (Stm s : p.liststm_) {
+    			s.accept(new StmVisitor(), null);
+    		}
+    		popBlock();
     		return null;
     	}
     	public Value visit(SIfElse p, Object o) {
@@ -250,16 +267,76 @@ public class Interpreter {
     	}
 
     	public Value visit(ELt p, Object o) {
-    		return null;    		
+    		Value v1 = p.exp_1.accept(this, null);
+    		Value v2 = p.exp_2.accept(this, null);
+
+    		if (v1 instanceof VInt) {
+    			if (((VInt)v1).value < ((VInt)v2).value) {
+    				return new VBool(true);
+    			} else {
+    				return new VBool(false);
+    			}
+    		} else {
+    			if (((VDouble)v1).value < ((VDouble)v2).value) {
+    				return new VBool(true);
+    			} else {
+    				return new VBool(false);
+    			}
+    		}
     	}
     	public Value visit(EGt p, Object o) {
-    		return null;    		
+    		Value v1 = p.exp_1.accept(this, null);
+    		Value v2 = p.exp_2.accept(this, null);
+
+    		if (v1 instanceof VInt) {
+    			if (((VInt)v1).value > ((VInt)v2).value) {
+    				return new VBool(true);
+    			} else {
+    				return new VBool(false);
+    			}
+    		} else {
+    			if (((VDouble)v1).value > ((VDouble)v2).value) {
+    				return new VBool(true);
+    			} else {
+    				return new VBool(false);
+    			}
+    		}
     	}
     	public Value visit(ELtEq p, Object o) {
-    		return null;    		
+    		Value v1 = p.exp_1.accept(this, null);
+    		Value v2 = p.exp_2.accept(this, null);
+
+    		if (v1 instanceof VInt) {
+    			if (((VInt)v1).value <= ((VInt)v2).value) {
+    				return new VBool(true);
+    			} else {
+    				return new VBool(false);
+    			}
+    		} else {
+    			if (((VDouble)v1).value <= ((VDouble)v2).value) {
+    				return new VBool(true);
+    			} else {
+    				return new VBool(false);
+    			}
+    		}
     	}
     	public Value visit(EGtEq p, Object o) {
-    		return null;    		
+    		Value v1 = p.exp_1.accept(this, null);
+    		Value v2 = p.exp_2.accept(this, null);
+
+    		if (v1 instanceof VInt) {
+    			if (((VInt)v1).value >= ((VInt)v2).value) {
+    				return new VBool(true);
+    			} else {
+    				return new VBool(false);
+    			}
+    		} else {
+    			if (((VDouble)v1).value >= ((VDouble)v2).value) {
+    				return new VBool(true);
+    			} else {
+    				return new VBool(false);
+    			}
+    		}
     	}
 
     	public Value visit(EEq p, Object o) {
