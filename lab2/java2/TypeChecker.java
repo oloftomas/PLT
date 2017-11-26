@@ -144,9 +144,6 @@ public class TypeChecker {
     	public Object visit(SReturn p, Object o) {
     		// Check that return exp is same type as function type
     		Type t = isEqualTypes(returnType, p.exp_.accept(new ExpVisitor(), null));
-    		if (t.equals(VOID)) {
-    			throw new TypeException("Return expression should not be void");
-    		}
     		return null;
     	}
     	public Object visit(SWhile p, Object o) {

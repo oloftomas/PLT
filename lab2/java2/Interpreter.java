@@ -78,6 +78,7 @@ public class Interpreter {
     	}
     	public Value visit(SReturn p, Object o) {
     		Value v = p.exp_.accept(new ExpVisitor(), null);
+    		popBlock();
     		throw new ReturnException(v);
     	}
     	public Value visit(SWhile p, Object o) {
@@ -105,6 +106,16 @@ public class Interpreter {
     		return null;
     	}
     	public Value visit(SIfElse p, Object o) {
+    		Value v;
+    		if (((VBool)p.exp_.accept(new ExpVisitor(), null)).value) {
+    			newBlock();
+    			v = p.stm_1.accept(new StmVisitor(), null);
+    			popBlock();
+    		} else {
+    			newBlock();
+    			v = p.stm_2.accept(new StmVisitor(), null);
+    			popBlock();
+    		}
     		return null;
     	}
     }
@@ -127,9 +138,12 @@ public class Interpreter {
     	}
 
     	public Value visit(EApp p, Object o) {
+    		// Primitive functions
     		if (p.id_.equals("printInt")) {
+    			newBlock();
     			Value v = p.listexp_.get(0).accept(new ExpVisitor(), null);
     			System.out.println(((VInt)v).value);
+    			popBlock();
     			return null;
     		}
     		if (p.id_.equals("printDouble")) {
@@ -148,21 +162,39 @@ public class Interpreter {
     			return new VDouble(r);
     		}
 
+    		// Get called function from signature
     		DFun f = signature.get(p.id_);
+
+    		List<Value> paramEvals = new LinkedList<Value>();
+    		for (Exp e : p.listexp_) {
+    			//e.accept(new ExpVisitor(), null);
+    			paramEvals.add(e.accept(new ExpVisitor(), null));
+    		}
+
     		newBlock();
+
+    		// add argument id:s to env
+    		int i = 0;
     		for (Arg a : f.listarg_) {
     			a.accept(new ArgVisitor(), null);
-    		}
-    		
-    		int i = 0;
-    		for (Exp e : p.listexp_) {
-    			updateVar(((ADecl)f.listarg_.get(i)).id_, e.accept(new ExpVisitor(), null));
+    			updateVar(((ADecl)a).id_, paramEvals.get(i));
     			i++;
     		}
 
+    		// update env by evaluating arguments
+    		//int i = 0;
+    		for (Exp e : p.listexp_) {
+    			//updateVar(((ADecl)f.listarg_.get(i)).id_, e.accept(new ExpVisitor(), null));
+    			//System.out.println( ((ADecl)f.listarg_.get(i)).id_ );
+    			//System.out.println( ((VInt)(env.get(0)).get("y")).value );
+    			//i++;
+    		}
+
+    		newBlock();
     		try {
     			for (Stm s : f.liststm_) {
     				s.accept(new StmVisitor(), null);
+    				//System.out.println("N = " + ((VInt)(env.get(0)).get("n")).value );
     			}
     		} catch (ReturnException r) {
     			popBlock();
@@ -340,21 +372,65 @@ public class Interpreter {
     	}
 
     	public Value visit(EEq p, Object o) {
-    		return null;    		
+    		Value v1 = p.exp_1.accept(new ExpVisitor(), null);
+    		Value v2 = p.exp_2.accept(new ExpVisitor(), null);
+
+    		if (v1 instanceof VInt) {
+    			if (((VInt)v1).value.equals(((VInt)v2).value)) {
+    				return new VBool(true);
+    			}
+    		} else if (v1 instanceof VDouble) {
+    			if (((VDouble)v1).value.equals(((VDouble)v2).value)) {
+    				return new VBool(true);
+    			}
+    		} else if (v1 instanceof VBool) {
+    			if (((VBool)v1).value == ((VBool)v2).value) {
+    				return new VBool(true);
+    			}
+    		}
+    		return new VBool(false);		
     	}
     	public Value visit(ENEq p, Object o) {
-    		return null;    		
+    		Value v1 = p.exp_1.accept(this, null);
+    		Value v2 = p.exp_2.accept(this, null);
+
+    		if (v1 instanceof VInt) {
+    			if (!((VInt)v1).value.equals(((VInt)v2).value)) {
+    				return new VBool(true);
+    			}
+    		} else if (v1 instanceof VDouble) {
+    			if (!((VDouble)v1).value.equals(((VDouble)v2).value)) {
+    				return new VBool(true);
+    			}
+    		} else if (v1 instanceof VBool) {
+    			if (((VBool)v1).value != ((VBool)v2).value) {
+    				return new VBool(true);
+    			}
+    		}
+    		return new VBool(false);
     	}
 
     	public Value visit(EAnd p, Object o) {
-    		return null;    		
+    		if (!(((VBool)p.exp_1.accept(this, null)).value)) {
+    			return new VBool(false);
+    		} else if (!(((VBool)p.exp_2.accept(this, null)).value)) {
+    			return new VBool(false);
+    		}
+    		return new VBool(true);
     	}
     	public Value visit(EOr p, Object o) {
-    		return null;    		
+    		if (((VBool)p.exp_1.accept(this, null)).value) {
+    			return new VBool(true);
+    		} else if 	(((VBool)p.exp_2.accept(this, null)).value) {
+    			return new VBool(true);
+    		}
+    		return new VBool(false);
     	}
 
     	public Value visit(EAss p, Object o) {
-    		return null;    		
+    		Value v = p.exp_.accept(this, null);
+    		updateVar(p.id_, v);
+    		return v;    		
     	}
     }
 
@@ -362,8 +438,10 @@ public class Interpreter {
     public void newVar(String id, Value v) {
     	// Get top env block
     	Map<String,Value> m = env.get(0);
-    	// Add variable and value to top env block
-    	m.put(id,v);
+    	//if (!m.containsKey(id)) {
+    		// Add variable and value to top env block
+    		m.put(id,v);
+    	//}
     }
 
     // Add new block to env
@@ -378,9 +456,13 @@ public class Interpreter {
 
     public Value lookupVar(String id) {
     	for (Map<String,Value> m : env) {
-    		Value v = m.get(id);
-    		if (v != null) {
-    			return v;
+    		if (m.containsKey(id)) {
+    			Value v = m.get(id);
+    			if (v != null) {
+    				return v;
+    			} else {
+    				//throw new RuntimeException("uninitialized variable " + id);
+    			}
     		}
     	}
     	throw new RuntimeException("uninitialized variable " + id);

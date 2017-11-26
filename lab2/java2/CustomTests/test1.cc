@@ -1,4 +1,15 @@
 int main () {
+
+  int i = 0;
+  retInt(++i);
+
+  printInt(i);
+
+  //retInt(tst = tst + 1, tst2);
+
+  //printInt(tst);
+
+/*
   int i = 0;
   int x = 5;
 
@@ -22,11 +33,31 @@ int main () {
   int funCall = test();
   printInt(funCall);
 
+  funCall = 666;
+
+  printInt(funCall);
+
   while(i < x) {
   	printInt(i);
   	i++;
   }
 
+  double b = 2.1;
+  double c = 2.1;
+
+  bool bc = (b == c);
+  
+  if (bc) {
+  	printInt(123);
+  } else {
+  	printInt(321);
+  }
+
+*/
+}
+
+int retInt(int i) {
+	return i;
 }
 
 int test() {
