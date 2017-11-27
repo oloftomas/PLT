@@ -11,11 +11,17 @@ CUPFILE = CPP/_cup.cup
 
 .PHONY: bnfc lab2 clean distclean vclean
 
-all: bnfc lab2
+all: bnfc lab2 TypeChecker Interpreter
 
 lab2:
-	${JAVAC} ${JAVAC_FLAGS} lab2.java
+	${JAVAC} ${JAVAC_FLAGS} lab2.java 
 	chmod a+x lab2
+
+TypeChecker:
+	${JAVAC} ${JAVAC_FLAGS} TypeChecker.java 
+
+Interpreter:
+	${JAVAC} ${JAVAC_FLAGS} Interpreter.java
 
 bnfc:
 	bnfc -java CPP.cf

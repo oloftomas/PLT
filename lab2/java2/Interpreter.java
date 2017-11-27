@@ -6,6 +6,8 @@ public class Interpreter {
 	private Map<String,DFun> signature;
 	private List<Map<String,Value>> env;
 
+    Scanner scan = new Scanner(System.in);
+
     public void interpret(Program p) {
     	p.accept(new ProgramVisitor(), null);
         //throw new RuntimeException("Not yet an interpreter");
@@ -147,18 +149,22 @@ public class Interpreter {
     			return null;
     		}
     		if (p.id_.equals("printDouble")) {
+    			newBlock();
     			Value v = p.listexp_.get(0).accept(new ExpVisitor(), null);
     			System.out.println(((VDouble)v).value);
+    			popBlock();
     			return null;
     		}
     		if (p.id_.equals("readInt")) {
-    			Scanner scan = new Scanner(System.in);
+    			newBlock();
     			int r = scan.nextInt();
+    			popBlock();
     			return new VInt(r);
     		}
     		if (p.id_.equals("readDouble")) {
-    			Scanner scan = new Scanner(System.in);
+    			newBlock();
     			double r = scan.nextDouble();
+    			popBlock();
     			return new VDouble(r);
     		}
 
@@ -179,15 +185,6 @@ public class Interpreter {
     			a.accept(new ArgVisitor(), null);
     			updateVar(((ADecl)a).id_, paramEvals.get(i));
     			i++;
-    		}
-
-    		// update env by evaluating arguments
-    		//int i = 0;
-    		for (Exp e : p.listexp_) {
-    			//updateVar(((ADecl)f.listarg_.get(i)).id_, e.accept(new ExpVisitor(), null));
-    			//System.out.println( ((ADecl)f.listarg_.get(i)).id_ );
-    			//System.out.println( ((VInt)(env.get(0)).get("y")).value );
-    			//i++;
     		}
 
     		newBlock();
