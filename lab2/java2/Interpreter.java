@@ -10,7 +10,6 @@ public class Interpreter {
 
     public void interpret(Program p) {
     	p.accept(new ProgramVisitor(), null);
-        //throw new RuntimeException("Not yet an interpreter");
     }
 
     public class ProgramVisitor implements Program.Visitor<Object,Object> {
@@ -173,7 +172,6 @@ public class Interpreter {
 
     		List<Value> paramEvals = new LinkedList<Value>();
     		for (Exp e : p.listexp_) {
-    			//e.accept(new ExpVisitor(), null);
     			paramEvals.add(e.accept(new ExpVisitor(), null));
     		}
 
@@ -191,7 +189,6 @@ public class Interpreter {
     		try {
     			for (Stm s : f.liststm_) {
     				s.accept(new StmVisitor(), null);
-    				//System.out.println("N = " + ((VInt)(env.get(0)).get("n")).value );
     			}
     		} catch (ReturnException r) {
     			popBlock();
@@ -435,10 +432,8 @@ public class Interpreter {
     public void newVar(String id, Value v) {
     	// Get top env block
     	Map<String,Value> m = env.get(0);
-    	//if (!m.containsKey(id)) {
     		// Add variable and value to top env block
     		m.put(id,v);
-    	//}
     }
 
     // Add new block to env
@@ -457,8 +452,6 @@ public class Interpreter {
     			Value v = m.get(id);
     			if (v != null) {
     				return v;
-    			} else {
-    				//throw new RuntimeException("uninitialized variable " + id);
     			}
     		}
     	}
