@@ -4,7 +4,6 @@ import java.io.*;
 
 /*
    TypeChecker for lab3
-   TODO implement setType?
 */
 public class TypeChecker {
 
@@ -192,7 +191,6 @@ public class TypeChecker {
     }
 
     // Expression Visitor
-    // TODO extend so that each exp also sets Type!
     public class ExpVisitor implements Exp.Visitor<Type,Object> {
     	// Literals
     	public Type visit(ETrue p, Object o) {
