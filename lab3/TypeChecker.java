@@ -196,19 +196,19 @@ public class TypeChecker {
     public class ExpVisitor implements Exp.Visitor<Type,Object> {
     	// Literals
     	public Type visit(ETrue p, Object o) {
-    		return BOOL;
+    		return p.setType(BOOL);
     	}
     	public Type visit(EFalse p, Object o) {
-    		return BOOL;
+    		return p.setType(BOOL);
     	}
     	public Type visit(EInt p, Object o) {
-    		return INT;
+    		return p.setType(INT);
     	}
     	public Type visit(EDouble p, Object o) {
-    		return DOUBLE;
+    		return p.setType(DOUBLE);
     	}
     	public Type visit(EId p, Object o) {
-    		return lookupVar(p.id_);
+    		return p.setType(lookupVar(p.id_));
     	}
 
     	// Function call
@@ -229,37 +229,37 @@ public class TypeChecker {
     			check(a.type_, e.accept(new ExpVisitor(), null));
     			i++;
     		}
-    		return ft.retType;
+    		return p.setType(ft.retType);
     	}
 
     	// Arithmetics and comparison
     	public Type visit(EPostIncr p, Object o) {
-    		return isNumType(lookupVar(p.id_));
+    		return p.setType(isNumType(lookupVar(p.id_)));
     	}
     	public Type visit(EPostDecr p, Object o) {
-    		return isNumType(lookupVar(p.id_));
+    		return p.setType(isNumType(lookupVar(p.id_)));
     	}
     	public Type visit(EPreIncr p, Object o) {
-    		return isNumType(lookupVar(p.id_));	
+    		return p.setType(isNumType(lookupVar(p.id_)));	
     	}
     	public Type visit(EPreDecr p, Object o) {
-    		return isNumType(lookupVar(p.id_));
+    		return p.setType(isNumType(lookupVar(p.id_)));
     	}
     	public Type visit(ETimes p, Object o) {
-			return isEqualTypes(isNumType(p.exp_1.accept(this, null)),
-								isNumType(p.exp_2.accept(this, null)));
+			return p.setType(isEqualTypes(isNumType(p.exp_1.accept(this, null)),
+								isNumType(p.exp_2.accept(this, null))));
     	}
     	public Type visit(EDiv p, Object o) {
-    		return isEqualTypes(isNumType(p.exp_1.accept(this, null)),
-								isNumType(p.exp_2.accept(this, null)));
+    		return p.setType(isEqualTypes(isNumType(p.exp_1.accept(this, null)),
+								isNumType(p.exp_2.accept(this, null))));
     	}
     	public Type visit(EPlus p, Object o) {
-    		return isEqualTypes(isNumType(p.exp_1.accept(this, null)),
-								isNumType(p.exp_2.accept(this, null)));
+    		return p.setType(isEqualTypes(isNumType(p.exp_1.accept(this, null)),
+								isNumType(p.exp_2.accept(this, null))));
     	}
     	public Type visit(EMinus p, Object o) {
-    		return isEqualTypes(isNumType(p.exp_1.accept(this, null)),
-								isNumType(p.exp_2.accept(this, null)));
+    		return p.setType(isEqualTypes(isNumType(p.exp_1.accept(this, null)),
+								isNumType(p.exp_2.accept(this, null))));
     	}
 
     	public Type visit(ELt p, Object o) {
@@ -267,28 +267,28 @@ public class TypeChecker {
     		Type t2 = isNumType(p.exp_2.accept(this, null));
 
     		Type dummy = isEqualTypes(t1,t2);
-    		return BOOL;
+    		return p.setType(BOOL);
     	}
     	public Type visit(EGt p, Object o) {
     		Type t1 = isNumType(p.exp_1.accept(this, null));
     		Type t2 = isNumType(p.exp_2.accept(this, null));
 
     		Type dummy = isEqualTypes(t1,t2);
-    		return BOOL;
+    		return p.setType(BOOL);
     	}
     	public Type visit(ELtEq p, Object o) {
     		Type t1 = isNumType(p.exp_1.accept(this, null));
     		Type t2 = isNumType(p.exp_2.accept(this, null));
 
     		Type dummy = isEqualTypes(t1,t2);
-    		return BOOL;
+    		return p.setType(BOOL);
     	}
     	public Type visit(EGtEq p, Object o) {
     		Type t1 = isNumType(p.exp_1.accept(this, null));
     		Type t2 = isNumType(p.exp_2.accept(this, null));
 
     		Type dummy = isEqualTypes(t1,t2);
-    		return BOOL;
+    		return p.setType(BOOL);
     	}
 
     	// Equality/inequality
@@ -297,7 +297,7 @@ public class TypeChecker {
     		Type t2 = p.exp_2.accept(this, null);
 
     		if (!isEqualTypes(t1,t2).equals(VOID)) {
-    			return BOOL;
+    			return p.setType(BOOL);
     		}
     		throw new TypeException("Equality cannot operate on void");
     	}
@@ -306,7 +306,7 @@ public class TypeChecker {
     		Type t2 = p.exp_2.accept(this, null);
 
     		if (!isEqualTypes(t1,t2).equals(VOID)) {
-    			return BOOL;
+    			return p.setType(BOOL);
     		}
     		throw new TypeException("Inequality cannot operate on void");
     	}
@@ -319,7 +319,7 @@ public class TypeChecker {
     		check(BOOL,t1);
     		check(BOOL,t2);
 
-    		return isEqualTypes(t1,t2);
+    		return p.setType(isEqualTypes(t1,t2));
     	}
     	public Type visit(EOr p, Object o) {
     		Type t1 = p.exp_1.accept(this, null);
@@ -328,14 +328,14 @@ public class TypeChecker {
     		check(BOOL,t1);
     		check(BOOL,t2);
 
-    		return isEqualTypes(t1,t2);
+    		return p.setType(isEqualTypes(t1,t2));
     	}
 
     	public Type visit(EAss p, Object o) {
     		// Check if variable is declared and same type as expression
     		Type t = isEqualTypes(lookupVar(p.id_), p.exp_.accept(this, null));
 
-    		return t;
+    		return p.setType(t);
     	}
 
     }
