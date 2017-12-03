@@ -27,10 +27,10 @@ public class TypeChecker {
     	public Object visit(PDefs p, Object o) {
     		signature = new HashMap<String,FunType>();
     		// TODO add primitive functions (printInt, printDouble etc)
-    		signature.put("printInt", new FunType(singleArg(INT), VOID));
-    		signature.put("readInt", new FunType(new ListArg(), INT));
-    		signature.put("printDouble", new FunType(singleArg(DOUBLE), VOID));
-    		signature.put("readDouble", new FunType(new ListArg(), DOUBLE));
+    		signature.put("printInt", new FunType(VOID, singleArg(INT)));
+    		signature.put("readInt", new FunType(INT, new ListArg()));
+    		signature.put("printDouble", new FunType(VOID, singleArg(DOUBLE)));
+    		signature.put("readDouble", new FunType(DOUBLE, new ListArg()));
 
     		// Build symbol table
     		for (Def d : p.listdef_) {
@@ -42,7 +42,7 @@ public class TypeChecker {
     		if (ft == null) {
     			throw new TypeException("function main undefined");
     		}
-    		if (!ft.retType.equals(INT)) {
+    		if (!ft.returnType.equals(INT)) {
     			throw new TypeException("function main should return int");
     		}
     		if (!ft.args.isEmpty()) {
@@ -72,7 +72,7 @@ public class TypeChecker {
     			throw new TypeException("Function " + p.id_ + " already defined");
     		}
     		// Add function to signature
-    		FunType ft = new FunType(p.listarg_, p.type_);
+    		FunType ft = new FunType(p.type_, p.listarg_);
     		signature.put(p.id_, ft);
 
     		return null;
@@ -103,6 +103,7 @@ public class TypeChecker {
     }
 
     // Function Type
+    /*
     public class FunType {
     	public ListArg args;
     	public Type retType;
@@ -112,6 +113,7 @@ public class TypeChecker {
     		retType = ty;
     	}
     }
+    */
 
     // Argument Visitor
     public class ArgVisitor implements Arg.Visitor<Object,Object> {
@@ -227,7 +229,7 @@ public class TypeChecker {
     			check(a.type_, e.accept(new ExpVisitor(), null));
     			i++;
     		}
-    		return p.setType(ft.retType);
+    		return p.setType(ft.returnType);
     	}
 
     	// Arithmetics and comparison

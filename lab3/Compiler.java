@@ -1,12 +1,12 @@
-import CPP.Absyn.*;
 import java.util.*;
+import CPP.Absyn.*;
 
 public class Compiler {
 
 	// Compiler output
 	LinkedList<String> output;
 	// Signature map
-	Map<String,FunType> signature;
+	Map<String,Fun> signature;
 	// Context list
 	List<Map<String,CxtEntry>> context;
 
@@ -19,8 +19,7 @@ public class Compiler {
 
 	boolean returned = false;
 
-	// TODO predef types int, double, bool and void
-
+	// Variable info
 	public class CxtEntry {
 		final Type type;
 		final Integer addr;
@@ -31,25 +30,30 @@ public class Compiler {
 		}
 	}
 
+	// Types
 	public final Type BOOL = new Type_bool();
 	public final Type INT = new Type_int();
 	public final Type DOUBLE = new Type_double();
 	public final Type VOID = new Type_void();
 
+	// Global name var
+	String globalName;
 
 	public void compile(String name, Program p) {
+		globalName = name;
 		// Init output
 		output = new LinkedList();
 
-		// output boiler
+		// output boilerplate
 		output.add(".class public " + name + "\n");
 		output.add(".super java/lang/Object\n");
 		output.add("\n");
 		output.add(".method public <init>()V\n");
 		output.add("  .limit locals 1\n");
+		output.add("  .limit stack  1\n");
 		output.add("\n");
 		output.add("  aload_0\n");
-		output.add("  invocespecial java/lang/Object/<init>()V\n");
+		output.add("  invokespecial java/lang/Object/<init>()V\n");
 		output.add("  return\n");
 		output.add("\n");
 		output.add(".end method\n");
@@ -85,26 +89,34 @@ public class Compiler {
 		// readDouble
 		signature.put("readDouble", new Fun("Runtime/readDouble", new FunType(DOUBLE, new ListArg())));
 
-		// Add functions to signature
-		for (Def d : (PDefs)p.listdef_) {
-			DFun def = (DFun)d;
-			signature.put(def.id_, new Fun(name + "/" + def.id_, new FunType(def.type_, def.listarg_)));
-		}
 
-		// Run compiler/visit whole program
+		// Add functions to signature and run compiler
 		p.accept(new ProgramVisitor(), null);
 
 		// Output result
 		for (String s : output) {
-			System.out.println(s);
+			System.out.print(s);
 		}
 	}
 
 	public class ProgramVisitor implements Program.Visitor<Object,Object> {
 		public Object visit(PDefs p, Object o) {
+
+			// Add user-defined functions to signature
+			for (Def d : p.listdef_) {
+				d.accept(new DefToSigVisitor(), null);
+			}
+
 			for (Def d : p.listdef_) {
 				d.accept(new DefVisitor(), null);
 			}
+			return null;
+		}
+	}
+
+	public class DefToSigVisitor implements Def.Visitor<Object,Object> {
+		public Object visit(DFun p, Object o) {
+			signature.put(p.id_, new Fun(globalName + "/" + p.id_, new FunType(p.type_, p.listarg_)));
 			return null;
 		}
 	}
@@ -193,7 +205,119 @@ public class Compiler {
 	}
 
 	public class ExpVisitor implements Exp.Visitor<Object,Object> {
+		public Object visit(ETrue p, Object o) {
+			return null;
+		}
+		public Object visit(EFalse p, Object o) {
+			return null;
+		}
+		public Object visit(EInt p, Object o) {
+			emit (new IConst(p.integer_));
+			return null;
+		}
+		public Object visit(EDouble p, Object o) {
+			return null;
+		}
+		public Object visit(EId p, Object o) {
+			CxtEntry ce = lookupVar(p.id_);
+			emit(new Load(ce.type, ce.addr));
+			return null;
+		}
+		public Object visit(EApp p, Object o) {
+			for (Exp e : p.listexp_) {
+				e.accept(this, null);
+			}
+			Fun f = signature.get(p.id_);
+			emit(new Call(f));
+			return null;
+		}
+		public Object visit(EPostIncr p, Object o) {
+			CxtEntry ce = lookupVar(p.id_);
+			emit(new Load(ce.type, ce.addr));
+			emit(new Dup(ce.type));
+			emit(new IConst(1));
+			emit(new Add(ce.type));
+			emit(new Store(ce.type, ce.addr));
+			return null;
+		}
+		public Object visit(EPostDecr p, Object o) {
+			CxtEntry ce = lookupVar(p.id_);
+			emit(new Load(ce.type, ce.addr));
+			emit(new Dup(ce.type));
+			emit(new IConst(1));
+			emit(new Sub(ce.type));
+			emit(new Store(ce.type, ce.addr));
+			return null;
+		}
+		public Object visit(EPreIncr p, Object o) {
+			CxtEntry ce = lookupVar(p.id_);
+			emit(new Load(ce.type, ce.addr));
+			emit(new IConst(1));
+			emit(new Add(ce.type));
+			emit(new Store(ce.type, ce.addr));
+			emit(new Load(ce.type, ce.addr));
+			return null;
+		}
+		public Object visit(EPreDecr p, Object o) {
+			CxtEntry ce = lookupVar(p.id_);
+			emit(new Load(ce.type, ce.addr));
+			emit(new IConst(1));
+			emit(new Sub(ce.type));
+			emit(new Store(ce.type, ce.addr));
+			emit(new Load(ce.type, ce.addr));
+			return null;
+		}
+		public Object visit(ETimes p, Object o) {
+			return null;
+		}
+		public Object visit(EDiv p, Object o) {
+			return null;
+		}
+		public Object visit(EPlus p, Object o) {
+			//Exp e1 = p.exp_1.accept(this, null);
+			//Exp e2 = p.exp_2.accept(this, null);
 
+			// BIG ASS TODO
+
+			CxtEntry ce1 = lookupVar(((EId)p.exp_1).id_);
+			CxtEntry ce2 = lookupVar(((EId)p.exp_2).id_);
+
+			emit(new Load(ce1.type, ce1.addr));
+			emit(new Load(ce2.type, ce2.addr));
+			emit(new Add(ce1.type));
+
+			return null;
+		}
+		public Object visit(EMinus p, Object o) {
+			return null;
+		}
+		public Object visit(ELt p, Object o) {
+			return null;
+		}
+		public Object visit(EGt p, Object o) {
+			return null;
+		}
+		public Object visit(ELtEq p, Object o) {
+			return null;
+		}
+		public Object visit(EGtEq p, Object o) {
+			return null;
+		}
+		public Object visit(EEq p, Object o) {
+			return null;
+		}
+		public Object visit(ENEq p, Object o) {
+			return null;
+		}
+		public Object visit(EAnd p, Object o) {
+			return null;
+		}
+		public Object visit(EOr p, Object o) {
+			return null;
+		}
+		public Object visit(EAss p, Object o) {
+			return null;
+		}
 	}
 
 	void emit(Code c) {
@@ -218,8 +342,8 @@ public class Compiler {
 	}
 
 	CxtEntry lookupVar(String s) {
-		Map m = context.get(0);
-		return null;
+		Map<String,CxtEntry> m = context.get(0);
+		return m.get(s);
 		//throw new RuntimeException("Impossible: unbound variable " + x);
 	}
 
@@ -253,7 +377,7 @@ public class Compiler {
 		public Object visit(Store a)   { decStack(a.type); return null; }
 		public Object visit(Load a)    { incStack(a.type); return null; }
 		public Object visit(IConst c)  { incStack(INT);    return null; }
-		public Object visit(Dup c)     { intStack(c.type); return null; }
+		public Object visit(Dup c)     { incStack(c.type); return null; }
 		public Object visit(Pop c)     { decStack(c.type); return null; }
 		public Object visit(Return c)  { decStack(c.type); return null; }
 
@@ -267,6 +391,7 @@ public class Compiler {
 		}
 
 		public Object visit(Add c)     { decStack(c.type); return null; }
+		public Object visit(Sub c)     { decStack(c.type); return null; }
 	}
 
 }

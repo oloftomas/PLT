@@ -1,47 +1,45 @@
-JAVAC=javac
-JAVAC_FLAGS=-sourcepath .
-JAVA=java
-JAVA_FLAGS=
-PARSER=${JAVA} ${JAVA_FLAGS} java_cup.Main
-PARSER_FLAGS=-nopositions -expect 100
-LEXER=${JAVA} ${JAVA_FLAGS} JLex.Main
-LEXER_FLAGS=
-all: test
+# Makefile for lab2 in java
 
-test: absyn CPP/Yylex.class CPP/PrettyPrinter.class CPP/Test.class CPP/ComposVisitor.class CPP/AbstractVisitor.class CPP/FoldVisitor.class CPP/AllVisitor.class CPP/parser.class CPP/sym.class CPP/Test.class
+JAVAC = javac
+JAVAC_FLAGS = -sourcepath .
 
-.PHONY: absyn
+JAVA = java
 
-%.class: %.java
-	${JAVAC} ${JAVAC_FLAGS} $^
+# Name of generated .cup file for bnfc 2.8.1
+CUPFILE = CPP/_cup.cup
+# WAS: CUPFILE = CPP/CPP.cup
 
-absyn: CPP/Absyn/Program.java CPP/Absyn/PDefs.java CPP/Absyn/Def.java CPP/Absyn/DFun.java CPP/Absyn/ListDef.java CPP/Absyn/Arg.java CPP/Absyn/ADecl.java CPP/Absyn/ListArg.java CPP/Absyn/Stm.java CPP/Absyn/SExp.java CPP/Absyn/SDecls.java CPP/Absyn/SInit.java CPP/Absyn/SReturn.java CPP/Absyn/SWhile.java CPP/Absyn/SBlock.java CPP/Absyn/SIfElse.java CPP/Absyn/ListStm.java CPP/Absyn/Exp.java CPP/Absyn/ETrue.java CPP/Absyn/EFalse.java CPP/Absyn/EInt.java CPP/Absyn/EDouble.java CPP/Absyn/EId.java CPP/Absyn/EApp.java CPP/Absyn/EPostIncr.java CPP/Absyn/EPostDecr.java CPP/Absyn/EPreIncr.java CPP/Absyn/EPreDecr.java CPP/Absyn/ETimes.java CPP/Absyn/EDiv.java CPP/Absyn/EPlus.java CPP/Absyn/EMinus.java CPP/Absyn/ELt.java CPP/Absyn/EGt.java CPP/Absyn/ELtEq.java CPP/Absyn/EGtEq.java CPP/Absyn/EEq.java CPP/Absyn/ENEq.java CPP/Absyn/EAnd.java CPP/Absyn/EOr.java CPP/Absyn/EAss.java CPP/Absyn/ListExp.java CPP/Absyn/Type.java CPP/Absyn/Type_bool.java CPP/Absyn/Type_int.java CPP/Absyn/Type_double.java CPP/Absyn/Type_void.java CPP/Absyn/ListId.java
-	${JAVAC} ${JAVAC_FLAGS} $^
+.PHONY: bnfc lab3 clean distclean vclean
 
-CPP/Yylex.java: CPP/Yylex
-	${LEXER} ${LEXER_FLAGS} CPP/Yylex
+all: bnfc lab3 TypeChecker Compiler
 
-CPP/parser.java CPP/sym.java: CPP/_cup.cup
-	${PARSER} ${PARSER_FLAGS} CPP/_cup.cup
-	mv parser.java sym.java CPP/
+lab3:
+	${JAVAC} ${JAVAC_FLAGS} lab3.java 
+	chmod a+x lab3
 
-CPP/Yylex.class: CPP/Yylex.java CPP/parser.java CPP/sym.java
+TypeChecker:
+	${JAVAC} ${JAVAC_FLAGS} TypeChecker.java 
 
-CPP/sym.class: CPP/sym.java
+Compiler:
+	${JAVAC} ${JAVAC_FLAGS} Compiler.java
 
-CPP/parser.class: CPP/parser.java CPP/sym.java
-
-CPP/PrettyPrinter.class: CPP/PrettyPrinter.java
+bnfc:
+	bnfc -java CPP.cf
+	${JAVA} ${JAVA_FLAGS} JLex.Main CPP/Yylex
+	${JAVA} ${JAVA_FLAGS} java_cup.Main -nopositions -expect 100 $(CUPFILE)
+	mv sym.java parser.java CPP
 
 clean:
-	rm -f CPP/Absyn/*.class CPP/*.class
+	 -rm -f CPP/Absyn/*.class CPP/*.class
+	 -rm -f .dvi CPP.aux CPP.log CPP.ps  *.class
 
 distclean: vclean
 
-vclean:
-	 rm -f CPP/Absyn/Program.java CPP/Absyn/PDefs.java CPP/Absyn/Def.java CPP/Absyn/DFun.java CPP/Absyn/ListDef.java CPP/Absyn/Arg.java CPP/Absyn/ADecl.java CPP/Absyn/ListArg.java CPP/Absyn/Stm.java CPP/Absyn/SExp.java CPP/Absyn/SDecls.java CPP/Absyn/SInit.java CPP/Absyn/SReturn.java CPP/Absyn/SWhile.java CPP/Absyn/SBlock.java CPP/Absyn/SIfElse.java CPP/Absyn/ListStm.java CPP/Absyn/Exp.java CPP/Absyn/ETrue.java CPP/Absyn/EFalse.java CPP/Absyn/EInt.java CPP/Absyn/EDouble.java CPP/Absyn/EId.java CPP/Absyn/EApp.java CPP/Absyn/EPostIncr.java CPP/Absyn/EPostDecr.java CPP/Absyn/EPreIncr.java CPP/Absyn/EPreDecr.java CPP/Absyn/ETimes.java CPP/Absyn/EDiv.java CPP/Absyn/EPlus.java CPP/Absyn/EMinus.java CPP/Absyn/ELt.java CPP/Absyn/EGt.java CPP/Absyn/ELtEq.java CPP/Absyn/EGtEq.java CPP/Absyn/EEq.java CPP/Absyn/ENEq.java CPP/Absyn/EAnd.java CPP/Absyn/EOr.java CPP/Absyn/EAss.java CPP/Absyn/ListExp.java CPP/Absyn/Type.java CPP/Absyn/Type_bool.java CPP/Absyn/Type_int.java CPP/Absyn/Type_double.java CPP/Absyn/Type_void.java CPP/Absyn/ListId.java CPP/Absyn/Program.class CPP/Absyn/PDefs.class CPP/Absyn/Def.class CPP/Absyn/DFun.class CPP/Absyn/ListDef.class CPP/Absyn/Arg.class CPP/Absyn/ADecl.class CPP/Absyn/ListArg.class CPP/Absyn/Stm.class CPP/Absyn/SExp.class CPP/Absyn/SDecls.class CPP/Absyn/SInit.class CPP/Absyn/SReturn.class CPP/Absyn/SWhile.class CPP/Absyn/SBlock.class CPP/Absyn/SIfElse.class CPP/Absyn/ListStm.class CPP/Absyn/Exp.class CPP/Absyn/ETrue.class CPP/Absyn/EFalse.class CPP/Absyn/EInt.class CPP/Absyn/EDouble.class CPP/Absyn/EId.class CPP/Absyn/EApp.class CPP/Absyn/EPostIncr.class CPP/Absyn/EPostDecr.class CPP/Absyn/EPreIncr.class CPP/Absyn/EPreDecr.class CPP/Absyn/ETimes.class CPP/Absyn/EDiv.class CPP/Absyn/EPlus.class CPP/Absyn/EMinus.class CPP/Absyn/ELt.class CPP/Absyn/EGt.class CPP/Absyn/ELtEq.class CPP/Absyn/EGtEq.class CPP/Absyn/EEq.class CPP/Absyn/ENEq.class CPP/Absyn/EAnd.class CPP/Absyn/EOr.class CPP/Absyn/EAss.class CPP/Absyn/ListExp.class CPP/Absyn/Type.class CPP/Absyn/Type_bool.class CPP/Absyn/Type_int.class CPP/Absyn/Type_double.class CPP/Absyn/Type_void.class CPP/Absyn/ListId.class
-	 rm -f CPP/Absyn/*.class
-	 rmdir CPP/Absyn/
-	 rm -f CPP/Yylex CPP/_cup.cup CPP/Yylex.java CPP/VisitSkel.java CPP/ComposVisitor.java CPP/AbstractVisitor.java CPP/FoldVisitor.java CPP/AllVisitor.java CPP/PrettyPrinter.java CPP/Skeleton.java CPP/Test.java CPP/parser.java CPP/sym.java CPP/*.class
-	 rm -f Makefile
-	 rmdir -p CPP/
+vclean: clean
+	 -rm -f CPP/Absyn/*.java
+	 -rmdir CPP/Absyn/
+	 -rm -f CPP.tex CPP.dvi CPP.aux CPP.log CPP.ps
+	 -rm -f CPP/Yylex $(CUPFILE) CPP/Yylex.java CPP/VisitSkel.java CPP/ComposVisitor.java CPP/AbstractVisitor.java CPP/FoldVisitor.java CPP/AllVisitor.java CPP/PrettyPrinter.java CPP/Skeleton.java CPP/Test.java CPP/sym.java CPP/parser.java CPP/*.class
+	 -rmdir -p CPP/
+
+# EOF

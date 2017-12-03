@@ -47,7 +47,7 @@ public class lab3 {
 
     // Remove extension from input file
     private static String stripSuffix(String fileName) {
-        int divider = fileName.lastIndefOf('.');
+        int divider = fileName.lastIndexOf('.');
         if (divider <= 0) {
             return fileName;
         } else {
