@@ -194,21 +194,38 @@ public class Compiler {
 			return null;
 		}
 		public Object visit(SWhile p, Object o) {
+			// Set top label
+			output.add(new Label(nextLabel++).toJVM() + ":\n");
+			p.exp_.accept(new ExpVisitor(), null);
+			// if exp == 0, exit while
+			emit(new IConst(0));
+			output.add("if_icmpeq " + new Label(nextLabel).toJVM() + "\n");
+			// if exp == true do statement
+
 			return null;
 		}
 		public Object visit(SBlock p, Object o) {
+			// TODO newBlock popBlock ?
+			for (Stm s : p.liststm_) {
+				s.accept(new StmVisitor(), null);
+			}
 			return null;
 		}
 		public Object visit(SIfElse p, Object o) {
+			// set labels
+			// test expression
+			// do correct statement
 			return null;
 		}
 	}
 
 	public class ExpVisitor implements Exp.Visitor<Object,Object> {
 		public Object visit(ETrue p, Object o) {
+			emit(new IConst(1));
 			return null;
 		}
 		public Object visit(EFalse p, Object o) {
+			emit(new IConst(0));
 			return null;
 		}
 		public Object visit(EInt p, Object o) {
@@ -268,27 +285,27 @@ public class Compiler {
 			return null;
 		}
 		public Object visit(ETimes p, Object o) {
+			p.exp_1.accept(this, null);
+			p.exp_2.accept(this, null);
+			emit(new Mul(p.getType()));
 			return null;
 		}
 		public Object visit(EDiv p, Object o) {
+			p.exp_1.accept(this, null);
+			p.exp_2.accept(this, null);
+			emit(new Div(p.getType()));
 			return null;
 		}
 		public Object visit(EPlus p, Object o) {
-			//Exp e1 = p.exp_1.accept(this, null);
-			//Exp e2 = p.exp_2.accept(this, null);
-
-			// BIG ASS TODO
-
-			CxtEntry ce1 = lookupVar(((EId)p.exp_1).id_);
-			CxtEntry ce2 = lookupVar(((EId)p.exp_2).id_);
-
-			emit(new Load(ce1.type, ce1.addr));
-			emit(new Load(ce2.type, ce2.addr));
-			emit(new Add(ce1.type));
-
+			p.exp_1.accept(this, null);
+			p.exp_2.accept(this, null);
+			emit(new Add(p.getType()));
 			return null;
 		}
 		public Object visit(EMinus p, Object o) {
+			p.exp_1.accept(this, null);
+			p.exp_2.accept(this, null);
+			emit(new Sub(p.getType()));
 			return null;
 		}
 		public Object visit(ELt p, Object o) {
@@ -310,12 +327,17 @@ public class Compiler {
 			return null;
 		}
 		public Object visit(EAnd p, Object o) {
+
 			return null;
 		}
 		public Object visit(EOr p, Object o) {
 			return null;
 		}
 		public Object visit(EAss p, Object o) {
+			CxtEntry ce = lookupVar(p.id_);
+			p.exp_.accept(this, null);
+			emit(new Store(ce.type, ce.addr));
+			emit(new Load(ce.type, ce.addr));
 			return null;
 		}
 	}
@@ -342,9 +364,13 @@ public class Compiler {
 	}
 
 	CxtEntry lookupVar(String s) {
-		Map<String,CxtEntry> m = context.get(0);
-		return m.get(s);
-		//throw new RuntimeException("Impossible: unbound variable " + x);
+		for (Map<String,CxtEntry> m  : context) {
+			CxtEntry ce = m.get(s);
+			if (ce != null) {
+				return ce;
+			}
+		}
+		throw new RuntimeException("Impossible: unbound variable " + s);
 	}
 
 	// Adjust stack depending on c
@@ -392,6 +418,11 @@ public class Compiler {
 
 		public Object visit(Add c)     { decStack(c.type); return null; }
 		public Object visit(Sub c)     { decStack(c.type); return null; }
+		public Object visit(Mul c)     { decStack(c.type); return null; }
+		public Object visit(Div c)     { decStack(c.type); return null; }
+		public Object visit(Lt  c)     { decStack(c.type); return null; }
+		public Object visit(And c)     { decStack(BOOL);   return null; }
+		public Object visit(Or  c)     { decStack(BOOL);   return null; }
 	}
 
 }

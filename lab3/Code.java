@@ -131,6 +131,50 @@ class Sub extends Code {
     }
 }
 
+class Mul extends Code {
+    public Type type;
+    public Mul (Type type) {
+        this.type = type;
+    }
+    public <R> R accept (CodeVisitor<R> v) {
+        return v.visit (this);
+    }
+}
+
+class Div extends Code {
+    public Type type;
+    public Div (Type type) {
+        this.type = type;
+    }
+    public <R> R accept (CodeVisitor<R> v) {
+        return v.visit (this);
+    }
+}
+
+class Lt extends Code {
+    public Type type;
+    public Lt (Type type) {
+        this.type = type;
+    }
+    public <R> R accept (CodeVisitor<R> v) {
+        return v.visit (this);
+    }
+}
+
+class And extends Code {
+    public And () {}
+    public <R> R accept (CodeVisitor<R> v) {
+        return v.visit(this);
+    }
+}
+
+class Or extends Code {
+    public Or () {}
+    public <R> R accept (CodeVisitor<R> v) {
+        return v.visit(this);
+    }
+}
+
 interface CodeVisitor<R> {
     public R visit (Comment c);
     public R visit (Store c);
@@ -142,6 +186,11 @@ interface CodeVisitor<R> {
     public R visit (Call c);
     public R visit (Add c);
     public R visit (Sub c);
+    public R visit (Mul c);
+    public R visit (Div c);
+    public R visit (Lt c);
+    public R visit (And c);
+    public R visit (Or c);
 }
 
 class CodeToJVM implements CodeVisitor<String> {
@@ -200,6 +249,27 @@ class CodeToJVM implements CodeVisitor<String> {
 
   public String visit (Sub c) {
     return (c.type instanceof Type_double ? "d" : "i") + "sub\n";
+  }
+
+  public String visit (Mul c) {
+    return (c.type instanceof Type_double ? "d" : "i") + "mul\n";
+  }
+
+  public String visit (Div c) {
+    return (c.type instanceof Type_double ? "d" : "i") + "div\n";
+  }
+
+  public String visit (Lt c) {
+        // TODO
+        return "if_icmplt ";
+  }
+
+  public String visit (And c) {
+    return ("iand\n");
+  }
+
+  public String visit (Or c) {
+    return ("ior\n");
   }
 
 }

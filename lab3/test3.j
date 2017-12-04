@@ -1,4 +1,4 @@
-.class public test2
+.class public test3
 .super java/lang/Object
 
 .method public <init>()V
@@ -15,7 +15,7 @@
   .limit locals 1
   .limit stack  1
 
-  invokestatic test2/main()I
+  invokestatic test3/main()I
   pop
   return
 
@@ -26,20 +26,15 @@
   .limit locals 2
   .limit stack 2
 
-  bipush 20
+  iconst_0
   istore_0
-  iconst_4
-  istore_1
-  iload_0
   iconst_1
-  isub
+  iconst_2
+  if_icmplt   L0
   istore_1
-  iload_1
-  pop
-  iload_0
-  iload_1
-  iadd
-  invokestatic Runtime/printInt(I)V
+  L0:
+  iconst_0
+  if_icmpeq L1
   iconst_0
   ireturn
 
