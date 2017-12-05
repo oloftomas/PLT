@@ -1,13 +1,9 @@
 int main() {
 	int x = 0;
+	int y = 10;
 
-	bool b = 1 < 2;
-
-	while (x == 0) {
-		int i = 1;
-		int j = 2;
-		i = i + j;
-		printInt(i);
+	while(y != x) {
+		printInt(y--);
 	}
 	return 0;
 }

@@ -15,13 +15,19 @@ class Fun {
     }
 }
 
-class Label {
+// TEST this extends Code
+class Label extends Code {
     public int label;
     public Label (int label) {
         this.label = label;
     }
+    /*
     public String toJVM() {
       return "L" + label;
+    }
+    */
+    public <R> R accept(CodeVisitor<R> v) {
+        return v.visit(this);
     }
 }
 
@@ -151,10 +157,84 @@ class Div extends Code {
     }
 }
 
-class Lt extends Code {
+class IfLt extends Code {
     public Type type;
-    public Lt (Type type) {
+    public Label label;
+    public IfLt (Type type, Label label) {
         this.type = type;
+        this.label = label;
+    }
+    public <R> R accept (CodeVisitor<R> v) {
+        return v.visit (this);
+    }
+}
+
+class IfGt extends Code {
+    public Type type;
+    public Label label;
+    public IfGt (Type type, Label label) {
+        this.type = type;
+        this.label = label;
+    }
+    public <R> R accept (CodeVisitor<R> v) {
+        return v.visit (this);
+    }
+}
+
+class IfLtEq extends Code {
+    public Type type;
+    public Label label;
+    public IfLtEq (Type type, Label label) {
+        this.type = type;
+        this.label = label;
+    }
+    public <R> R accept (CodeVisitor<R> v) {
+        return v.visit (this);
+    }
+}
+
+class IfGtEq extends Code {
+    public Type type;
+    public Label label;
+    public IfGtEq (Type type, Label label) {
+        this.type = type;
+        this.label = label;
+    }
+    public <R> R accept (CodeVisitor<R> v) {
+        return v.visit (this);
+    }
+}
+
+class IfEq extends Code {
+    public Type type;
+    public Label label;
+    public IfEq (Type type, Label label) {
+        this.type = type;
+        this.label = label;
+    }
+    public <R> R accept (CodeVisitor<R> v) {
+        return v.visit (this);
+    }
+}
+
+class IfNEq extends Code {
+    public Type type;
+    public Label label;
+    public IfNEq (Type type, Label label) {
+        this.type = type;
+        this.label = label;
+    }
+    public <R> R accept (CodeVisitor<R> v) {
+        return v.visit (this);
+    }
+}
+
+class IfZ extends Code {
+    public Type type;
+    public Label label;
+    public IfZ (Type type, Label label) {
+        this.type = type;
+        this.label = label;
     }
     public <R> R accept (CodeVisitor<R> v) {
         return v.visit (this);
@@ -175,7 +255,18 @@ class Or extends Code {
     }
 }
 
+class Goto extends Code {
+    public Label label;
+    public Goto(Label label) {
+        this.label = label;
+    }
+    public <R> R accept (CodeVisitor<R> v) {
+        return v.visit(this);
+    }
+}
+
 interface CodeVisitor<R> {
+    public R visit (Label c);
     public R visit (Comment c);
     public R visit (Store c);
     public R visit (Load c);
@@ -188,12 +279,23 @@ interface CodeVisitor<R> {
     public R visit (Sub c);
     public R visit (Mul c);
     public R visit (Div c);
-    public R visit (Lt c);
+    public R visit (IfLt c);
+    public R visit (IfGt c);
+    public R visit (IfLtEq c);
+    public R visit (IfGtEq c);
+    public R visit (IfEq c);
+    public R visit (IfNEq c);
+    public R visit (IfZ c);
     public R visit (And c);
     public R visit (Or c);
+    public R visit (Goto c);
 }
 
 class CodeToJVM implements CodeVisitor<String> {
+
+  public String visit (Label c) {
+    return "L" + c.label + ":\n";
+  }
 
   public String visit (Comment c) {
     return "\n  ;; " + c.comment;
@@ -259,9 +361,38 @@ class CodeToJVM implements CodeVisitor<String> {
     return (c.type instanceof Type_double ? "d" : "i") + "div\n";
   }
 
-  public String visit (Lt c) {
-        // TODO
-        return "if_icmplt ";
+  public String visit (IfLt c) {
+    // TODO for doubles
+    return "if_icmplt " + "L" + c.label.label + "\n";
+  }
+
+  public String visit (IfGt c) {
+    // TODO for doubles
+    return "if_icmpgt " + "L" + c.label.label + "\n";
+  }
+
+  public String visit (IfLtEq c) {
+    // TODO for doubles
+    return "if_icmple " + "L" + c.label.label + "\n";
+  }
+
+  public String visit (IfGtEq c) {
+    // TODO for doubles
+    return "if_icmpge " + "L" + c.label.label + "\n";
+  }
+
+  public String visit (IfEq c) {
+    // TODO for doubles
+    return "if_icmpeq " + "L" + c.label.label + "\n";
+  }
+
+  public String visit (IfNEq c) {
+    // TODO for doubles
+    return "if_icmpne " + "L" + c.label.label + "\n";
+  }
+
+  public String visit (IfZ c) {
+    return "ifeq " + "L" + c.label.label + "\n";
   }
 
   public String visit (And c) {
@@ -270,6 +401,10 @@ class CodeToJVM implements CodeVisitor<String> {
 
   public String visit (Or c) {
     return ("ior\n");
+  }
+
+  public String visit (Goto c) {
+    return "goto L" + c.label.label + "\n";
   }
 
 }

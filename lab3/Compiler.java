@@ -194,32 +194,49 @@ public class Compiler {
 			return null;
 		}
 		public Object visit(SWhile p, Object o) {
-			// Set top label
-			output.add(new Label(nextLabel++).toJVM() + ":\n");
-			p.exp_.accept(new ExpVisitor(), null);
-			// if exp == 0, exit while
-			emit(new IConst(0));
-			output.add("if_icmpeq " + new Label(nextLabel).toJVM() + "\n");
-			// if exp == true do statement
+			// Set top and end labels
+			Label topWhile = new Label(nextLabel++);
+			Label endWhile = new Label(nextLabel++);
 
+			emit(topWhile);
+			p.exp_.accept(new ExpVisitor(), null);
+			// check if exp == 0(false)
+			emit(new IfZ(p.exp_.getType(), endWhile));
+			// if exp == true do statement
+			p.stm_.accept(new StmVisitor(), null);
+			// loop from topWhile
+			emit(new Goto(topWhile));
+			emit(endWhile);
 			return null;
 		}
 		public Object visit(SBlock p, Object o) {
-			// TODO newBlock popBlock ?
+			newBlock();
 			for (Stm s : p.liststm_) {
 				s.accept(new StmVisitor(), null);
 			}
+			popBlock();
 			return null;
 		}
 		public Object visit(SIfElse p, Object o) {
-			// set labels
-			// test expression
-			// do correct statement
+			Label endIf = new Label(nextLabel++);
+			Label elseLabel = new Label(nextLabel++);
+			// Check expression
+			p.exp_.accept(new ExpVisitor(), null);
+			// If false, goto else
+			emit(new IfZ(p.exp_.getType(), elseLabel));
+			// If true, do if statements
+			p.stm_1.accept(new StmVisitor(), null);
+			emit(new Goto(endIf));
+			// Else statements
+			emit(elseLabel);
+			p.stm_2.accept(new StmVisitor(), null);
+			emit(endIf);
 			return null;
 		}
 	}
 
 	public class ExpVisitor implements Exp.Visitor<Object,Object> {
+		// Literals
 		public Object visit(ETrue p, Object o) {
 			emit(new IConst(1));
 			return null;
@@ -240,6 +257,8 @@ public class Compiler {
 			emit(new Load(ce.type, ce.addr));
 			return null;
 		}
+
+		// Function call
 		public Object visit(EApp p, Object o) {
 			for (Exp e : p.listexp_) {
 				e.accept(this, null);
@@ -248,6 +267,8 @@ public class Compiler {
 			emit(new Call(f));
 			return null;
 		}
+
+		// Arithmetic
 		public Object visit(EPostIncr p, Object o) {
 			CxtEntry ce = lookupVar(p.id_);
 			emit(new Load(ce.type, ce.addr));
@@ -308,31 +329,93 @@ public class Compiler {
 			emit(new Sub(p.getType()));
 			return null;
 		}
+
+		// Comparison, needs more to work with doubles
 		public Object visit(ELt p, Object o) {
+			// put a 1 on the stack (keep this if true)
+			emit(new IConst(1));
+			p.exp_1.accept(this, null);
+			p.exp_2.accept(this, null);
+			Label trueLabel = new Label(nextLabel++);
+			emit(new IfLt(p.exp_1.getType(), trueLabel));
+			// if cmp is false, put a 0(false) on the stack
+			emit(new Pop(BOOL));
+			emit(new IConst(0));
+			// if cmp is true, keep the 1(true) on the stack
+			emit(trueLabel);
 			return null;
 		}
 		public Object visit(EGt p, Object o) {
+			emit(new IConst(1));
+			p.exp_1.accept(this, null);
+			p.exp_2.accept(this, null);
+			Label trueLabel = new Label(nextLabel++);
+			emit(new IfGt(p.exp_1.getType(), trueLabel));
+			emit(new Pop(BOOL));
+			emit(new IConst(0));
+			emit(trueLabel);
 			return null;
 		}
 		public Object visit(ELtEq p, Object o) {
+			emit(new IConst(1));
+			p.exp_1.accept(this, null);
+			p.exp_2.accept(this, null);
+			Label trueLabel = new Label(nextLabel++);
+			emit(new IfLtEq(p.exp_1.getType(), trueLabel));
+			emit(new Pop(BOOL));
+			emit(new IConst(0));
+			emit(trueLabel);
 			return null;
 		}
 		public Object visit(EGtEq p, Object o) {
+			emit(new IConst(1));
+			p.exp_1.accept(this, null);
+			p.exp_2.accept(this, null);
+			Label trueLabel = new Label(nextLabel++);
+			emit(new IfGtEq(p.exp_1.getType(), trueLabel));
+			emit(new Pop(BOOL));
+			emit(new IConst(0));
+			emit(trueLabel);
 			return null;
 		}
 		public Object visit(EEq p, Object o) {
+			emit(new IConst(1));
+			p.exp_1.accept(this, null);
+			p.exp_2.accept(this, null);
+			Label trueLabel = new Label(nextLabel++);
+			emit(new IfEq(p.exp_1.getType(), trueLabel));
+			emit(new Pop(BOOL));
+			emit(new IConst(0));
+			emit(trueLabel);
 			return null;
 		}
 		public Object visit(ENEq p, Object o) {
+			emit(new IConst(1));
+			p.exp_1.accept(this, null);
+			p.exp_2.accept(this, null);
+			Label trueLabel = new Label(nextLabel++);
+			emit(new IfNEq(p.exp_1.getType(), trueLabel));
+			emit(new Pop(BOOL));
+			emit(new IConst(0));
+			emit(trueLabel);
 			return null;
 		}
-		public Object visit(EAnd p, Object o) {
 
+		// Logic
+		public Object visit(EAnd p, Object o) {
+			p.exp_1.accept(this, null);
+			p.exp_2.accept(this, null);
+			emit(new And());
 			return null;
 		}
 		public Object visit(EOr p, Object o) {
+			p.exp_1.accept(this, null);
+			p.exp_2.accept(this, null);
+			emit(new Or());
 			return null;
 		}
+
+		// Assignment
 		public Object visit(EAss p, Object o) {
 			CxtEntry ce = lookupVar(p.id_);
 			p.exp_.accept(this, null);
@@ -373,6 +456,14 @@ public class Compiler {
 		throw new RuntimeException("Impossible: unbound variable " + s);
 	}
 
+	// Add or remove block from context
+	void newBlock() {
+		context.add(0, new HashMap());
+	}
+	void popBlock() {
+		context.remove(0);
+	}
+
 	// Adjust stack depending on c
 	void adjustStack(Code c) {
 		c.accept(new AdjustStack());
@@ -399,6 +490,7 @@ public class Compiler {
 	}
 
 	class AdjustStack implements CodeVisitor<Object> {
+		public Object visit(Label c)   {                   return null; }
 		public Object visit(Comment a) {                   return null; }
 		public Object visit(Store a)   { decStack(a.type); return null; }
 		public Object visit(Load a)    { incStack(a.type); return null; }
@@ -420,9 +512,42 @@ public class Compiler {
 		public Object visit(Sub c)     { decStack(c.type); return null; }
 		public Object visit(Mul c)     { decStack(c.type); return null; }
 		public Object visit(Div c)     { decStack(c.type); return null; }
-		public Object visit(Lt  c)     { decStack(c.type); return null; }
+
+		public Object visit(IfLt c) {
+			decStack(c.type);
+			decStack(c.type);
+			return null;
+		}
+		public Object visit(IfGt c) {
+			decStack(c.type);
+			decStack(c.type); 
+			return null; 
+		}
+		public Object visit(IfLtEq c) {
+			decStack(c.type);
+			decStack(c.type); 
+			return null;
+		}
+		public Object visit(IfGtEq c) {
+			decStack(c.type);
+			decStack(c.type); 
+			return null; 
+		}
+		public Object visit(IfEq c) {
+			decStack(c.type);
+			decStack(c.type); 
+			return null; 
+		}
+		public Object visit(IfNEq c) {
+			decStack(c.type);
+			decStack(c.type); 
+			return null; 
+		}
+
+		public Object visit(IfZ c)     { decStack(c.type); return null; }
 		public Object visit(And c)     { decStack(BOOL);   return null; }
-		public Object visit(Or  c)     { decStack(BOOL);   return null; }
+		public Object visit(Or c)      { decStack(BOOL);   return null; }
+		public Object visit(Goto c)    {                   return null; }
 	}
 
 }
