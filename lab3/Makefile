@@ -7,7 +7,7 @@ JAVA = java
 
 .PHONY: lab3 
 
-all: lab3 TypeChecker Compiler
+all: lab3 TypeChecker Compiler Runtime
 
 lab3:
 	${JAVAC} ${JAVAC_FLAGS} lab3.java 
@@ -18,5 +18,8 @@ TypeChecker:
 
 Compiler:
 	${JAVAC} ${JAVAC_FLAGS} Compiler.java
+
+Runtime:
+	${JAVAC} ${JAVAC_FLAGS} Runtime.java
 
 # EOF

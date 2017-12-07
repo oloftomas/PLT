@@ -157,6 +157,16 @@ public class Compiler {
 			for (String s : newOutput) {
 				output.add("  " + s);
 			}
+
+			if (!hasReturn(p)) {
+				if (p.id_.equals("main")) {
+					output.add("  iconst_0");
+					output.add("  ireturn");
+				} else {
+					output.add("  return");
+				}
+			}
+
 			output.add("\n.end method\n");
 			return null;
 		}
@@ -210,11 +220,14 @@ public class Compiler {
 			return null;
 		}
 		public Object visit(SBlock p, Object o) {
+			//int oldNextLocal = nextLocal;
+			//nextLocal = 0;
 			newBlock();
 			for (Stm s : p.liststm_) {
 				s.accept(new StmVisitor(), null);
 			}
 			popBlock();
+			//nextLocal = oldNextLocal;
 			return null;
 		}
 		public Object visit(SIfElse p, Object o) {
@@ -403,15 +416,23 @@ public class Compiler {
 
 		// Logic
 		public Object visit(EAnd p, Object o) {
+			emit(new IConst(0));
+			Label lazyAnd = new Label(nextLabel++);
 			p.exp_1.accept(this, null);
+			emit(new IfZ(BOOL, lazyAnd));
 			p.exp_2.accept(this, null);
 			emit(new And());
+			emit(lazyAnd);
 			return null;
 		}
 		public Object visit(EOr p, Object o) {
+			emit(new IConst(1));
+			Label lazyOr = new Label(nextLabel++);
 			p.exp_1.accept(this, null);
+			emit(new IfNZ(BOOL, lazyOr));
 			p.exp_2.accept(this, null);
 			emit(new Or());
+			emit(lazyOr);
 			return null;
 		}
 
@@ -462,6 +483,16 @@ public class Compiler {
 	}
 	void popBlock() {
 		context.remove(0);
+	}
+
+	// Check for return statement
+	boolean hasReturn(DFun fun) {
+		for (Stm s : fun.liststm_) {
+			if (s instanceof SReturn) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	// Adjust stack depending on c
@@ -545,6 +576,7 @@ public class Compiler {
 		}
 
 		public Object visit(IfZ c)     { decStack(c.type); return null; }
+		public Object visit(IfNZ c)    { decStack(c.type); return null; }
 		public Object visit(And c)     { decStack(BOOL);   return null; }
 		public Object visit(Or c)      { decStack(BOOL);   return null; }
 		public Object visit(Goto c)    {                   return null; }

@@ -1,9 +1,16 @@
 int main() {
-	int x = 0;
-	int y = 10;
+	int j = 4;
 
-	while(y != x) {
-		printInt(y--);
+	while(j < 6) {
+		int i = 0;
+		i++;
+		printInt(i);
+		j++;
 	}
-	return 0;
+	if (j < 7) j++;
+	else {
+		j--;
+	}
+	printInt(j);
+	return j;
 }

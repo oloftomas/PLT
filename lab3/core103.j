@@ -1,4 +1,4 @@
-.class public test3
+.class public core103
 .super java/lang/Object
 
 .method public <init>()V
@@ -15,7 +15,7 @@
   .limit locals 1
   .limit stack  1
 
-  invokestatic test3/main()I
+  invokestatic core103/main()I
   pop
   return
 

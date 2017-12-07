@@ -241,6 +241,18 @@ class IfZ extends Code {
     }
 }
 
+class IfNZ extends Code {
+    public Type type;
+    public Label label;
+    public IfNZ (Type type, Label label) {
+        this.type = type;
+        this.label = label;
+    }
+    public <R> R accept (CodeVisitor<R> v) {
+        return v.visit (this);
+    }
+}
+
 class And extends Code {
     public And () {}
     public <R> R accept (CodeVisitor<R> v) {
@@ -286,6 +298,7 @@ interface CodeVisitor<R> {
     public R visit (IfEq c);
     public R visit (IfNEq c);
     public R visit (IfZ c);
+    public R visit (IfNZ c);
     public R visit (And c);
     public R visit (Or c);
     public R visit (Goto c);
@@ -393,6 +406,10 @@ class CodeToJVM implements CodeVisitor<String> {
 
   public String visit (IfZ c) {
     return "ifeq " + "L" + c.label.label + "\n";
+  }
+
+  public String visit (IfNZ c) {
+    return "ifne " + "L" + c.label.label + "\n";
   }
 
   public String visit (And c) {
