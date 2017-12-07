@@ -1,6 +1,9 @@
 # Compiled class file
 *.class
 
+#Jasmin files
+*.j
+
 # Log file
 *.log
 
