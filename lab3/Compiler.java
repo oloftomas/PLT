@@ -158,15 +158,18 @@ public class Compiler {
 				output.add("  " + s);
 			}
 
+			// if function has no return, add one or JVM cries
 			if (!hasReturn(p)) {
 				if (p.id_.equals("main")) {
-					output.add("  iconst_0");
-					output.add("  ireturn");
+					// main needs to return int
+					output.add("  iconst_0\n");
+					output.add("  ireturn\n");
 				} else {
-					output.add("  return");
+					// return is void if program passed the typechecker
+					output.add("  return\n");
 				}
 			}
-
+			
 			output.add("\n.end method\n");
 			return null;
 		}
@@ -220,14 +223,11 @@ public class Compiler {
 			return null;
 		}
 		public Object visit(SBlock p, Object o) {
-			//int oldNextLocal = nextLocal;
-			//nextLocal = 0;
 			newBlock();
 			for (Stm s : p.liststm_) {
 				s.accept(new StmVisitor(), null);
 			}
 			popBlock();
-			//nextLocal = oldNextLocal;
 			return null;
 		}
 		public Object visit(SIfElse p, Object o) {
@@ -354,7 +354,6 @@ public class Compiler {
 			// if cmp is false, put a 0(false) on the stack
 			emit(new Pop(BOOL));
 			emit(new IConst(0));
-			// if cmp is true, keep the 1(true) on the stack
 			emit(trueLabel);
 			return null;
 		}
@@ -419,19 +418,29 @@ public class Compiler {
 			emit(new IConst(0));
 			Label lazyAnd = new Label(nextLabel++);
 			p.exp_1.accept(this, null);
+			// check if first exp is 0 -> AND is false
 			emit(new IfZ(BOOL, lazyAnd));
+			// check second exp
 			p.exp_2.accept(this, null);
-			emit(new And());
+			emit(new IfZ(BOOL, lazyAnd));
+			// if true, push a 1 on the stack
+			emit(new Pop(BOOL));
+			emit(new IConst(1));
 			emit(lazyAnd);
 			return null;
 		}
 		public Object visit(EOr p, Object o) {
 			emit(new IConst(1));
 			Label lazyOr = new Label(nextLabel++);
+			// check first exp
 			p.exp_1.accept(this, null);
 			emit(new IfNZ(BOOL, lazyOr));
+			// check second exp
 			p.exp_2.accept(this, null);
-			emit(new Or());
+			emit(new IfNZ(BOOL, lazyOr));
+			// if niether was true, push a 0 to the stack
+			emit(new Pop(BOOL));
+			emit(new IConst(0));
 			emit(lazyOr);
 			return null;
 		}
