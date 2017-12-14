@@ -123,10 +123,12 @@ public class Interpreter {
             if (strategy) {
                 todo("call-by-name");
             }
+
             // Evaluate function
             Value vFun = p.exp_1.accept(this, env);
             // Evaluate argument
             Value vArg = p.exp_2.accept(this, env);
+            
             return vFun.apply(vArg);
         }
 
@@ -161,8 +163,16 @@ public class Interpreter {
         }
 
         public Value visit (EIf p, Environment env) {
-            todo("if");
-            return null;
+            if (debug) {
+                System.out.println("In if, evaluating condition");
+            }
+            Value vCon = p.exp_1.accept(this, env);
+            if (vCon.intValue() == 0) {
+                Value vElse = p.exp_3.accept(this, env);
+                return vElse;
+            }
+            Value vIf = p.exp_2.accept(this, env);
+            return vIf;
         }
 
         public Value visit (EAbs p, Environment env) {
@@ -241,6 +251,9 @@ public class Interpreter {
         final Environment rest;
 
         public Extend (String s, Value v, Environment rest) {
+            if (debug) {
+                System.out.println("Extend env: Adding " + s);
+            }
             this.s = s;
             this.v = v;
             this.rest = rest;
