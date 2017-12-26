@@ -113,9 +113,11 @@ public class TypeChecker {
     // Argument Visitor
     public class ArgVisitor implements Arg.Visitor<Object,Object> {
     	public Object visit(ADecl p, Object o) {
-    		newVar(p.id_, p.type_);
-
-    		return null;
+            if (!p.type_.equals(VOID)) {
+                newVar(p.id_, p.type_);
+                return null;
+            }
+            throw new TypeException("Argument should not be type void");
     	}
     }
 
@@ -128,7 +130,11 @@ public class TypeChecker {
     	public Object visit(SDecls p, Object o) {
     		// Add all <Id,Type>-pairs from p.listid_ to current block
     		for (String s : p.listid_) {
-    			newVar(s, p.type_);
+                if (!p.type_.equals(VOID)) {
+                    newVar(s, p.type_);
+                } else {
+                    throw new TypeException("Variables should not be type void");
+                }
     		}
     		return null;	
     	}

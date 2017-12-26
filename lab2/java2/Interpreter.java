@@ -33,7 +33,11 @@ public class Interpreter {
 
     		// Execute function body
     		for (Stm s : main.liststm_) {
-    			s.accept(new StmVisitor(), null);
+                try {
+                    s.accept(new StmVisitor(), null);
+                } catch (ReturnException r) {
+                    return null;
+                }
     		}
 
     		return null;
@@ -84,18 +88,11 @@ public class Interpreter {
     	}
     	public Value visit(SWhile p, Object o) {
     		Value v;
-    		Boolean newBlockCreated = false;
     		while (((VBool)p.exp_.accept(new ExpVisitor(), null)).value) {
-    			if (!newBlockCreated) {
-    				newBlock();
-    				newBlockCreated = true;
-    			}
-    			v = p.stm_.accept(this, null);
+                newBlock();
+    			v = p.stm_.accept(new StmVisitor(), null);
+                popBlock();
     		}
-    		if(newBlockCreated) {
-	    		popBlock();	
-    		}
-    		
     		return null;
     	}
     	public Value visit(SBlock p, Object o) {
@@ -194,6 +191,7 @@ public class Interpreter {
     			popBlock();
     			return r.retVal;
     		}
+            popBlock();
     		popBlock();
     		return null;    		
     	}
