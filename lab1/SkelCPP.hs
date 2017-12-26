@@ -21,7 +21,7 @@ transDef x = case x of
   DFunemp type_ id args -> failure x
   DTypedef ids id -> failure x
   DTypedeft type_ id -> failure x
-  DVardeq typens -> failure x
+  DVardef type_ typens -> failure x
   QConuse ids -> failure x
 transArg :: Arg -> Result
 transArg x = case x of
@@ -93,8 +93,6 @@ transType x = case x of
   Tid ids -> failure x
 transTypeN :: TypeN -> Result
 transTypeN x = case x of
-  Tname1 id -> failure x
-  Tname2 type_ id -> failure x
-  Tnameinit1 id exp -> failure x
-  Tnameinit2 type_ id exp -> failure x
+  Tname id -> failure x
+  Tnameinit id exp -> failure x
 

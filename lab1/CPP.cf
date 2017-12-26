@@ -18,8 +18,7 @@ DTypedef.	Def ::= "typedef" [Id] Id ";" ;
 DTypedeft.	Def ::= "typedef" Type Id ";" ;
 
 -- variable def
-DVardeq.	Def ::= [TypeN] ";" ;
---DVarinit.	Def ::= Type Id "=" Exp ";" ;
+DVardef.	Def ::= Type [TypeN] ";" ;
 
 -- using
 QConuse.	Def ::= "using" [Id] ";" ;
@@ -41,6 +40,7 @@ SInit. 		Stm ::= Type [TypeN] ";" ;
 
 STypedef.	Stm ::= "typedef" [Id] Id ";" ;
 STypedeft.	Stm ::= "typedef" Type Id ";" ;
+
 
 -- Statemens (return, while, block, ifelse)
 SReturn. 	Stm ::= "return" Exp ";" ;
@@ -108,7 +108,6 @@ separator 	Exp "," ;
 separator 	nonempty String "" ;
 
 
-
 -- Types
 Ttype1.		Type ::= Type1 ;
 Ttype2.		Type ::= Type1 "&" ;
@@ -121,12 +120,11 @@ Tint.		Type1 ::= "int" ;
 Tvoid.		Type1 ::= "void" ;
 Tid.		Type1 ::= [Id] ;
 
-Tname1.		TypeN ::= Id ;
-Tname2.		TypeN ::= Type Id;
-Tnameinit1.	TypeN ::= Id "=" Exp ;
-Tnameinit2.	TypeN ::= Type Id "=" Exp ;
+Tname.		TypeN ::= Id ;
+Tnameinit.	TypeN ::= Id "=" Exp ;
 
 separator nonempty TypeN "," ;
+
 
 -- Id
 token Id (letter (letter | digit | '_')*) ;

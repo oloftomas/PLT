@@ -116,7 +116,7 @@ Def : Type Id '(' ListArg ')' '{' ListStm '}' { AbsCPP.DFun $1 $2 $4 (reverse $7
     | Type Id '(' ListArg ')' ';' { AbsCPP.DFunemp $1 $2 $4 }
     | 'typedef' ListId Id ';' { AbsCPP.DTypedef $2 $3 }
     | 'typedef' Type Id ';' { AbsCPP.DTypedeft $2 $3 }
-    | ListTypeN ';' { AbsCPP.DVardeq $1 }
+    | Type ListTypeN ';' { AbsCPP.DVardef $1 $2 }
     | 'using' ListId ';' { AbsCPP.QConuse $2 }
 ListArg :: { [Arg] }
 ListArg : {- empty -} { [] }
@@ -224,10 +224,8 @@ Type1 : 'bool' { AbsCPP.Tbool }
       | 'void' { AbsCPP.Tvoid }
       | ListId { AbsCPP.Tid $1 }
 TypeN :: { TypeN }
-TypeN : Id { AbsCPP.Tname1 $1 }
-      | Type Id { AbsCPP.Tname2 $1 $2 }
-      | Id '=' Exp { AbsCPP.Tnameinit1 $1 $3 }
-      | Type Id '=' Exp { AbsCPP.Tnameinit2 $1 $2 $4 }
+TypeN : Id { AbsCPP.Tname $1 }
+      | Id '=' Exp { AbsCPP.Tnameinit $1 $3 }
 ListTypeN :: { [TypeN] }
 ListTypeN : TypeN { (:[]) $1 } | TypeN ',' ListTypeN { (:) $1 $3 }
 ListId :: { [Id] }

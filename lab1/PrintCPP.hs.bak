@@ -95,7 +95,7 @@ instance Print Def where
     DFunemp type_ id args -> prPrec i 0 (concatD [prt 0 type_, prt 0 id, doc (showString "("), prt 0 args, doc (showString ")"), doc (showString ";")])
     DTypedef ids id -> prPrec i 0 (concatD [doc (showString "typedef"), prt 0 ids, prt 0 id, doc (showString ";")])
     DTypedeft type_ id -> prPrec i 0 (concatD [doc (showString "typedef"), prt 0 type_, prt 0 id, doc (showString ";")])
-    DVardeq typens -> prPrec i 0 (concatD [prt 0 typens, doc (showString ";")])
+    DVardef type_ typens -> prPrec i 0 (concatD [prt 0 type_, prt 0 typens, doc (showString ";")])
     QConuse ids -> prPrec i 0 (concatD [doc (showString "using"), prt 0 ids, doc (showString ";")])
   prtList _ [] = (concatD [])
   prtList _ (x:xs) = (concatD [prt 0 x, prt 0 xs])
@@ -134,7 +134,7 @@ instance Print Exp where
     EIndex exp1 exp2 -> prPrec i 14 (concatD [prt 14 exp1, doc (showString "["), prt 0 exp2, doc (showString "]")])
     ECall exp exps -> prPrec i 14 (concatD [prt 14 exp, doc (showString "("), prt 0 exps, doc (showString ")")])
     EDot exp1 exp2 -> prPrec i 13 (concatD [prt 13 exp1, doc (showString "."), prt 14 exp2])
-    EArrow exp id -> prPrec i 13 (concatD [prt 13 exp, doc (showString "->"), prt 0 id])
+    EArrow exp1 exp2 -> prPrec i 13 (concatD [prt 13 exp1, doc (showString "->"), prt 14 exp2])
     EPInc exp -> prPrec i 13 (concatD [prt 13 exp, doc (showString "++")])
     EPDec exp -> prPrec i 13 (concatD [prt 13 exp, doc (showString "--")])
     Einc exp -> prPrec i 12 (concatD [doc (showString "++"), prt 12 exp])
@@ -174,14 +174,11 @@ instance Print Type where
     Tdouble -> prPrec i 1 (concatD [doc (showString "double")])
     Tint -> prPrec i 1 (concatD [doc (showString "int")])
     Tvoid -> prPrec i 1 (concatD [doc (showString "void")])
-    Tid ids -> prPrec i 1 (concatD [prt 0 ids])
 
 instance Print TypeN where
   prt i e = case e of
-    Tname1 id -> prPrec i 0 (concatD [prt 0 id])
-    Tname2 type_ id -> prPrec i 0 (concatD [prt 0 type_, prt 0 id])
-    Tnameinit1 id exp -> prPrec i 0 (concatD [prt 0 id, doc (showString "="), prt 0 exp])
-    Tnameinit2 type_ id exp -> prPrec i 0 (concatD [prt 0 type_, prt 0 id, doc (showString "="), prt 0 exp])
+    Tname id -> prPrec i 0 (concatD [prt 0 id])
+    Tnameinit id exp -> prPrec i 0 (concatD [prt 0 id, doc (showString "="), prt 0 exp])
   prtList _ [x] = (concatD [prt 0 x])
   prtList _ (x:xs) = (concatD [prt 0 x, doc (showString ","), prt 0 xs])
 

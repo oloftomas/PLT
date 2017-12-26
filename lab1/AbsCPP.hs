@@ -16,7 +16,7 @@ data Def
     | DFunemp Type Id [Arg]
     | DTypedef [Id] Id
     | DTypedeft Type Id
-    | DVardeq [TypeN]
+    | DVardef Type [TypeN]
     | QConuse [Id]
   deriving (Eq, Ord, Show, Read)
 
@@ -89,10 +89,6 @@ data Type
     | Tid [Id]
   deriving (Eq, Ord, Show, Read)
 
-data TypeN
-    = Tname1 Id
-    | Tname2 Type Id
-    | Tnameinit1 Id Exp
-    | Tnameinit2 Type Id Exp
+data TypeN = Tname Id | Tnameinit Id Exp
   deriving (Eq, Ord, Show, Read)
 

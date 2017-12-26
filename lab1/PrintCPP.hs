@@ -95,7 +95,7 @@ instance Print Def where
     DFunemp type_ id args -> prPrec i 0 (concatD [prt 0 type_, prt 0 id, doc (showString "("), prt 0 args, doc (showString ")"), doc (showString ";")])
     DTypedef ids id -> prPrec i 0 (concatD [doc (showString "typedef"), prt 0 ids, prt 0 id, doc (showString ";")])
     DTypedeft type_ id -> prPrec i 0 (concatD [doc (showString "typedef"), prt 0 type_, prt 0 id, doc (showString ";")])
-    DVardeq typens -> prPrec i 0 (concatD [prt 0 typens, doc (showString ";")])
+    DVardef type_ typens -> prPrec i 0 (concatD [prt 0 type_, prt 0 typens, doc (showString ";")])
     QConuse ids -> prPrec i 0 (concatD [doc (showString "using"), prt 0 ids, doc (showString ";")])
   prtList _ [] = (concatD [])
   prtList _ (x:xs) = (concatD [prt 0 x, prt 0 xs])
@@ -178,10 +178,8 @@ instance Print Type where
 
 instance Print TypeN where
   prt i e = case e of
-    Tname1 id -> prPrec i 0 (concatD [prt 0 id])
-    Tname2 type_ id -> prPrec i 0 (concatD [prt 0 type_, prt 0 id])
-    Tnameinit1 id exp -> prPrec i 0 (concatD [prt 0 id, doc (showString "="), prt 0 exp])
-    Tnameinit2 type_ id exp -> prPrec i 0 (concatD [prt 0 type_, prt 0 id, doc (showString "="), prt 0 exp])
+    Tname id -> prPrec i 0 (concatD [prt 0 id])
+    Tnameinit id exp -> prPrec i 0 (concatD [prt 0 id, doc (showString "="), prt 0 exp])
   prtList _ [x] = (concatD [prt 0 x])
   prtList _ (x:xs) = (concatD [prt 0 x, doc (showString ","), prt 0 xs])
 
