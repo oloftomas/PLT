@@ -216,7 +216,12 @@ public class Compiler {
 			// check if exp == 0(false)
 			emit(new IfZ(p.exp_.getType(), endWhile));
 			// if exp == true do statement
+
+			// Add and pop block in case while is one-liner
+			newBlock();
 			p.stm_.accept(new StmVisitor(), null);
+			popBlock();
+
 			// loop from topWhile
 			emit(new Goto(topWhile));
 			emit(endWhile);

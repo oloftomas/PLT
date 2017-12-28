@@ -5,7 +5,7 @@ JAVAC_FLAGS = -sourcepath .
 
 JAVA = java
 
-.PHONY: lab3 
+.PHONY: lab3
 
 all: lab3 TypeChecker Compiler Runtime
 
